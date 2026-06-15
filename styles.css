@@ -180,7 +180,7 @@ video {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr);
   align-items: center;
-  min-height: 100svh;
+  min-height: 92svh;
   padding: 118px 6vw 72px;
   border-bottom: 1px solid var(--line);
 }
@@ -437,6 +437,10 @@ h1 em {
 .work-section,
 .services-section {
   padding: clamp(90px, 12vw, 180px) 5vw;
+}
+
+.work-section {
+  padding-top: clamp(48px, 5vw, 76px);
 }
 
 .section-heading {
