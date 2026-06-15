@@ -7,6 +7,7 @@ const playIcon = `
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M8 5.5v13l10-6.5z"></path>
   </svg>`;
+
 const layoutClass = {
   wide: "project--wide",
   tall: "project--tall",
@@ -15,8 +16,9 @@ const layoutClass = {
 
 byId("tagline-a").textContent = profile.tagline_a;
 byId("tagline-b").textContent = profile.tagline_b;
+byId("hero-title").textContent = profile.hero_title;
 byId("hero-sub").textContent = profile.hero_sub;
-byId("about-text").textContent = profile.about;
+byId("contact-note").textContent = profile.about;
 
 const contactLinks = [
   byId("nav-contact"),
@@ -28,8 +30,29 @@ contactLinks.forEach(link => {
 });
 byId("contact-instagram").href = profile.contact.instagram;
 
-const showreel = cases[0];
-byId("showreel-link").href = showreel.permalink;
+const showreel = cases.find(item => item.id === "DXiIx4_kQ-0") || cases[0];
+byId("hero-feature").innerHTML = `
+  <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}">
+    <img src="${showreel.thumb}" alt="${showreel.title}" fetchpriority="high">
+    <video muted loop playsinline preload="${reduceMotion ? "none" : "auto"}" ${reduceMotion ? "" : `src="${showreel.preview}"`} aria-hidden="true"></video>
+    <div class="hero-media-shade"></div>
+    <div class="hero-media-copy">
+      <span>Destaque / ${showreel.categoryLabel}</span>
+      <h2>${showreel.title}</h2>
+      <p>${showreel.direction}</p>
+    </div>
+    <span class="hero-play">${playIcon}</span>
+  </a>
+`;
+
+const stripCases = cases.filter(item => item.id !== showreel.id).slice(0, 3);
+byId("hero-strip").innerHTML = stripCases.map((item, index) => `
+  <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}">
+    <span>${String(index + 1).padStart(2, "0")}</span>
+    <img src="${item.thumb}" alt="" loading="eager">
+    <strong>${item.title}</strong>
+  </a>
+`).join("");
 
 byId("project-grid").innerHTML = cases.map((item, index) => `
   <a
@@ -42,29 +65,47 @@ byId("project-grid").innerHTML = cases.map((item, index) => `
     aria-label="${item.title}, ${item.client}"
   >
     <div class="project-media">
-      <img src="${item.thumb}" alt="" loading="${index < 2 ? "eager" : "lazy"}">
+      <img src="${item.thumb}" alt="" loading="${index < 3 ? "eager" : "lazy"}">
       <video muted loop playsinline preload="none" aria-hidden="true"></video>
+      <span class="project-play">${playIcon}</span>
     </div>
-    <div class="project-shade"></div>
-    <div class="project-top">
-      <span>${String(index + 1).padStart(2, "0")} / ${String(cases.length).padStart(2, "0")}</span>
-      ${item.featured ? "<strong>Destaque</strong>" : `<span>${item.format}</span>`}
-    </div>
-    <div class="project-info">
+    <div class="project-body">
+      <div class="project-top">
+        <span>${String(index + 1).padStart(2, "0")} / ${String(cases.length).padStart(2, "0")}</span>
+        ${item.featured ? "<strong>Destaque</strong>" : `<span>${item.format}</span>`}
+      </div>
       <p class="project-meta">${item.categoryLabel} · ${item.client} · ${item.year}</p>
       <h3>${item.title}</h3>
       <p class="project-role">${item.role}</p>
+      <div class="project-brief" aria-label="Resumo do case">
+        <div>
+          <span>Problema</span>
+          <p>${item.problem}</p>
+        </div>
+        <div>
+          <span>Direção</span>
+          <p>${item.direction}</p>
+        </div>
+        <div>
+          <span>Entrega</span>
+          <p>${item.deliverable}</p>
+        </div>
+      </div>
     </div>
-    <span class="project-play">${playIcon}</span>
   </a>
 `).join("");
 
-byId("process").innerHTML = profile.process.map((item, index) => `
-  <div class="process-item">
+byId("method-grid").innerHTML = profile.methods.map((item, index) => `
+  <article class="method-card reveal">
     <span>${String(index + 1).padStart(2, "0")}</span>
-    ${item}
-  </div>
+    <h3>${item.title}</h3>
+    <p>${item.text}</p>
+  </article>
 `).join("");
+
+byId("client-strip").innerHTML = profile.clients
+  .map(client => `<span>${client}</span>`)
+  .join("");
 
 byId("services").innerHTML = profile.services.map(service => `
   <a class="service reveal" href="${profile.contact.whatsapp}" target="_blank" rel="noopener">
@@ -76,6 +117,10 @@ byId("services").innerHTML = profile.services.map(service => `
     <span class="service-detail">${service.detail}</span>
     <span class="service-arrow" aria-hidden="true">→</span>
   </a>
+`).join("");
+
+byId("contact-reel").innerHTML = cases.slice(4, 8).map(item => `
+  <img src="${item.thumb}" alt="">
 `).join("");
 
 const footerItems = [
@@ -104,32 +149,35 @@ filters.forEach(button => {
   });
 });
 
-projects.forEach(project => {
-  const video = project.querySelector("video");
-  const source = project.dataset.preview;
-  let loaded = false;
+const attachVideoPreview = element => {
+  const video = element.querySelector("video");
+  const source = element.dataset.preview;
+  let loaded = Boolean(video && video.getAttribute("src"));
+  if (!video || !source) return;
 
   const play = () => {
-    if (reduceMotion || !source) return;
+    if (reduceMotion) return;
     if (!loaded) {
       video.src = source;
       loaded = true;
     }
     video.play()
-      .then(() => project.classList.add("is-playing"))
+      .then(() => element.classList.add("is-playing"))
       .catch(() => {});
   };
 
   const pause = () => {
     video.pause();
-    project.classList.remove("is-playing");
+    element.classList.remove("is-playing");
   };
 
-  project.addEventListener("mouseenter", play);
-  project.addEventListener("mouseleave", pause);
-  project.addEventListener("focus", play);
-  project.addEventListener("blur", pause);
-});
+  element.addEventListener("mouseenter", play);
+  element.addEventListener("mouseleave", pause);
+  element.addEventListener("focus", play);
+  element.addEventListener("blur", pause);
+};
+
+[...document.querySelectorAll(".project, .hero-media-link, .mini-case")].forEach(attachVideoPreview);
 
 const reveals = [...document.querySelectorAll(".reveal")];
 if (reduceMotion) {
@@ -178,21 +226,23 @@ if (window.matchMedia("(pointer: fine)").matches) {
     cursor.style.top = `${event.clientY}px`;
   }, { passive: true });
 
-  projects.forEach(project => {
-    project.addEventListener("mouseenter", () => cursor.classList.add("is-active"));
-    project.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
+  [...document.querySelectorAll(".project, .hero-media-link")].forEach(item => {
+    item.addEventListener("mouseenter", () => cursor.classList.add("is-active"));
+    item.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
   });
 }
 
-const magnetic = document.querySelector(".magnetic");
-if (magnetic && window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
-  magnetic.addEventListener("pointermove", event => {
-    const rect = magnetic.getBoundingClientRect();
-    const x = (event.clientX - rect.left - rect.width / 2) * .16;
-    const y = (event.clientY - rect.top - rect.height / 2) * .16;
-    magnetic.style.transform = `translate(${x}px, ${y}px) scale(1.06)`;
-  });
-  magnetic.addEventListener("pointerleave", () => {
-    magnetic.style.transform = "";
+const magneticItems = [...document.querySelectorAll(".magnetic")];
+if (window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
+  magneticItems.forEach(item => {
+    item.addEventListener("pointermove", event => {
+      const rect = item.getBoundingClientRect();
+      const x = (event.clientX - rect.left - rect.width / 2) * .08;
+      const y = (event.clientY - rect.top - rect.height / 2) * .08;
+      item.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    item.addEventListener("pointerleave", () => {
+      item.style.transform = "";
+    });
   });
 }

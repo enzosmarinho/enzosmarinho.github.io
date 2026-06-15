@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08070b">
   <title>Enzo Marinho — Direção & Conteúdo</title>
-  <meta name="description" content="Estratégia, direção, captação e edição para transformar negócios em histórias que prendem e vendem.">
+  <meta name="description" content="Portfólio de direção, captação e edição para conteúdo, anúncios e vídeos long-form.">
   <meta property="og:title" content="Enzo Marinho — Direção & Conteúdo">
-  <meta property="og:description" content="Estratégia, direção, captação e edição em um processo só.">
+  <meta property="og:description" content="Vídeo com direção, roteiro, captação e edição para negócios que precisam ser entendidos.">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260615-2">
+  <link rel="stylesheet" href="styles.css?v=20260615-3">
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
@@ -25,7 +25,7 @@
     </a>
     <div class="nav-links">
       <a href="#work">Trabalhos</a>
-      <a href="#sobre">Sobre</a>
+      <a href="#metodo">Método</a>
       <a href="#servicos">Serviços</a>
       <a href="#contato">Contato</a>
     </div>
@@ -35,36 +35,26 @@
   <main>
     <header class="hero" id="top">
       <div class="hero-copy">
-        <p class="identity">ENZO MARINHO <span>—</span> DIREÇÃO & CONTEÚDO</p>
+        <p class="identity">ENZO MARINHO <span>—</span> PORTFÓLIO 2026</p>
         <h1>
-          <span id="tagline-a">Transformo negócios em</span>
-          <em id="tagline-b">histórias que prendem e vendem.</em>
+          <span id="tagline-a"></span>
+          <em id="tagline-b"></em>
         </h1>
+        <p class="hero-title" id="hero-title"></p>
         <p class="hero-sub" id="hero-sub"></p>
         <div class="hero-actions">
-          <a class="button button--fill" href="#work">Ver trabalhos</a>
-          <a class="button button--line" id="hero-contact" href="#">Falar comigo</a>
+          <a class="button button--fill" href="#work">Ver seleção</a>
+          <a class="button button--line" id="hero-contact" href="#">Chamar para projeto</a>
         </div>
       </div>
 
-      <div class="hero-visual" aria-label="Retrato de Enzo Marinho">
-        <div class="portrait-frame">
-          <img src="assets/enzo.png" alt="Enzo Marinho" fetchpriority="high">
-          <div class="portrait-light" aria-hidden="true"></div>
-        </div>
-        <a class="showreel-link magnetic" id="showreel-link" href="#" target="_blank" rel="noopener">
-          <span>ASSISTIR<br>TRABALHO</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>
-        </a>
-        <div class="hero-index" aria-hidden="true">
-          <span>01</span>
-          <i></i>
-          <small>PORTFÓLIO<br>2026</small>
-        </div>
+      <div class="hero-stage" aria-label="Trabalho em destaque">
+        <div class="hero-feature reveal" id="hero-feature"></div>
+        <div class="hero-strip" id="hero-strip" aria-label="Outros trabalhos em destaque"></div>
       </div>
 
       <a class="scroll-cue" href="#work">
-        <span>Scroll</span>
+        <span>Trabalhos</span>
         <i></i>
       </a>
     </header>
@@ -72,7 +62,8 @@
     <section class="work-section" id="work">
       <div class="section-heading">
         <p class="section-label">Trabalhos selecionados</p>
-        <h2>Poucos trabalhos.<br><em>Cada um mostra uma força diferente.</em></h2>
+        <h2>Uma seleção curta,<br><em>com função clara.</em></h2>
+        <p>Cada card mostra o problema, a decisão de direção e a entrega. A vitrine é o trabalho, não um retrato.</p>
       </div>
 
       <div class="work-toolbar" aria-label="Filtros dos trabalhos">
@@ -86,17 +77,13 @@
       <div class="project-grid" id="project-grid"></div>
     </section>
 
-    <section class="about-section" id="sobre">
-      <div class="about-portrait reveal">
-        <img src="assets/enzo.png" alt="Enzo Marinho">
-        <span>ENZO<br>MARINHO</span>
+    <section class="method-section" id="metodo">
+      <div class="section-heading section-heading--compact">
+        <p class="section-label">Método</p>
+        <h2>O vídeo fica melhor<br><em>quando a direção vem antes da timeline.</em></h2>
       </div>
-      <div class="about-copy">
-        <p class="section-label">Sobre</p>
-        <h2>Um processo inteiro,<br><em>uma direção só.</em></h2>
-        <p class="about-text" id="about-text"></p>
-        <div class="process" id="process" aria-label="Etapas do processo"></div>
-      </div>
+      <div class="method-grid" id="method-grid"></div>
+      <div class="client-strip" id="client-strip" aria-label="Clientes e marcas trabalhadas"></div>
     </section>
 
     <section class="services-section" id="servicos">
@@ -110,15 +97,14 @@
     <section class="contact-section" id="contato">
       <div class="contact-copy">
         <p class="section-label">Contato</p>
-        <h2>Seu produto já é bom.<br><em>Vamos fazer o conteúdo parecer à altura.</em></h2>
+        <h2>Seu produto já tem valor.<br><em>O conteúdo precisa deixar isso óbvio.</em></h2>
+        <p id="contact-note"></p>
         <div class="contact-actions">
           <a class="button button--fill" id="contact-whatsapp" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
           <a class="button button--line" id="contact-instagram" href="#" target="_blank" rel="noopener">Ver Instagram</a>
         </div>
       </div>
-      <div class="contact-silhouette" aria-hidden="true">
-        <img src="assets/enzo.png" alt="">
-      </div>
+      <div class="contact-reel" id="contact-reel" aria-hidden="true"></div>
     </section>
   </main>
 
@@ -130,7 +116,7 @@
     <div class="footer-links" id="footer-links"></div>
   </footer>
 
-  <script src="cases.js?v=20260615-2"></script>
-  <script src="render.js?v=20260615-2"></script>
+  <script src="cases.js?v=20260615-3"></script>
+  <script src="render.js?v=20260615-3"></script>
 </body>
 </html>
