@@ -27,6 +27,7 @@ const filterLabel = {
 };
 
 const isKaykyItem = item => /kayky|kaique|pitondo/i.test(`${item.client} ${item.title}`);
+const mediaVars = item => item.mediaPosition ? ` style="--media-position: ${item.mediaPosition}"` : "";
 
 byId("tagline-a").textContent = profile.tagline_a;
 byId("tagline-b").textContent = profile.tagline_b;
@@ -47,7 +48,7 @@ byId("contact-instagram").href = profile.contact.instagram;
 const showreelIndex = Math.max(0, cases.findIndex(item => item.featured));
 const showreel = cases[showreelIndex];
 byId("hero-feature").innerHTML = `
-  <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}" data-case-index="${showreelIndex}" aria-haspopup="dialog">
+  <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}" data-case-index="${showreelIndex}" data-id="${showreel.id}" aria-haspopup="dialog"${mediaVars(showreel)}>
     <img src="${mediaImage(showreel)}" alt="${showreel.title}" fetchpriority="high">
     <video muted loop playsinline preload="${reduceMotion ? "none" : "auto"}" ${reduceMotion ? "" : `src="${showreel.preview}"`} aria-hidden="true"></video>
     <div class="hero-media-shade"></div>
@@ -62,7 +63,7 @@ byId("hero-feature").innerHTML = `
 
 const stripCases = cases.filter(item => item.id !== showreel.id).slice(0, 3);
 byId("hero-strip").innerHTML = stripCases.map((item, index) => `
-  <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}" data-case-index="${cases.indexOf(item)}" aria-haspopup="dialog">
+  <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}" data-case-index="${cases.indexOf(item)}" data-id="${item.id}" aria-haspopup="dialog"${mediaVars(item)}>
     <span>${String(index + 1).padStart(2, "0")}</span>
     <img src="${mediaImage(item)}" alt="" loading="eager">
     <strong>${item.title}</strong>
@@ -78,9 +79,11 @@ byId("project-grid").innerHTML = cases.map((item, index) => `
     data-category="${item.category}"
     data-preview="${item.preview}"
     data-case-index="${index}"
+    data-id="${item.id}"
     data-orientation="${item.orientation || "portrait"}"
     aria-haspopup="dialog"
     aria-label="${item.title}, ${item.client}"
+    ${mediaVars(item)}
   >
     <div class="project-media">
       <img src="${mediaImage(item)}" alt="" loading="${index < 3 ? "eager" : "lazy"}">
@@ -125,8 +128,10 @@ byId("kayky-suite").innerHTML = kaykyCase ? `
     rel="noopener"
     data-preview="${kaykyCase.preview}"
     data-case-index="${cases.indexOf(kaykyCase)}"
+    data-id="${kaykyCase.id}"
     aria-haspopup="dialog"
     aria-label="${kaykyCase.title}, ${kaykyCase.client}"
+    ${mediaVars(kaykyCase)}
   >
     <div class="kayky-main__media">
       <img src="${mediaImage(kaykyCase)}" alt="" loading="lazy">
@@ -150,8 +155,10 @@ byId("kayky-suite").innerHTML = kaykyCase ? `
           rel="noopener"
           data-preview="${item.preview}"
           data-case-index="${itemIndex}"
+          data-id="${item.id}"
           aria-haspopup="dialog"
           aria-label="${item.title}, ${item.client}"
+          ${mediaVars(item)}
         >
           <div class="kayky-cut__media">
             <img src="${mediaImage(item)}" alt="" loading="lazy">
@@ -178,9 +185,11 @@ byId("extra-rail").innerHTML = otherClips.map(item => {
       rel="noopener"
       data-preview="${item.preview}"
       data-case-index="${itemIndex}"
+      data-id="${item.id}"
       data-orientation="${item.orientation || "portrait"}"
       aria-haspopup="dialog"
       aria-label="${item.title}, ${item.client}"
+      ${mediaVars(item)}
     >
       <div class="extra-card__media">
         <img src="${mediaImage(item)}" alt="" loading="lazy">

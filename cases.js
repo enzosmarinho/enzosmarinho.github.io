@@ -341,12 +341,12 @@ window.EXTRA_CLIPS = [
     "deliverable": "Reel de prova social em campo.",
     "year": "2025",
     "layout": "standard",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "permalink": "https://www.instagram.com/reel/DGLMxcXRRJ4/",
     "thumb": "assets/thumbs/ig_DGLMxcXRRJ4.jpg",
     "poster": "assets/posters/DGLMxcXRRJ4.jpg",
     "preview": "assets/previews/DGLMxcXRRJ4.mp4",
-    "cardImage": "assets/thumbs/ig_DGLMxcXRRJ4.jpg"
+    "cardImage": "assets/posters/DGLMxcXRRJ4.jpg"
   },
   {
     "id": "DOzGHz2iLGz",
