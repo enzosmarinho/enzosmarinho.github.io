@@ -1,5 +1,7 @@
 const profile = window.PROFILE;
 const cases = window.CASES;
+const extraClips = window.EXTRA_CLIPS || [];
+const portfolioItems = [...cases, ...extraClips];
 const byId = id => document.getElementById(id);
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -13,6 +15,8 @@ const layoutClass = {
   tall: "project--tall",
   standard: "project--standard",
 };
+
+const mediaImage = item => item.poster || item.thumb;
 
 const filterLabel = {
   todos: "Todos",
@@ -42,7 +46,7 @@ const showreelIndex = Math.max(0, cases.findIndex(item => item.id === "DXiIx4_kQ
 const showreel = cases[showreelIndex];
 byId("hero-feature").innerHTML = `
   <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}" data-case-index="${showreelIndex}" aria-haspopup="dialog">
-    <img src="${showreel.thumb}" alt="${showreel.title}" fetchpriority="high">
+    <img src="${mediaImage(showreel)}" alt="${showreel.title}" fetchpriority="high">
     <video muted loop playsinline preload="${reduceMotion ? "none" : "auto"}" ${reduceMotion ? "" : `src="${showreel.preview}"`} aria-hidden="true"></video>
     <div class="hero-media-shade"></div>
     <div class="hero-media-copy">
@@ -58,25 +62,26 @@ const stripCases = cases.filter(item => item.id !== showreel.id).slice(0, 3);
 byId("hero-strip").innerHTML = stripCases.map((item, index) => `
   <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}" data-case-index="${cases.indexOf(item)}" aria-haspopup="dialog">
     <span>${String(index + 1).padStart(2, "0")}</span>
-    <img src="${item.thumb}" alt="" loading="eager">
+    <img src="${mediaImage(item)}" alt="" loading="eager">
     <strong>${item.title}</strong>
   </a>
 `).join("");
 
 byId("project-grid").innerHTML = cases.map((item, index) => `
   <a
-    class="project ${layoutClass[item.layout]} reveal"
+    class="project ${layoutClass[item.layout]} project--${item.orientation || "portrait"} reveal"
     href="${item.permalink}"
     target="_blank"
     rel="noopener"
     data-category="${item.category}"
     data-preview="${item.preview}"
     data-case-index="${index}"
+    data-orientation="${item.orientation || "portrait"}"
     aria-haspopup="dialog"
     aria-label="${item.title}, ${item.client}"
   >
     <div class="project-media">
-      <img src="${item.thumb}" alt="" loading="${index < 3 ? "eager" : "lazy"}">
+      <img src="${mediaImage(item)}" alt="" loading="${index < 3 ? "eager" : "lazy"}">
       <video muted loop playsinline preload="none" aria-hidden="true"></video>
       <span class="project-play">${playIcon}</span>
     </div>
@@ -106,6 +111,33 @@ byId("project-grid").innerHTML = cases.map((item, index) => `
   </a>
 `).join("");
 
+byId("extra-rail").innerHTML = extraClips.map((item, index) => {
+  const itemIndex = cases.length + index;
+  return `
+    <a
+      class="extra-card extra-card--${item.orientation || "portrait"} reveal"
+      href="${item.permalink}"
+      target="_blank"
+      rel="noopener"
+      data-preview="${item.preview}"
+      data-case-index="${itemIndex}"
+      data-orientation="${item.orientation || "portrait"}"
+      aria-haspopup="dialog"
+      aria-label="${item.title}, ${item.client}"
+    >
+      <div class="extra-card__media">
+        <img src="${mediaImage(item)}" alt="" loading="lazy">
+        <video muted loop playsinline preload="none" aria-hidden="true"></video>
+        <span>${playIcon}</span>
+      </div>
+      <div class="extra-card__copy">
+        <p>${item.categoryLabel} · ${item.format}</p>
+        <h3>${item.title}</h3>
+      </div>
+    </a>
+  `;
+}).join("");
+
 byId("method-grid").innerHTML = profile.methods.map((item, index) => `
   <article class="method-card reveal">
     <span>${String(index + 1).padStart(2, "0")}</span>
@@ -131,7 +163,7 @@ byId("services").innerHTML = profile.services.map(service => `
 `).join("");
 
 byId("contact-reel").innerHTML = cases.slice(4, 8).map(item => `
-  <img src="${item.thumb}" alt="">
+  <img src="${mediaImage(item)}" alt="">
 `).join("");
 
 const footerItems = [
@@ -209,7 +241,7 @@ const attachVideoPreview = element => {
   element.addEventListener("blur", pause);
 };
 
-[...document.querySelectorAll(".project, .hero-media-link, .mini-case")].forEach(attachVideoPreview);
+[...document.querySelectorAll(".project, .hero-media-link, .mini-case, .extra-card")].forEach(attachVideoPreview);
 
 const caseModal = byId("case-modal");
 const modalPanel = caseModal.querySelector(".case-modal__panel");
@@ -228,12 +260,15 @@ let lastFocusedElement = null;
 let closeTimer = null;
 
 const renderCaseModal = index => {
-  activeCaseIndex = (index + cases.length) % cases.length;
-  const item = cases[activeCaseIndex];
+  activeCaseIndex = (index + portfolioItems.length) % portfolioItems.length;
+  const item = portfolioItems[activeCaseIndex];
+  const poster = mediaImage(item);
 
-  modalPoster.src = item.thumb;
+  modalPanel.classList.toggle("is-portrait", item.orientation !== "landscape");
+  modalPanel.classList.toggle("is-landscape", item.orientation === "landscape");
+  modalPoster.src = poster;
   modalPoster.alt = "";
-  modalVideo.poster = item.thumb;
+  modalVideo.poster = poster;
   modalVideo.src = item.preview;
   modalEyebrow.textContent = `${item.categoryLabel} · ${item.client} · ${item.year}`;
   modalTitle.textContent = item.title;
@@ -378,7 +413,7 @@ if (window.matchMedia("(pointer: fine)").matches) {
     cursor.style.top = `${event.clientY}px`;
   }, { passive: true });
 
-  [...document.querySelectorAll(".project, .hero-media-link")].forEach(item => {
+  [...document.querySelectorAll(".project, .hero-media-link, .extra-card")].forEach(item => {
     item.addEventListener("mouseenter", () => cursor.classList.add("is-active"));
     item.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
   });

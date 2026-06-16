@@ -503,6 +503,7 @@ h1 em,
 }
 
 .work-section,
+.extra-section,
 .method-section,
 .services-section,
 .contact-section {
@@ -633,6 +634,10 @@ h1 em,
   grid-column: span 8;
 }
 
+.project--portrait.project--wide {
+  grid-column: span 4;
+}
+
 .project--tall {
   grid-column: span 4;
 }
@@ -650,6 +655,19 @@ h1 em,
 
 .project--tall .project-media {
   aspect-ratio: 4 / 5;
+}
+
+.project--portrait .project-media,
+.project--portrait.project--wide .project-media,
+.project--portrait.project--standard .project-media,
+.project--portrait.project--tall .project-media {
+  aspect-ratio: 9 / 16;
+}
+
+.project--landscape .project-media,
+.project--landscape.project--wide .project-media,
+.project--landscape.project--standard .project-media {
+  aspect-ratio: 16 / 9;
 }
 
 .project-media img,
@@ -749,6 +767,116 @@ h1 em,
 
 .project--wide .project-brief {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project--portrait.project--wide .project-brief {
+  grid-template-columns: 1fr;
+}
+
+.extra-section {
+  overflow: hidden;
+}
+
+.extra-section .section-heading {
+  margin-bottom: 22px;
+}
+
+.extra-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(220px, 22vw, 300px);
+  gap: 14px;
+  overflow-x: auto;
+  padding: 0 0 18px;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.extra-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, .045);
+  scroll-snap-align: start;
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.extra-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+}
+
+.extra-card__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  background: #111015;
+}
+
+.extra-card--landscape .extra-card__media {
+  aspect-ratio: 16 / 9;
+}
+
+.extra-card__media img,
+.extra-card__media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity .25s ease, transform .35s ease;
+}
+
+.extra-card__media video {
+  opacity: 0;
+}
+
+.extra-card.is-playing .extra-card__media video {
+  opacity: 1;
+}
+
+.extra-card:hover .extra-card__media img {
+  transform: scale(1.04);
+}
+
+.extra-card__media span {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 1;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  color: #08070b;
+  background: var(--text);
+}
+
+.extra-card__media svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.extra-card__copy {
+  padding: 14px;
+}
+
+.extra-card__copy p {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font: 500 10px/1.3 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.extra-card__copy h3 {
+  margin-bottom: 0;
+  font-size: 20px;
+  line-height: 1.05;
+  letter-spacing: -.04em;
 }
 
 .method-section {
@@ -1008,16 +1136,29 @@ footer span {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .case-modal__media img {
-  opacity: .36;
-  filter: saturate(.9);
+  opacity: .2;
+  filter: blur(12px) saturate(.9);
+  transform: scale(1.08);
 }
 
 .case-modal__media video {
   z-index: 1;
+}
+
+.case-modal__panel.is-portrait {
+  grid-template-columns: minmax(280px, .64fr) minmax(360px, .86fr);
+}
+
+.case-modal__panel.is-portrait .case-modal__media {
+  background: #050506;
+}
+
+.case-modal__panel.is-landscape .case-modal__media {
+  min-height: 520px;
 }
 
 .case-modal__copy {
@@ -1156,6 +1297,10 @@ footer span {
     grid-column: span 6;
   }
 
+  .project--portrait.project--wide {
+    grid-column: span 6;
+  }
+
   .project--wide {
     grid-column: span 12;
   }
@@ -1235,12 +1380,33 @@ footer span {
     aspect-ratio: 4 / 3;
   }
 
+  .project--portrait .project-media,
+  .project--portrait.project--wide .project-media,
+  .project--portrait.project--standard .project-media,
+  .project--portrait.project--tall .project-media {
+    aspect-ratio: 9 / 16;
+  }
+
+  .project--landscape .project-media,
+  .project--landscape.project--wide .project-media,
+  .project--landscape.project--standard .project-media {
+    aspect-ratio: 16 / 9;
+  }
+
   .project--tall .project-media {
     aspect-ratio: 4 / 5;
   }
 
+  .project--portrait.project--tall .project-media {
+    aspect-ratio: 9 / 16;
+  }
+
   .project--wide .project-brief {
     grid-template-columns: 1fr;
+  }
+
+  .extra-rail {
+    grid-auto-columns: min(72vw, 280px);
   }
 
   .method-grid {
@@ -1273,6 +1439,10 @@ footer span {
     max-height: calc(100svh - 20px);
     grid-template-columns: 1fr;
     border-radius: 24px;
+  }
+
+  .case-modal__panel.is-portrait {
+    grid-template-columns: 1fr;
   }
 
   .case-modal__media {

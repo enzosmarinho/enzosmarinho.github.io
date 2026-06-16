@@ -78,9 +78,11 @@ window.CASES = [
     "deliverable": "Reel roteirizado e dirigido, pronto para o feed.",
     "year": "2025",
     "layout": "wide",
+    "orientation": "portrait",
     "featured": true,
     "permalink": "https://www.instagram.com/reel/DQfTWkhiK4k/",
     "thumb": "assets/thumbs/ig_DQfTWkhiK4k.jpg",
+    "poster": "assets/posters/DQfTWkhiK4k.jpg",
     "preview": "assets/previews/DQfTWkhiK4k.mp4"
   },
   {
@@ -96,8 +98,10 @@ window.CASES = [
     "deliverable": "Reel vertical de impacto para a academia.",
     "year": "2026",
     "layout": "tall",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DUf-ODMDWqA/",
     "thumb": "assets/thumbs/ig_DUf-ODMDWqA.jpg",
+    "poster": "assets/posters/DUf-ODMDWqA.jpg",
     "preview": "assets/previews/DUf-ODMDWqA.mp4"
   },
   {
@@ -113,8 +117,10 @@ window.CASES = [
     "deliverable": "Short de apresentação para o canal.",
     "year": "2025",
     "layout": "standard",
+    "orientation": "portrait",
     "permalink": "https://youtu.be/qBTk1irwDc4",
     "thumb": "assets/thumbs/qBTk1irwDc4.jpg",
+    "poster": "assets/posters/qBTk1irwDc4.jpg",
     "preview": "assets/previews/qBTk1irwDc4.mp4"
   },
   {
@@ -130,8 +136,10 @@ window.CASES = [
     "deliverable": "Vídeo long-form de 40 min editado e finalizado.",
     "year": "2026",
     "layout": "wide",
+    "orientation": "landscape",
     "permalink": "https://youtu.be/ADKpionmFiw",
     "thumb": "assets/thumbs/ADKpionmFiw.jpg",
+    "poster": "assets/posters/ADKpionmFiw.jpg",
     "preview": "assets/previews/ADKpionmFiw.mp4"
   },
   {
@@ -147,8 +155,10 @@ window.CASES = [
     "deliverable": "Reel educativo com hook e demonstração.",
     "year": "2026",
     "layout": "standard",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DXiIx4_kQ-0/",
     "thumb": "assets/thumbs/ig_DXiIx4_kQ-0.jpg",
+    "poster": "assets/posters/DXiIx4_kQ-0.jpg",
     "preview": "assets/previews/DXiIx4_kQ-0.mp4"
   },
   {
@@ -164,8 +174,10 @@ window.CASES = [
     "deliverable": "Anúncio pronto para veiculação.",
     "year": "2026",
     "layout": "wide",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DYC7byPyEnW/",
     "thumb": "assets/thumbs/ig_DYC7byPyEnW.jpg",
+    "poster": "assets/posters/DYC7byPyEnW.jpg",
     "preview": "assets/previews/DYC7byPyEnW.mp4"
   },
   {
@@ -181,8 +193,10 @@ window.CASES = [
     "deliverable": "Anúncio com voz off e identidade visual aplicada.",
     "year": "2026",
     "layout": "tall",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DUQ8YNYEc4z/",
     "thumb": "assets/thumbs/ig_DUQ8YNYEc4z.jpg",
+    "poster": "assets/posters/DUQ8YNYEc4z.jpg",
     "preview": "assets/previews/DUQ8YNYEc4z.mp4"
   },
   {
@@ -198,8 +212,10 @@ window.CASES = [
     "deliverable": "Reel narrativo para campanha de fim de ano.",
     "year": "2025",
     "layout": "standard",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DSldztZCA9P/",
     "thumb": "assets/thumbs/ig_DSldztZCA9P.jpg",
+    "poster": "assets/posters/DSldztZCA9P.jpg",
     "preview": "assets/previews/DSldztZCA9P.mp4"
   },
   {
@@ -215,8 +231,10 @@ window.CASES = [
     "deliverable": "Reel de produto com argumento claro e cortes objetivos.",
     "year": "2026",
     "layout": "wide",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DWpa8TQCKvX/",
     "thumb": "assets/thumbs/ig_DWpa8TQCKvX.jpg",
+    "poster": "assets/posters/DWpa8TQCKvX.jpg",
     "preview": "assets/previews/DWpa8TQCKvX.mp4"
   },
   {
@@ -232,8 +250,107 @@ window.CASES = [
     "deliverable": "Reel de bastidores para reforço de confiança.",
     "year": "2025",
     "layout": "standard",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DKkdTYyItAy/",
     "thumb": "assets/thumbs/ig_DKkdTYyItAy.jpg",
+    "poster": "assets/posters/DKkdTYyItAy.jpg",
     "preview": "assets/previews/DKkdTYyItAy.mp4"
+  }
+];
+window.EXTRA_CLIPS = [
+  {
+    "id": "DUJfuJsCPir",
+    "title": "WhatsApp conectado",
+    "client": "VOTI Software",
+    "category": "conteudo",
+    "categoryLabel": "Conteúdo",
+    "format": "Reel",
+    "role": "Demonstração · produto · clareza",
+    "problem": "Mostrar uma integração técnica sem transformar o vídeo em tutorial frio.",
+    "direction": "Roteiro guiado por ação na tela, com ritmo de demonstração curta.",
+    "deliverable": "Reel de produto para explicar uma função específica.",
+    "year": "2026",
+    "layout": "standard",
+    "orientation": "portrait",
+    "permalink": "https://www.instagram.com/reel/DUJfuJsCPir/",
+    "thumb": "assets/thumbs/ig_DUJfuJsCPir.jpg",
+    "poster": "assets/posters/DUJfuJsCPir.jpg",
+    "preview": "assets/previews/DUJfuJsCPir.mp4"
+  },
+  {
+    "id": "DV9deuiCHea",
+    "title": "Loja física + online",
+    "client": "VOTI Software",
+    "category": "conteudo",
+    "categoryLabel": "Conteúdo",
+    "format": "Reel",
+    "role": "Copy · dor real · produto",
+    "problem": "Transformar retrabalho de estoque e preço em uma dor fácil de reconhecer.",
+    "direction": "Começo por pergunta direta e conexão com situação real de varejo.",
+    "deliverable": "Reel educativo para topo de funil.",
+    "year": "2026",
+    "layout": "standard",
+    "orientation": "portrait",
+    "permalink": "https://www.instagram.com/reel/DV9deuiCHea/",
+    "thumb": "assets/thumbs/ig_DV9deuiCHea.jpg",
+    "poster": "assets/posters/DV9deuiCHea.jpg",
+    "preview": "assets/previews/DV9deuiCHea.mp4"
+  },
+  {
+    "id": "DW4c4OjkdA5",
+    "title": "Renda extra Lumiar",
+    "client": "Lumiar Parfum",
+    "category": "anuncios",
+    "categoryLabel": "Anúncios",
+    "format": "Anúncio",
+    "role": "Oferta · captação · CTA",
+    "problem": "Apresentar uma oportunidade comercial sem parecer panfleto estático.",
+    "direction": "Roteiro de oferta com presença em cena e CTA simples.",
+    "deliverable": "Anúncio vertical para campanha de revenda.",
+    "year": "2026",
+    "layout": "standard",
+    "orientation": "portrait",
+    "permalink": "https://www.instagram.com/lumiar.parfum/reel/DW4c4OjkdA5/",
+    "thumb": "assets/thumbs/ig_DW4c4OjkdA5.jpg",
+    "poster": "assets/posters/DW4c4OjkdA5.jpg",
+    "preview": "assets/previews/DW4c4OjkdA5.mp4"
+  },
+  {
+    "id": "DTgXN2FiDV6",
+    "title": "Sintoma de gestão",
+    "client": "VOTI Software",
+    "category": "conteudo",
+    "categoryLabel": "Conteúdo",
+    "format": "Reel",
+    "role": "Hook · analogia · edição",
+    "problem": "Chamar atenção para uma dor de gestão usando uma entrada mais memorável.",
+    "direction": "Abordagem por sintoma e cura para tornar o tema técnico mais assistível.",
+    "deliverable": "Reel de awareness para social.",
+    "year": "2026",
+    "layout": "standard",
+    "orientation": "landscape",
+    "permalink": "https://www.instagram.com/reel/DTgXN2FiDV6/",
+    "thumb": "assets/thumbs/ig_DTgXN2FiDV6.jpg",
+    "poster": "assets/posters/DTgXN2FiDV6.jpg",
+    "preview": "assets/previews/DTgXN2FiDV6.mp4"
+  },
+  {
+    "id": "blYFchVi4xg",
+    "title": "Sistema de Natal",
+    "client": "VOTI Software",
+    "category": "anuncios",
+    "categoryLabel": "Anúncios",
+    "format": "Short",
+    "role": "Sazonal · roteiro · edição",
+    "problem": "Aproveitar uma data comercial sem perder o vínculo com produto.",
+    "direction": "Gancho sazonal com linguagem leve e foco em preparação de venda.",
+    "deliverable": "Short sazonal para campanha de fim de ano.",
+    "year": "2025",
+    "layout": "standard",
+    "orientation": "portrait",
+    "permalink": "https://youtu.be/blYFchVi4xg",
+    "thumb": "assets/thumbs/blYFchVi4xg.jpg",
+    "poster": "assets/posters/blYFchVi4xg.jpg",
+    "preview": "assets/previews/blYFchVi4xg.mp4"
   }
 ];
