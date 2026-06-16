@@ -6,8 +6,8 @@ window.PROFILE = {
   "location": "Araçatuba · SP",
   "tagline_a": "Conteúdo com direção,",
   "tagline_b": "ritmo e intenção.",
-  "hero_title": "Vídeos que mostram o produto, seguram atenção e deixam claro o próximo passo.",
-  "hero_sub": "Portfólio curado por função: direção, conteúdo, anúncios e long-form. Cada trabalho abaixo mostra uma decisão de roteiro, captação ou edição.",
+  "hero_title": "Direção, roteiro e edição para vídeos que parecem simples porque foram bem pensados.",
+  "hero_sub": "Uma seleção curta de trabalhos com problema, decisão criativa e entrega. O foco é provar clareza, ritmo e acabamento antes da conversa comercial.",
   "about": "Eu uno estratégia, roteiro, direção, captação e edição para transformar assuntos difíceis em conteúdo claro, humano e assistível. O foco não é aparecer: é fazer o trabalho do cliente ficar mais fácil de entender.",
   "process": [
     "Estratégia",
@@ -38,8 +38,8 @@ window.PROFILE = {
   "clients": [
     "VOTI Software",
     "8848 Jiu-Jitsu",
+    "Kayky Pitondo",
     "Magnos Steel",
-    "Lumiar Parfum",
     "Catvi"
   ],
   "services": [
@@ -371,25 +371,6 @@ window.EXTRA_CLIPS = [
     "thumb": "assets/thumbs/ig_DHtF3CvxAlF.jpg",
     "poster": "assets/posters/DHtF3CvxAlF.jpg",
     "preview": "assets/previews/DHtF3CvxAlF.mp4"
-  },
-  {
-    "id": "DHd09LFxvdo",
-    "title": "Sistema para açougue",
-    "client": "VOTI Software",
-    "category": "conteudo",
-    "categoryLabel": "Conteúdo",
-    "format": "Reel",
-    "role": "Demonstração · nicho · utilidade",
-    "problem": "Provar utilidade prática para um segmento específico.",
-    "direction": "Demonstração técnica com prova social e foco no uso real.",
-    "deliverable": "Reel de demonstração para o nicho.",
-    "year": "2025",
-    "layout": "standard",
-    "orientation": "portrait",
-    "permalink": "https://www.instagram.com/reel/DHd09LFxvdo/",
-    "thumb": "assets/thumbs/ig_DHd09LFxvdo.jpg",
-    "poster": "assets/posters/DHd09LFxvdo.jpg",
-    "preview": "assets/previews/DHd09LFxvdo.mp4"
   },
   {
     "id": "DYBL_r1jP3A",

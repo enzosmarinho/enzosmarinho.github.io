@@ -26,6 +26,8 @@ const filterLabel = {
   "long-form": "Long-form",
 };
 
+const isKaykyItem = item => /kayky|kaique|pitondo/i.test(`${item.client} ${item.title}`);
+
 byId("tagline-a").textContent = profile.tagline_a;
 byId("tagline-b").textContent = profile.tagline_b;
 byId("hero-title").textContent = profile.hero_title;
@@ -42,7 +44,7 @@ contactLinks.forEach(link => {
 });
 byId("contact-instagram").href = profile.contact.instagram;
 
-const showreelIndex = Math.max(0, cases.findIndex(item => item.id === "DXiIx4_kQ-0"));
+const showreelIndex = Math.max(0, cases.findIndex(item => item.featured));
 const showreel = cases[showreelIndex];
 byId("hero-feature").innerHTML = `
   <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}" data-case-index="${showreelIndex}" aria-haspopup="dialog">
@@ -111,8 +113,63 @@ byId("project-grid").innerHTML = cases.map((item, index) => `
   </a>
 `).join("");
 
-byId("extra-rail").innerHTML = extraClips.map((item, index) => {
-  const itemIndex = cases.length + index;
+const kaykyCase = cases.find(isKaykyItem);
+const kaykyClips = extraClips.filter(isKaykyItem);
+const otherClips = extraClips.filter(item => !isKaykyItem(item));
+
+byId("kayky-suite").innerHTML = kaykyCase ? `
+  <a
+    class="kayky-main reveal"
+    href="${kaykyCase.permalink}"
+    target="_blank"
+    rel="noopener"
+    data-preview="${kaykyCase.preview}"
+    data-case-index="${cases.indexOf(kaykyCase)}"
+    aria-haspopup="dialog"
+    aria-label="${kaykyCase.title}, ${kaykyCase.client}"
+  >
+    <div class="kayky-main__media">
+      <img src="${mediaImage(kaykyCase)}" alt="" loading="lazy">
+      <video muted loop playsinline preload="none" aria-hidden="true"></video>
+      <span class="project-play">${playIcon}</span>
+    </div>
+    <div class="kayky-main__copy">
+      <p>Long-form · ${kaykyCase.client}</p>
+      <h3>${kaykyCase.title}</h3>
+      <span>${kaykyCase.direction}</span>
+    </div>
+  </a>
+  <div class="kayky-cuts" aria-label="Cortes derivados do long-form">
+    ${kaykyClips.map(item => {
+      const itemIndex = cases.length + extraClips.indexOf(item);
+      return `
+        <a
+          class="kayky-cut reveal"
+          href="${item.permalink}"
+          target="_blank"
+          rel="noopener"
+          data-preview="${item.preview}"
+          data-case-index="${itemIndex}"
+          aria-haspopup="dialog"
+          aria-label="${item.title}, ${item.client}"
+        >
+          <div class="kayky-cut__media">
+            <img src="${mediaImage(item)}" alt="" loading="lazy">
+            <video muted loop playsinline preload="none" aria-hidden="true"></video>
+            <span>${playIcon}</span>
+          </div>
+          <div class="kayky-cut__copy">
+            <p>${item.format} · ${item.categoryLabel}</p>
+            <h3>${item.title}</h3>
+          </div>
+        </a>
+      `;
+    }).join("")}
+  </div>
+` : "";
+
+byId("extra-rail").innerHTML = otherClips.map(item => {
+  const itemIndex = cases.length + extraClips.indexOf(item);
   return `
     <a
       class="extra-card extra-card--${item.orientation || "portrait"} reveal"
@@ -241,7 +298,7 @@ const attachVideoPreview = element => {
   element.addEventListener("blur", pause);
 };
 
-[...document.querySelectorAll(".project, .hero-media-link, .mini-case, .extra-card")].forEach(attachVideoPreview);
+[...document.querySelectorAll(".project, .hero-media-link, .mini-case, .kayky-main, .kayky-cut, .extra-card")].forEach(attachVideoPreview);
 
 const caseModal = byId("case-modal");
 const modalPanel = caseModal.querySelector(".case-modal__panel");
@@ -413,7 +470,7 @@ if (window.matchMedia("(pointer: fine)").matches) {
     cursor.style.top = `${event.clientY}px`;
   }, { passive: true });
 
-  [...document.querySelectorAll(".project, .hero-media-link, .extra-card")].forEach(item => {
+  [...document.querySelectorAll(".project, .hero-media-link, .kayky-main, .kayky-cut, .extra-card")].forEach(item => {
     item.addEventListener("mouseenter", () => cursor.classList.add("is-active"));
     item.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
   });
