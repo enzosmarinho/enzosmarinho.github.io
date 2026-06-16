@@ -16,7 +16,7 @@ const layoutClass = {
   standard: "project--standard",
 };
 
-const mediaImage = item => item.poster || item.thumb;
+const mediaImage = item => item.cardImage || item.thumb || item.poster;
 
 const filterLabel = {
   todos: "Todos",

@@ -83,7 +83,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DQfTWkhiK4k/",
     "thumb": "assets/thumbs/ig_DQfTWkhiK4k.jpg",
     "poster": "assets/posters/DQfTWkhiK4k.jpg",
-    "preview": "assets/previews/DQfTWkhiK4k.mp4"
+    "preview": "assets/previews/DQfTWkhiK4k.mp4",
+    "cardImage": "assets/posters/DQfTWkhiK4k.jpg"
   },
   {
     "id": "DUf-ODMDWqA",
@@ -102,7 +103,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DUf-ODMDWqA/",
     "thumb": "assets/thumbs/ig_DUf-ODMDWqA.jpg",
     "poster": "assets/posters/DUf-ODMDWqA.jpg",
-    "preview": "assets/previews/DUf-ODMDWqA.mp4"
+    "preview": "assets/previews/DUf-ODMDWqA.mp4",
+    "cardImage": "assets/thumbs/ig_DUf-ODMDWqA.jpg"
   },
   {
     "id": "qBTk1irwDc4",
@@ -121,7 +123,8 @@ window.CASES = [
     "permalink": "https://youtu.be/qBTk1irwDc4",
     "thumb": "assets/thumbs/qBTk1irwDc4.jpg",
     "poster": "assets/posters/qBTk1irwDc4.jpg",
-    "preview": "assets/previews/qBTk1irwDc4.mp4"
+    "preview": "assets/previews/qBTk1irwDc4.mp4",
+    "cardImage": "assets/posters/qBTk1irwDc4.jpg"
   },
   {
     "id": "ADKpionmFiw",
@@ -140,7 +143,8 @@ window.CASES = [
     "permalink": "https://youtu.be/ADKpionmFiw",
     "thumb": "assets/thumbs/ADKpionmFiw.jpg",
     "poster": "assets/posters/ADKpionmFiw.jpg",
-    "preview": "assets/previews/ADKpionmFiw.mp4"
+    "preview": "assets/previews/ADKpionmFiw.mp4",
+    "cardImage": "assets/thumbs/ADKpionmFiw.jpg"
   },
   {
     "id": "DXiIx4_kQ-0",
@@ -159,7 +163,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DXiIx4_kQ-0/",
     "thumb": "assets/thumbs/ig_DXiIx4_kQ-0.jpg",
     "poster": "assets/posters/DXiIx4_kQ-0.jpg",
-    "preview": "assets/previews/DXiIx4_kQ-0.mp4"
+    "preview": "assets/previews/DXiIx4_kQ-0.mp4",
+    "cardImage": "assets/thumbs/ig_DXiIx4_kQ-0.jpg"
   },
   {
     "id": "DYC7byPyEnW",
@@ -178,7 +183,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DYC7byPyEnW/",
     "thumb": "assets/thumbs/ig_DYC7byPyEnW.jpg",
     "poster": "assets/posters/DYC7byPyEnW.jpg",
-    "preview": "assets/previews/DYC7byPyEnW.mp4"
+    "preview": "assets/previews/DYC7byPyEnW.mp4",
+    "cardImage": "assets/thumbs/ig_DYC7byPyEnW.jpg"
   },
   {
     "id": "DSldztZCA9P",
@@ -197,7 +203,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DSldztZCA9P/",
     "thumb": "assets/thumbs/ig_DSldztZCA9P.jpg",
     "poster": "assets/posters/DSldztZCA9P.jpg",
-    "preview": "assets/previews/DSldztZCA9P.mp4"
+    "preview": "assets/previews/DSldztZCA9P.mp4",
+    "cardImage": "assets/thumbs/ig_DSldztZCA9P.jpg"
   },
   {
     "id": "DWpa8TQCKvX",
@@ -216,7 +223,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DWpa8TQCKvX/",
     "thumb": "assets/thumbs/ig_DWpa8TQCKvX.jpg",
     "poster": "assets/posters/DWpa8TQCKvX.jpg",
-    "preview": "assets/previews/DWpa8TQCKvX.mp4"
+    "preview": "assets/previews/DWpa8TQCKvX.mp4",
+    "cardImage": "assets/thumbs/ig_DWpa8TQCKvX.jpg"
   },
   {
     "id": "DKkdTYyItAy",
@@ -235,7 +243,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DKkdTYyItAy/",
     "thumb": "assets/thumbs/ig_DKkdTYyItAy.jpg",
     "poster": "assets/posters/DKkdTYyItAy.jpg",
-    "preview": "assets/previews/DKkdTYyItAy.mp4"
+    "preview": "assets/previews/DKkdTYyItAy.mp4",
+    "cardImage": "assets/thumbs/ig_DKkdTYyItAy.jpg"
   }
 ];
 window.EXTRA_CLIPS = [
@@ -256,7 +265,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/reel/DUJfuJsCPir/",
     "thumb": "assets/thumbs/ig_DUJfuJsCPir.jpg",
     "poster": "assets/posters/DUJfuJsCPir.jpg",
-    "preview": "assets/previews/DUJfuJsCPir.mp4"
+    "preview": "assets/previews/DUJfuJsCPir.mp4",
+    "cardImage": "assets/thumbs/ig_DUJfuJsCPir.jpg"
   },
   {
     "id": "DV9deuiCHea",
@@ -275,7 +285,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/reel/DV9deuiCHea/",
     "thumb": "assets/thumbs/ig_DV9deuiCHea.jpg",
     "poster": "assets/posters/DV9deuiCHea.jpg",
-    "preview": "assets/previews/DV9deuiCHea.mp4"
+    "preview": "assets/previews/DV9deuiCHea.mp4",
+    "cardImage": "assets/thumbs/ig_DV9deuiCHea.jpg"
   },
   {
     "id": "DTgXN2FiDV6",
@@ -290,11 +301,12 @@ window.EXTRA_CLIPS = [
     "deliverable": "Reel de awareness para social.",
     "year": "2026",
     "layout": "standard",
-    "orientation": "landscape",
+    "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DTgXN2FiDV6/",
     "thumb": "assets/thumbs/ig_DTgXN2FiDV6.jpg",
     "poster": "assets/posters/DTgXN2FiDV6.jpg",
-    "preview": "assets/previews/DTgXN2FiDV6.mp4"
+    "preview": "assets/previews/DTgXN2FiDV6.mp4",
+    "cardImage": "assets/thumbs/ig_DTgXN2FiDV6.jpg"
   },
   {
     "id": "blYFchVi4xg",
@@ -313,7 +325,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://youtu.be/blYFchVi4xg",
     "thumb": "assets/thumbs/blYFchVi4xg.jpg",
     "poster": "assets/posters/blYFchVi4xg.jpg",
-    "preview": "assets/previews/blYFchVi4xg.mp4"
+    "preview": "assets/previews/blYFchVi4xg.mp4",
+    "cardImage": "assets/posters/blYFchVi4xg.jpg"
   },
   {
     "id": "DGLMxcXRRJ4",
@@ -332,7 +345,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/reel/DGLMxcXRRJ4/",
     "thumb": "assets/thumbs/ig_DGLMxcXRRJ4.jpg",
     "poster": "assets/posters/DGLMxcXRRJ4.jpg",
-    "preview": "assets/previews/DGLMxcXRRJ4.mp4"
+    "preview": "assets/previews/DGLMxcXRRJ4.mp4",
+    "cardImage": "assets/thumbs/ig_DGLMxcXRRJ4.jpg"
   },
   {
     "id": "DOzGHz2iLGz",
@@ -351,7 +365,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/reel/DOzGHz2iLGz/",
     "thumb": "assets/thumbs/ig_DOzGHz2iLGz.jpg",
     "poster": "assets/posters/DOzGHz2iLGz.jpg",
-    "preview": "assets/previews/DOzGHz2iLGz.mp4"
+    "preview": "assets/previews/DOzGHz2iLGz.mp4",
+    "cardImage": "assets/thumbs/ig_DOzGHz2iLGz.jpg"
   },
   {
     "id": "DHtF3CvxAlF",
@@ -370,7 +385,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/reel/DHtF3CvxAlF/",
     "thumb": "assets/thumbs/ig_DHtF3CvxAlF.jpg",
     "poster": "assets/posters/DHtF3CvxAlF.jpg",
-    "preview": "assets/previews/DHtF3CvxAlF.mp4"
+    "preview": "assets/previews/DHtF3CvxAlF.mp4",
+    "cardImage": "assets/thumbs/ig_DHtF3CvxAlF.jpg"
   },
   {
     "id": "DYBL_r1jP3A",
@@ -389,26 +405,8 @@ window.EXTRA_CLIPS = [
     "permalink": "https://www.instagram.com/p/DYBL_r1jP3A/",
     "thumb": "assets/thumbs/ig_DYBL_r1jP3A.jpg",
     "poster": "assets/posters/DYBL_r1jP3A.jpg",
-    "preview": "assets/previews/DYBL_r1jP3A.mp4"
-  },
-  {
-    "id": "DZIAm2VtC_4",
-    "permalink": "https://www.instagram.com/reel/DZIAm2VtC_4/",
-    "title": "Corte — ordem dos exercícios",
-    "client": "Kayky Pitondo",
-    "category": "long-form",
-    "categoryLabel": "Long-form",
-    "format": "Corte",
-    "role": "Corte · edição · legenda",
-    "problem": "Transformar o treino longo em peças curtas de alcance.",
-    "direction": "Recorte da melhor dica com legenda animada e ritmo de reel.",
-    "deliverable": "Corte vertical do long-form para o Instagram.",
-    "year": "2026",
-    "layout": "standard",
-    "orientation": "portrait",
-    "thumb": "assets/thumbs/DZIAm2VtC_4.jpg",
-    "poster": "assets/posters/DZIAm2VtC_4.jpg",
-    "preview": "assets/previews/DZIAm2VtC_4.mp4"
+    "preview": "assets/previews/DYBL_r1jP3A.mp4",
+    "cardImage": "assets/thumbs/ig_DYBL_r1jP3A.jpg"
   },
   {
     "id": "DZUo3jokhkP",
@@ -427,7 +425,8 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "thumb": "assets/thumbs/DZUo3jokhkP.jpg",
     "poster": "assets/posters/DZUo3jokhkP.jpg",
-    "preview": "assets/previews/DZUo3jokhkP.mp4"
+    "preview": "assets/previews/DZUo3jokhkP.mp4",
+    "cardImage": "assets/thumbs/DZUo3jokhkP.jpg"
   },
   {
     "id": "DZGeYPdBiet",
@@ -446,6 +445,7 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "thumb": "assets/thumbs/DZGeYPdBiet.jpg",
     "poster": "assets/posters/DZGeYPdBiet.jpg",
-    "preview": "assets/previews/DZGeYPdBiet.mp4"
+    "preview": "assets/previews/DZGeYPdBiet.mp4",
+    "cardImage": "assets/thumbs/DZGeYPdBiet.jpg"
   }
 ];
