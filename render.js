@@ -14,6 +14,14 @@ const layoutClass = {
   standard: "project--standard",
 };
 
+const filterLabel = {
+  todos: "Todos",
+  direcao: "Direção",
+  conteudo: "Conteúdo",
+  anuncios: "Anúncios",
+  "long-form": "Long-form",
+};
+
 byId("tagline-a").textContent = profile.tagline_a;
 byId("tagline-b").textContent = profile.tagline_b;
 byId("hero-title").textContent = profile.hero_title;
@@ -30,9 +38,10 @@ contactLinks.forEach(link => {
 });
 byId("contact-instagram").href = profile.contact.instagram;
 
-const showreel = cases.find(item => item.id === "DXiIx4_kQ-0") || cases[0];
+const showreelIndex = Math.max(0, cases.findIndex(item => item.id === "DXiIx4_kQ-0"));
+const showreel = cases[showreelIndex];
 byId("hero-feature").innerHTML = `
-  <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}">
+  <a class="hero-media-link magnetic" href="${showreel.permalink}" target="_blank" rel="noopener" data-preview="${showreel.preview}" data-case-index="${showreelIndex}" aria-haspopup="dialog">
     <img src="${showreel.thumb}" alt="${showreel.title}" fetchpriority="high">
     <video muted loop playsinline preload="${reduceMotion ? "none" : "auto"}" ${reduceMotion ? "" : `src="${showreel.preview}"`} aria-hidden="true"></video>
     <div class="hero-media-shade"></div>
@@ -47,7 +56,7 @@ byId("hero-feature").innerHTML = `
 
 const stripCases = cases.filter(item => item.id !== showreel.id).slice(0, 3);
 byId("hero-strip").innerHTML = stripCases.map((item, index) => `
-  <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}">
+  <a class="mini-case reveal" href="${item.permalink}" target="_blank" rel="noopener" data-preview="${item.preview}" data-case-index="${cases.indexOf(item)}" aria-haspopup="dialog">
     <span>${String(index + 1).padStart(2, "0")}</span>
     <img src="${item.thumb}" alt="" loading="eager">
     <strong>${item.title}</strong>
@@ -62,6 +71,8 @@ byId("project-grid").innerHTML = cases.map((item, index) => `
     rel="noopener"
     data-category="${item.category}"
     data-preview="${item.preview}"
+    data-case-index="${index}"
+    aria-haspopup="dialog"
     aria-label="${item.title}, ${item.client}"
   >
     <div class="project-media">
@@ -135,6 +146,25 @@ byId("footer-links").innerHTML = footerItems
 
 const filters = [...document.querySelectorAll(".filter")];
 const projects = [...document.querySelectorAll(".project")];
+const workStatus = byId("work-status");
+
+filters.forEach(button => {
+  const filter = button.dataset.filter;
+  const count = filter === "todos"
+    ? cases.length
+    : cases.filter(item => item.category === filter).length;
+  const label = button.textContent.trim();
+  button.innerHTML = `<span>${label}</span><small>${count}</small>`;
+  button.setAttribute("aria-label", `${label}: ${count} trabalhos`);
+});
+
+const updateWorkStatus = filter => {
+  const count = filter === "todos"
+    ? cases.length
+    : cases.filter(item => item.category === filter).length;
+  const label = filterLabel[filter] || filter;
+  workStatus.textContent = `${count} ${count === 1 ? "trabalho" : "trabalhos"} em ${label}. Clique em um case para abrir o estudo sem sair da página.`;
+};
 
 filters.forEach(button => {
   button.addEventListener("click", () => {
@@ -146,8 +176,10 @@ filters.forEach(button => {
       const visible = filter === "todos" || project.dataset.category === filter;
       project.classList.toggle("is-hidden", !visible);
     });
+    updateWorkStatus(filter);
   });
 });
+updateWorkStatus("todos");
 
 const attachVideoPreview = element => {
   const video = element.querySelector("video");
@@ -178,6 +210,126 @@ const attachVideoPreview = element => {
 };
 
 [...document.querySelectorAll(".project, .hero-media-link, .mini-case")].forEach(attachVideoPreview);
+
+const caseModal = byId("case-modal");
+const modalPanel = caseModal.querySelector(".case-modal__panel");
+const modalVideo = byId("case-modal-video");
+const modalPoster = byId("case-modal-poster");
+const modalEyebrow = byId("case-modal-eyebrow");
+const modalTitle = byId("case-modal-title");
+const modalSummary = byId("case-modal-summary");
+const modalBrief = byId("case-modal-brief");
+const modalOpen = byId("case-modal-open");
+const modalPrev = byId("case-prev");
+const modalNext = byId("case-next");
+const closeButtons = [...document.querySelectorAll("[data-close-case]")];
+let activeCaseIndex = 0;
+let lastFocusedElement = null;
+let closeTimer = null;
+
+const renderCaseModal = index => {
+  activeCaseIndex = (index + cases.length) % cases.length;
+  const item = cases[activeCaseIndex];
+
+  modalPoster.src = item.thumb;
+  modalPoster.alt = "";
+  modalVideo.poster = item.thumb;
+  modalVideo.src = item.preview;
+  modalEyebrow.textContent = `${item.categoryLabel} · ${item.client} · ${item.year}`;
+  modalTitle.textContent = item.title;
+  modalSummary.textContent = item.role;
+  modalOpen.href = item.permalink;
+  modalBrief.innerHTML = [
+    ["Problema", item.problem],
+    ["Direção", item.direction],
+    ["Entrega", item.deliverable],
+  ].map(([label, text]) => `
+    <div>
+      <span>${label}</span>
+      <p>${text}</p>
+    </div>
+  `).join("");
+
+  if (!reduceMotion) {
+    modalVideo.play().catch(() => {});
+  }
+};
+
+const openCase = index => {
+  clearTimeout(closeTimer);
+  lastFocusedElement = document.activeElement;
+  caseModal.hidden = false;
+  renderCaseModal(index);
+  document.body.classList.add("modal-open");
+  requestAnimationFrame(() => {
+    caseModal.classList.add("is-open");
+    modalPanel.focus();
+  });
+};
+
+const closeCase = () => {
+  caseModal.classList.remove("is-open");
+  document.body.classList.remove("modal-open");
+  modalVideo.pause();
+  modalVideo.removeAttribute("src");
+  modalVideo.load();
+  closeTimer = window.setTimeout(() => {
+    caseModal.hidden = true;
+  }, reduceMotion ? 0 : 180);
+  if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+    lastFocusedElement.focus({ preventScroll: true });
+  }
+};
+
+const goToCase = direction => {
+  renderCaseModal(activeCaseIndex + direction);
+};
+
+[...document.querySelectorAll("[data-case-index]")].forEach(trigger => {
+  trigger.addEventListener("click", event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    event.preventDefault();
+    openCase(Number(trigger.dataset.caseIndex));
+  });
+});
+
+closeButtons.forEach(button => button.addEventListener("click", closeCase));
+modalPrev.addEventListener("click", () => goToCase(-1));
+modalNext.addEventListener("click", () => goToCase(1));
+
+document.addEventListener("keydown", event => {
+  if (caseModal.hidden) return;
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeCase();
+    return;
+  }
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    goToCase(1);
+    return;
+  }
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    goToCase(-1);
+    return;
+  }
+  if (event.key === "Tab") {
+    const focusable = [...caseModal.querySelectorAll("a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex='-1'])")];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+});
 
 const reveals = [...document.querySelectorAll(".reveal")];
 if (reduceMotion) {
