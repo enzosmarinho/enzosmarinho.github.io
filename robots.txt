@@ -1,4 +1,5 @@
-User-agent: *
+User-Agent: *
 Allow: /
 
+Host: https://enzosmarinho.github.io
 Sitemap: https://enzosmarinho.github.io/sitemap.xml
