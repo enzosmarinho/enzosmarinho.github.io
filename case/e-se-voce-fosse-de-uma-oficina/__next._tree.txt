@@ -1,9 +1,0 @@
-:HL["/_next/static/chunks/0b2ru3bz6rlo7.css","style"]
-:HL["/_next/static/chunks/0uuc5t7psmlad.css","style"]
-:HL["/_next/static/media/36363bfb06833f56-s.p.38hmww4cj4vme.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/7546fe8f902b88b8-s.p.1agee208_hwfr.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/a73419dd2ba2d841-s.p.2yee423r7ahpo.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"case","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"e-se-voce-fosse-de-uma-oficina","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"YI2owZ8iqwQrvvuvhBMWV"}
