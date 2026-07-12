@@ -24,29 +24,21 @@ async function pictureFromOfficialApi() {
 }
 
 async function pictureFromPublicProfile() {
-  const { chromium } = require("playwright");
-  const browser = await chromium.launch({ headless: true });
-  try {
-    const context = await browser.newContext({ locale: "pt-BR", userAgent: USER_AGENT });
-    const page = await context.newPage();
-    await page.goto(PROFILE_URL, { waitUntil: "domcontentloaded", timeout: 45000 });
-    await page.waitForTimeout(2500);
-    const selector = [
-      `img[alt*="perfil de ${USERNAME}"]`,
-      `img[alt*="profile picture of ${USERNAME}"]`,
-      `img[alt*="Profile picture of ${USERNAME}"]`,
-    ].join(",");
-    const images = page.locator(selector);
-    await images.first().waitFor({ state: "visible", timeout: 20000 });
-    const candidates = await images.evaluateAll((elements) => elements.map((element) => ({
-      url: element.currentSrc || element.src,
-      width: element.naturalWidth,
-      height: element.naturalHeight,
-    })));
-    return candidates.sort((a, b) => (b.width * b.height) - (a.width * a.height))[0] || null;
-  } finally {
-    await browser.close();
-  }
+  const url = new URL("https://www.instagram.com/api/v1/users/web_profile_info/");
+  url.searchParams.set("username", USERNAME);
+  const response = await fetch(url, {
+    headers: {
+      Referer: PROFILE_URL,
+      "User-Agent": USER_AGENT,
+      "X-IG-App-ID": "936619743392459",
+    },
+  });
+  if (!response.ok) throw new Error(`Instagram public profile returned ${response.status}`);
+  const user = (await response.json())?.data?.user;
+  if (!user || user.username !== USERNAME) throw new Error("Instagram returned an unexpected profile");
+  if (user.profile_pic_url_hd) return { url: user.profile_pic_url_hd, width: 320, height: 320 };
+  if (user.profile_pic_url) return { url: user.profile_pic_url, width: 150, height: 150 };
+  return null;
 }
 
 async function downloadPicture(url) {
@@ -67,7 +59,19 @@ function digest(bytes) {
 }
 
 async function main() {
-  const picture = (await pictureFromOfficialApi()) || (await pictureFromPublicProfile());
+  let picture = null;
+  for (const source of [pictureFromOfficialApi, pictureFromPublicProfile]) {
+    try {
+      picture = await source();
+      if (picture?.url) break;
+    } catch (error) {
+      console.warn(error.message);
+    }
+  }
+  if (!picture?.url && fs.existsSync(OUTPUT)) {
+    console.warn("Instagram is unavailable; keeping the current local profile picture.");
+    return;
+  }
   if (!picture?.url) throw new Error("Instagram did not return a profile picture URL");
   if (picture.width && picture.width < 200) {
     throw new Error(`Instagram returned only ${picture.width}x${picture.height}; keeping the current fallback`);
