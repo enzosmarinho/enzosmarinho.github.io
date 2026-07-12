@@ -22,6 +22,7 @@ function serviceHref(service) {
 }
 
 function projectGroup(item) {
+  if (item.client === "Lumiar Parfum") return "lumiar";
   if (item.client === "VOTI Software") return "voti";
   if (item.client === "Negócio Sem Filtro" || item.category === "long-form" || item.category === "automacao") return "sistemas";
   return "independentes";
@@ -47,7 +48,7 @@ function projectCard(item) {
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.direction || item.deliverable)}</p>
           <div class="project-card__meta">
-            <span>${escapeHtml(item.client)} · ${escapeHtml(item.year)}</span>
+            <span>${escapeHtml(item.client)} · ${escapeHtml(item.status || item.year)}</span>
             <span>Publicação original</span>
           </div>
         </div>
@@ -62,8 +63,23 @@ function clipCard(item) {
         <img src="${escapeHtml(item.cardImage)}" alt="Capa de ${escapeHtml(item.title)}" loading="lazy">
       </div>
       <h3>${escapeHtml(item.title)}</h3>
-      <p>${escapeHtml(item.client)} · publicação original</p>
+      <p>${escapeHtml(item.client)} · ${escapeHtml(item.status || "publicação original")}</p>
     </a>`;
+}
+
+function renderHeroShowreel() {
+  const root = document.querySelector("#hero-showreel");
+  if (!root) return;
+  const preferred = ["qBTk1irwDc4", "DUQ8YNYEc4z", "DUf-ODMDWqA"];
+  const selected = preferred
+    .map((id) => projects.find((item) => item.id === id))
+    .filter(Boolean);
+
+  root.innerHTML = selected.map((item, index) => `
+    <figure class="hero-frame hero-frame--${index + 1}">
+      <img src="${escapeHtml(item.cardImage)}" alt="" fetchpriority="${index === 0 ? "high" : "auto"}">
+      <figcaption>${escapeHtml(item.client)}</figcaption>
+    </figure>`).join("");
 }
 
 function renderFlagship() {
@@ -98,9 +114,10 @@ function renderProjects(filter = "todos") {
   const status = document.querySelector("#work-status");
   if (!root) return;
 
+  const pool = filter === "lumiar" ? [...projects, ...extraClips] : projects;
   const visible = filter === "todos"
-    ? projects
-    : projects.filter((item) => projectGroup(item) === filter);
+    ? pool
+    : pool.filter((item) => projectGroup(item) === filter);
 
   root.innerHTML = visible.map(projectCard).join("");
   if (status) {
@@ -304,6 +321,7 @@ function bindScroll() {
 }
 
 function init() {
+  renderHeroShowreel();
   renderFlagship();
   renderProjects();
   renderExtras();
