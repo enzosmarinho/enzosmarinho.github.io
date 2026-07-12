@@ -1,0 +1,42 @@
+name: Sync Instagram profile photo
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-profile-photo
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser runtime
+        run: |
+          npm install --no-save playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Fetch current profile photo
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: node scripts/sync-instagram-avatar.cjs
+      - name: Publish photo when changed
+        run: |
+          if git diff --quiet -- assets/instagram-profile.jpg assets/instagram-profile.json; then
+            echo "Profile photo is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/instagram-profile.jpg assets/instagram-profile.json
+          git commit -m "Atualiza foto do Instagram"
+          git push

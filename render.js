@@ -70,25 +70,10 @@ function clipCard(item) {
 function renderHeroShowreel() {
   const root = document.querySelector("#hero-showreel");
   if (!root) return;
-  const preferred = ["qBTk1irwDc4", "DGLMxcXRRJ4", "DUf-ODMDWqA"];
-  const available = [...projects, ...extraClips];
-  const selected = preferred
-    .map((id) => available.find((item) => item.id === id))
-    .filter(Boolean);
-
-  root.innerHTML = selected.map((item, index) => `
-    <figure class="hero-frame ${index === 0 ? "is-active" : ""}">
-      <img src="${escapeHtml(item.cardImage)}" alt="" fetchpriority="${index === 0 ? "high" : "auto"}">
-    </figure>`).join("");
-
-  if (selected.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const frames = [...root.querySelectorAll(".hero-frame")];
-  let active = 0;
-  window.setInterval(() => {
-    frames[active].classList.remove("is-active");
-    active = (active + 1) % frames.length;
-    frames[active].classList.add("is-active");
-  }, 5200);
+  root.innerHTML = `
+    <figure class="hero-frame hero-frame--profile is-active">
+      <img src="assets/instagram-profile.jpg" alt="" fetchpriority="high">
+    </figure>`;
 }
 
 function renderFlagship() {
