@@ -6,8 +6,8 @@ window.PROFILE = {
   "location": "Araçatuba · SP",
   "tagline_a": "Eu edito vídeos.",
   "tagline_b": "E faço um bom conteúdo render mais.",
-  "hero_title": "Vídeo longo, cortes, anúncios e automações construídos para a rotina real de quem precisa publicar.",
-  "hero_sub": "Uso inteligência artificial para tirar o trabalho repetitivo do caminho, mas a escolha dos trechos, o ritmo e o acabamento continuam passando por mim.",
+  "hero_title": "Edição de vídeo, conteúdo e páginas profissionais com escopo claro e entrega pronta.",
+  "hero_sub": "Transformo gravações em peças prontas para publicar e construo portfólios que ajudam profissionais a apresentar e vender melhor o próprio trabalho.",
   "about": "Meu trabalho começa entendendo o que o vídeo precisa fazer. A partir daí, eu cuido da estrutura, da edição e das automações que ajudam a entregar mais sem transformar o conteúdo em algo genérico.",
   "process": [
     "Estratégia",
@@ -57,15 +57,79 @@ window.PROFILE = {
   "services": [
     {
       "number": "01",
-      "title": "Vídeo longo + cortes",
-      "description": "Eu organizo o material completo, encontro os melhores trechos e entrego uma sequência de peças no mesmo padrão.",
-      "detail": "Vídeo longo · curadoria · ranking · cortes · legendas · teasers"
+      "title": "Portfólio Profissional",
+      "description": "Uma página autoral como esta, construída para apresentar o seu trabalho com clareza e transformar visita em conversa comercial.",
+      "detail": "Estratégia · copy · design · desenvolvimento · publicação",
+      "price": "R$ 3.200",
+      "payment": "50% no início · 50% na entrega",
+      "timeline": "7 dias úteis",
+      "revisions": "1 rodada de ajustes",
+      "featured": true,
+      "includes": [
+        "Página responsiva e exclusiva",
+        "Textos escritos a partir do seu material",
+        "Organização de até 12 trabalhos",
+        "WhatsApp, SEO básico e publicação",
+        "30 dias para correções técnicas"
+      ]
     },
     {
       "number": "02",
-      "title": "Vídeo de campanha ou anúncio",
-      "description": "Quando o trabalho pede roteiro, captação e uma edição própria, eu monto o projeto em volta do objetivo da marca.",
-      "detail": "Conceito · roteiro · captação · edição · entrega final"
+      "title": "Episódio em Campanha",
+      "description": "Você envia uma gravação longa. Eu organizo o episódio, encontro os melhores momentos e devolvo uma campanha pronta para publicar.",
+      "detail": "Até 60 min · vídeo completo · 8 cortes · 1 teaser · legendas",
+      "price": "R$ 2.200",
+      "payment": "50% no início · 50% na entrega",
+      "timeline": "7 dias úteis",
+      "revisions": "1 rodada de ajustes",
+      "featured": false,
+      "includes": [
+        "Edição de 1 vídeo de até 60 minutos",
+        "Seleção e ranking dos melhores trechos",
+        "Até 8 cortes verticais legendados",
+        "1 teaser vertical",
+        "Arquivos organizados para publicação"
+      ]
+    },
+    {
+      "number": "03",
+      "title": "Vídeo de Venda com IA",
+      "description": "Uma peça curta para apresentar uma oferta, um produto ou um serviço sem depender de uma produção grande.",
+      "detail": "Roteiro · geração assistida · edição · voz · 2 formatos",
+      "price": "R$ 1.600",
+      "payment": "50% no início · 50% na entrega",
+      "timeline": "5 dias úteis",
+      "revisions": "1 rodada de ajustes",
+      "featured": false,
+      "includes": [
+        "Roteiro para vídeo de até 60 segundos",
+        "Geração de imagens ou cenas com IA",
+        "Edição, trilha, voz e legendas",
+        "Entrega em 9:16 e 16:9",
+        "Arquivo final pronto para anúncio ou postagem"
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "question": "O preço é fechado?",
+      "answer": "Sim. Os valores acima valem para o escopo descrito. Se o projeto precisar de mais páginas, vídeos, cortes ou revisões, eu apresento o adicional antes de começar."
+    },
+    {
+      "question": "Como funciona o pagamento?",
+      "answer": "O projeto começa com 50% do valor. Os outros 50% são pagos depois da aprovação final, antes da publicação ou entrega dos arquivos sem marca d'água."
+    },
+    {
+      "question": "O que eu preciso enviar?",
+      "answer": "Referências, materiais existentes e respostas a um briefing curto. No portfólio, também preciso dos links e arquivos dos trabalhos que serão apresentados."
+    },
+    {
+      "question": "Posso pedir alterações?",
+      "answer": "Cada oferta inclui uma rodada consolidada de ajustes. Assim a revisão continua objetiva e o prazo não vira uma sequência indefinida de mudanças."
+    },
+    {
+      "question": "Hospedagem e domínio estão incluídos?",
+      "answer": "A publicação e a configuração técnica estão incluídas. A compra de um domínio próprio, quando desejada, é paga diretamente pelo cliente."
     }
   ],
   "automation": {

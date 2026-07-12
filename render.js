@@ -22,7 +22,7 @@ byId("hero-title").textContent = profile.hero_title;
 byId("hero-sub").textContent = profile.hero_sub;
 byId("about-copy").textContent = profile.about;
 
-[byId("nav-contact"), byId("hero-contact"), byId("contact-whatsapp")].forEach(link => {
+[byId("nav-contact"), byId("contact-whatsapp")].filter(Boolean).forEach(link => {
   link.href = profile.contact.whatsapp;
 });
 
@@ -164,16 +164,47 @@ byId("experience-grid").innerHTML = `
   </article>
 `;
 
+const serviceHref = service => {
+  const base = profile.contact.whatsapp.split("?")[0];
+  const message = `Oi Enzo, vi o serviço ${service.title} por ${service.price} no seu portfólio e quero conversar sobre o projeto.`;
+  return `${base}?text=${encodeURIComponent(message)}`;
+};
+
 byId("service-list").innerHTML = profile.services.map(service => `
-  <a class="service-row reveal" href="${profile.contact.whatsapp}" target="_blank" rel="noopener">
-    <span>${service.number}</span>
-    <div>
-      <h3>${service.title}</h3>
-      <p>${service.description}</p>
+  <article class="service-card reveal${service.featured ? " service-card--featured" : ""}">
+    <div class="service-card__top">
+      <span>${service.number}</span>
+      ${service.featured ? "<strong>Oferta principal</strong>" : "<strong>Projeto avulso</strong>"}
     </div>
-    <small>${service.detail}</small>
-    <b aria-hidden="true">↗</b>
-  </a>
+    <h3>${service.title}</h3>
+    <p>${service.description}</p>
+    <div class="service-price">
+      <span>Investimento</span>
+      <strong>${service.price}</strong>
+      <small>${service.payment}</small>
+    </div>
+    <div class="service-facts">
+      <span><b>Prazo</b>${service.timeline}</span>
+      <span><b>Revisão</b>${service.revisions}</span>
+    </div>
+    <ul>
+      ${service.includes.map(item => `<li>${item}</li>`).join("")}
+    </ul>
+    <a class="service-cta" href="${serviceHref(service)}" target="_blank" rel="noopener">
+      Quero este serviço <span aria-hidden="true">↗</span>
+    </a>
+  </article>
+`).join("");
+
+byId("faq-list").innerHTML = (profile.faq || []).map((item, index) => `
+  <article class="faq-item${index === 0 ? " is-open" : ""}">
+    <button type="button" aria-expanded="${index === 0 ? "true" : "false"}">
+      <span>${String(index + 1).padStart(2, "0")}</span>
+      <strong>${item.question}</strong>
+      <i aria-hidden="true">+</i>
+    </button>
+    <div class="faq-item__body"><p>${item.answer}</p></div>
+  </article>
 `).join("");
 
 const contactItems = [
@@ -257,6 +288,21 @@ document.querySelectorAll(".process-step button").forEach(button => {
 });
 document.querySelector(".process-step")?.classList.add("is-open");
 
+document.querySelectorAll(".faq-item button").forEach(button => {
+  button.addEventListener("click", () => {
+    const item = button.closest(".faq-item");
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    document.querySelectorAll(".faq-item").forEach(entry => {
+      entry.classList.remove("is-open");
+      entry.querySelector("button").setAttribute("aria-expanded", "false");
+    });
+    if (!expanded) {
+      item.classList.add("is-open");
+      button.setAttribute("aria-expanded", "true");
+    }
+  });
+});
+
 const revealItems = [...document.querySelectorAll(".reveal")];
 if (reduceMotion || !("IntersectionObserver" in window)) {
   revealItems.forEach(item => item.classList.add("is-visible"));
@@ -277,9 +323,14 @@ const updateScroll = () => {
   const max = document.documentElement.scrollHeight - window.innerHeight;
   progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
   let current = "";
+  let nearestTop = Number.NEGATIVE_INFINITY;
   navLinks.forEach(link => {
     const section = document.querySelector(link.getAttribute("href"));
-    if (section && section.getBoundingClientRect().top <= window.innerHeight * 0.42) current = link.getAttribute("href");
+    const top = section?.getBoundingClientRect().top;
+    if (typeof top === "number" && top <= window.innerHeight * 0.42 && top > nearestTop) {
+      nearestTop = top;
+      current = link.getAttribute("href");
+    }
   });
   navLinks.forEach(link => link.classList.toggle("is-active", link.getAttribute("href") === current));
 };
