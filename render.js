@@ -70,16 +70,25 @@ function clipCard(item) {
 function renderHeroShowreel() {
   const root = document.querySelector("#hero-showreel");
   if (!root) return;
-  const preferred = ["qBTk1irwDc4", "DUQ8YNYEc4z", "DUf-ODMDWqA"];
+  const preferred = ["qBTk1irwDc4", "DGLMxcXRRJ4", "DUf-ODMDWqA"];
+  const available = [...projects, ...extraClips];
   const selected = preferred
-    .map((id) => projects.find((item) => item.id === id))
+    .map((id) => available.find((item) => item.id === id))
     .filter(Boolean);
 
   root.innerHTML = selected.map((item, index) => `
-    <figure class="hero-frame hero-frame--${index + 1}">
+    <figure class="hero-frame ${index === 0 ? "is-active" : ""}">
       <img src="${escapeHtml(item.cardImage)}" alt="" fetchpriority="${index === 0 ? "high" : "auto"}">
-      <figcaption>${escapeHtml(item.client)}</figcaption>
     </figure>`).join("");
+
+  if (selected.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const frames = [...root.querySelectorAll(".hero-frame")];
+  let active = 0;
+  window.setInterval(() => {
+    frames[active].classList.remove("is-active");
+    active = (active + 1) % frames.length;
+    frames[active].classList.add("is-active");
+  }, 5200);
 }
 
 function renderFlagship() {
@@ -310,10 +319,11 @@ function bindContact() {
 
 function bindScroll() {
   const bar = document.querySelector(".scroll-progress span");
+  const nav = document.querySelector(".site-nav");
   const update = () => {
-    if (!bar) return;
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+    if (bar) bar.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+    if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 24);
   };
   update();
   window.addEventListener("scroll", update, { passive: true });
