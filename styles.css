@@ -560,7 +560,8 @@ h3 {
 }
 
 @keyframes tape-scroll {
-  to { transform: translateX(calc(-50% - .5rem)); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-50% - .5rem), 0, 0); }
 }
 
 
@@ -2801,5 +2802,279 @@ footer > a:last-child {
 
   html.motion-enabled .hero-reel-progress span.is-running {
     animation-duration: 5.6s !important;
+  }
+}
+
+/* Quality pass: preserve source framing, make motion continuous and keep controls explicit. */
+.hero-scene {
+  transform: none;
+  transition: opacity 760ms var(--ease-state);
+}
+
+.hero-scene::after {
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .04), rgba(0, 0, 0, .2));
+}
+
+.hero-scene__dock {
+  position: absolute;
+  inset: 3.75rem 0 0 38%;
+  display: grid;
+  place-items: center;
+  padding: 0 clamp(1rem, 2vw, 3rem) 2.5rem 0;
+  overflow: hidden;
+}
+
+.hero-scene__media {
+  position: relative;
+  height: min(var(--media-h), calc(100% - 4rem));
+  max-width: 100%;
+  aspect-ratio: var(--media-ratio);
+  overflow: hidden;
+  opacity: .72;
+  transform: translateX(22px) scale(.985);
+  transition: opacity 900ms var(--ease-state), transform 1.2s var(--ease-out);
+}
+
+.hero-scene.is-active .hero-scene__media {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-scene__media > img,
+.hero-scene__media > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center;
+  background: #050505;
+}
+
+.hero-scene__media > img {
+  filter: saturate(.9) brightness(.76);
+}
+
+.hero-scene__media > video {
+  z-index: 1;
+  opacity: 0;
+  filter: saturate(.94) contrast(1.025) brightness(.88);
+  transition: opacity 360ms var(--ease-state);
+}
+
+.hero-scene__media > video.is-ready {
+  opacity: 1;
+}
+
+.hero-shade {
+  background:
+    linear-gradient(90deg, #050505 0%, rgba(5, 5, 5, .99) 25%, rgba(5, 5, 5, .9) 43%, rgba(5, 5, 5, .42) 58%, rgba(5, 5, 5, .08) 76%, rgba(5, 5, 5, .2) 100%),
+    linear-gradient(0deg, rgba(5, 5, 5, .9) 0%, transparent 31%);
+}
+
+.hero-content {
+  grid-column: 1 / span 7;
+  max-width: 920px;
+}
+
+.hero-statement {
+  max-width: 920px;
+  font-size: clamp(4.4rem, min(6.15vw, 13vh), 8rem);
+  line-height: .88;
+}
+
+.hero-reel-card {
+  bottom: 5.7rem;
+  width: clamp(20.5rem, 22vw, 23rem);
+}
+
+.hero-reel-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+}
+
+#hero-toggle {
+  min-width: 0;
+  min-height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: 0 .58rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 3px;
+  color: rgba(255, 255, 255, .78);
+  background: rgba(255, 255, 255, .04);
+  cursor: pointer;
+  font: 600 .52rem/1 var(--mono);
+  text-transform: uppercase;
+  transition: color var(--motion-ui) var(--ease-state), border-color var(--motion-ui) var(--ease-state), background var(--motion-ui) var(--ease-state);
+}
+
+#hero-toggle:hover,
+#hero-toggle:focus-visible {
+  border-color: rgba(255, 255, 255, .52);
+  color: var(--white);
+  background: rgba(255, 255, 255, .1);
+}
+
+.hero-reel-playlist {
+  grid-template-columns: repeat(auto-fit, minmax(2.2rem, 1fr));
+}
+
+.proof-tape__track {
+  animation-duration: 76s;
+}
+
+.proof-tape__viewport:hover .proof-tape__track,
+.proof-tape__viewport:focus-within .proof-tape__track {
+  animation-play-state: running;
+}
+
+html.motion-paused .proof-tape__track {
+  animation-play-state: paused;
+}
+
+html.motion-paused .hero-reel-progress span,
+html.motion-paused .hero-scene__media > video {
+  animation-play-state: paused;
+}
+
+.tape-toggle {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .hero-scene__dock {
+    left: 34%;
+  }
+
+  .hero-content {
+    grid-column: 1 / span 8;
+    max-width: 760px;
+  }
+
+  .hero-statement {
+    max-width: 760px;
+    font-size: clamp(4.15rem, 7vw, 6.65rem);
+  }
+}
+
+@media (max-height: 800px) and (min-width: 761px) {
+  .hero-scene__dock {
+    padding-bottom: 1.5rem;
+  }
+
+  .hero-statement {
+    font-size: clamp(3.8rem, 6.1vw, 5.8rem);
+  }
+
+  .hero-reel-card {
+    bottom: 4.9rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-scene__dock {
+    left: 30%;
+  }
+
+  .hero-shade {
+    background:
+      linear-gradient(90deg, #050505 0%, rgba(5, 5, 5, .94) 40%, rgba(5, 5, 5, .34) 74%, rgba(5, 5, 5, .12) 100%),
+      linear-gradient(0deg, rgba(5, 5, 5, .92) 0%, transparent 42%);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-scene__dock {
+    inset: 3.75rem 0 auto;
+    height: calc(43svh - 3.75rem);
+    place-items: center;
+    padding: .5rem .75rem 0;
+  }
+
+  .hero-scene__media {
+    height: min(var(--media-h), calc(100% - .5rem));
+    max-width: 100%;
+  }
+
+  .hero-shade {
+    background: linear-gradient(180deg, rgba(5, 5, 5, .04) 0%, rgba(5, 5, 5, .2) 27%, #050505 47%, #050505 100%);
+  }
+
+  .hero-reel-card {
+    top: calc(43svh - 8rem);
+    right: 0;
+    bottom: auto;
+    width: 100%;
+  }
+
+  .hero-reel-card__top {
+    gap: .55rem;
+  }
+
+  .hero-reel-card__status {
+    gap: .45rem;
+  }
+
+  #hero-toggle {
+    min-width: 0;
+    min-height: 1.85rem;
+    padding: 0 .48rem;
+  }
+
+  #hero-toggle span {
+    display: inline;
+  }
+
+  .hero-reel-playlist {
+    grid-column: 1 / -1;
+    display: grid;
+    margin-top: 0;
+  }
+
+  .hero-reel-playlist button {
+    padding: .12rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-enabled) .hero-reel-card__top > span:first-child::after {
+    content: none;
+  }
+
+  html:not(.motion-enabled) .hero-scene__media {
+    transform: none;
+    transition: none;
+  }
+
+  html:not(.motion-enabled) .hero-scene__media > video {
+    display: none;
+  }
+
+  html.motion-enabled .proof-tape__track {
+    animation: tape-scroll 76s linear infinite;
+    animation-duration: 76s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  html.motion-enabled.motion-paused .proof-tape__track {
+    animation-play-state: paused;
+  }
+
+  html.motion-enabled .hero-line b {
+    animation-duration: 980ms !important;
+  }
+
+  html.motion-enabled .hero-enter {
+    animation-duration: var(--motion-enter) !important;
+  }
+
+  html.motion-enabled .hero-scene__media {
+    transition-duration: 900ms, 1.2s !important;
   }
 }

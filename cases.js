@@ -381,15 +381,15 @@ window.PROFILE = {
     ],
     "proof": {
       "client": "Negócio Sem Filtro",
-      "title": "Todo o conteúdo em vídeo do perfil passou pela minha edição.",
-      "text": "No Negócio Sem Filtro, editei o vídeo longo, todos os cortes e todos os teasers publicados. Também separei e ranqueei os melhores trechos antes da entrega. A IA ajudou na análise e na organização; os teasers e o acabamento foram feitos por mim.",
+      "title": "Todos os cortes do perfil passaram pela minha edição.",
+      "text": "No Negócio Sem Filtro, edito os cortes publicados do perfil, faço a seleção e o ranking dos trechos e produzo os teasers. Também participei da captação de um dos vídeos longos, sem ser responsável pela edição desse episódio completo.",
       "poster": "assets/thumbs/ig_DaBe_RIhl06.avif",
       "permalink": "https://www.instagram.com/reel/DaBe_RIhl06/",
       "profile": "https://www.instagram.com/onegociosemfiltro/",
       "signals": [
-        "Todos os cortes",
-        "Todos os teasers",
-        "Seleção ranqueada"
+        "Todos os cortes do perfil",
+        "Teasers produzidos",
+        "Seleção e ranking"
       ],
       "links": [
         {
@@ -440,20 +440,22 @@ window.CASES = [
     "client": "Negócio Sem Filtro",
     "category": "automacao",
     "categoryLabel": "Sistema de conteúdo",
-    "format": "Long-form + cortes",
-    "role": "Vídeo longo · cortes · teasers · curadoria",
-    "problem": "O material precisava render além do episódio completo e manter o padrão visual definido pelo projeto.",
-    "direction": "Editei o vídeo longo, encontrei os trechos mais fortes, organizei o ranking e adaptei cada corte ao formato vertical.",
-    "deliverable": "Todos os cortes e teasers publicados no perfil, além do vídeo longo e da seleção organizada dos melhores trechos.",
+    "format": "Cortes + teasers",
+    "role": "Cortes · teasers · curadoria",
+    "problem": "Cada episódio precisava se transformar em uma sequência de cortes fortes, coerentes e prontos para publicação.",
+    "direction": "Seleciono e ranqueio os trechos, edito cada peça vertical e produzo os teasers. Também captei um dos episódios longos.",
+    "deliverable": "Todos os cortes e teasers publicados no perfil, além da captação de um dos vídeos longos.",
     "result": "Uma frente contínua de conteúdo construída a partir dos episódios do projeto.",
     "year": "2026",
     "layout": "wide",
     "orientation": "portrait",
     "featured": true,
     "thumb": "assets/thumbs/ig_DaBe_RIhl06.avif",
-    "poster": "assets/thumbs/ig_DaBe_RIhl06.avif",
-    "preview": null,
-    "cardImage": "assets/thumbs/ig_DaBe_RIhl06.avif"
+    "poster": "assets/hero/negocio-sem-filtro-hd.jpg",
+    "preview": "assets/hero/negocio-sem-filtro-hd.mp4",
+    "cardImage": "assets/hero/negocio-sem-filtro-hd.jpg",
+    "heroWidth": 720,
+    "heroHeight": 1280
   },
   {
     "id": "DQfTWkhiK4k",
@@ -513,9 +515,11 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://youtu.be/qBTk1irwDc4",
     "thumb": "assets/thumbs/qBTk1irwDc4.jpg",
-    "poster": "assets/posters/qBTk1irwDc4.jpg",
-    "preview": "assets/previews/qBTk1irwDc4.mp4",
-    "cardImage": "assets/posters/qBTk1irwDc4.jpg"
+    "poster": "assets/hero/qBTk1irwDc4-hd.jpg",
+    "preview": "assets/hero/qBTk1irwDc4-hd.mp4",
+    "cardImage": "assets/hero/qBTk1irwDc4-hd.jpg",
+    "heroWidth": 720,
+    "heroHeight": 1280
   },
   {
     "id": "ADKpionmFiw",
@@ -524,18 +528,20 @@ window.CASES = [
     "category": "long-form",
     "categoryLabel": "Long-form",
     "format": "40 min",
-    "role": "Estrutura · edição · color",
-    "problem": "Organizar quase quarenta minutos de treino sem deixar o conteúdo cansativo ou confuso.",
-    "direction": "Estruturei o treino em blocos, limpei o ritmo e padronizei a imagem na correção de cor.",
-    "deliverable": "Vídeo completo finalizado e cortes verticais derivados do mesmo material.",
+    "role": "Produção completa · captação · edição",
+    "problem": "Produzir quase quarenta minutos de treino com clareza, ritmo e material suficiente para continuar a comunicação em cortes.",
+    "direction": "Assumi a produção completa: planejei e fiz a captação, estruturei o vídeo longo, editei, finalizei a cor e derivei os cortes verticais.",
+    "deliverable": "Vídeo longo e cortes verticais produzidos de ponta a ponta.",
     "year": "2026",
     "layout": "wide",
     "orientation": "landscape",
     "permalink": "https://youtu.be/ADKpionmFiw",
     "thumb": "assets/thumbs/ADKpionmFiw.jpg",
-    "poster": "assets/posters/ADKpionmFiw.jpg",
-    "preview": "assets/previews/ADKpionmFiw.mp4",
-    "cardImage": "assets/thumbs/ADKpionmFiw.jpg"
+    "poster": "assets/hero/ADKpionmFiw-hd.jpg",
+    "preview": "assets/hero/ADKpionmFiw-hd.mp4",
+    "cardImage": "assets/hero/ADKpionmFiw-hd.jpg",
+    "heroWidth": 1280,
+    "heroHeight": 720
   },
   {
     "id": "DXiIx4_kQ-0",

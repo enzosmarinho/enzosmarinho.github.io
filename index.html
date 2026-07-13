@@ -12,10 +12,11 @@
   <meta property="og:url" content="https://enzosmarinho.github.io/">
   <meta property="og:image" content="https://enzosmarinho.github.io/assets/instagram-profile.jpg">
   <link rel="canonical" href="https://enzosmarinho.github.io/">
+  <link rel="preload" as="image" href="assets/hero/negocio-sem-filtro-hd.jpg" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260712-9">
+  <link rel="stylesheet" href="styles.css?v=20260713-10">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -74,7 +75,10 @@
         <aside class="hero-reel-card hero-enter" style="--enter: 6" aria-label="Controle do showreel">
           <div class="hero-reel-card__top">
             <span><i aria-hidden="true"></i> Showreel ao vivo</span>
-            <span id="hero-reel-count">01 / 05</span>
+            <div class="hero-reel-card__status">
+              <span id="hero-reel-count">01 / 07</span>
+              <button id="hero-toggle" type="button" aria-label="Pausar todas as animações" aria-pressed="false"><i data-lucide="pause" aria-hidden="true"></i><span>Pausar animações</span></button>
+            </div>
           </div>
           <div class="hero-reel-card__copy" aria-live="polite">
             <p id="hero-reel-client"></p>
@@ -84,7 +88,6 @@
           <div class="hero-reel-card__bottom">
             <div class="hero-reel-controls">
               <button id="hero-prev" type="button" aria-label="Projeto anterior"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
-              <button id="hero-toggle" type="button" aria-label="Pausar showreel"><i data-lucide="pause" aria-hidden="true"></i></button>
               <button id="hero-next" type="button" aria-label="Próximo projeto"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
             </div>
             <div class="hero-reel-progress" aria-hidden="true"><span id="hero-reel-progress"></span></div>
@@ -104,7 +107,7 @@
       <div class="proof-tape__heading section-shell">
         <p class="eyebrow eyebrow--bright">Showreel vivo</p>
         <h2 id="proof-tape-title">Trabalho real, em movimento e com publicação original.</h2>
-        <p>Trabalhos reais, com acesso à publicação original. <button class="tape-toggle" id="tape-toggle" type="button" aria-pressed="false"><i data-lucide="pause" aria-hidden="true"></i> Pausar faixa</button></p>
+        <p>Faixa contínua com mais trabalhos para explorar. Passe o mouse para assistir; clique para abrir a publicação original.</p>
       </div>
       <div class="proof-tape__viewport" id="proof-tape"></div>
     </section>
@@ -300,8 +303,8 @@
     <a href="#top" aria-label="Voltar ao topo"><i data-lucide="arrow-up" aria-hidden="true"></i></a>
   </footer>
 
-  <script src="cases.js?v=20260712-9"></script>
+  <script src="cases.js?v=20260713-10"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="render.js?v=20260712-9"></script>
+  <script src="render.js?v=20260713-10"></script>
 </body>
 </html>

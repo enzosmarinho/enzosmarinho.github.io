@@ -84,16 +84,25 @@ function renderHeroShowreel() {
   const root = document.querySelector("#hero-showreel");
   if (!root) return;
 
-  const preferred = ["ADKpionmFiw", "DUf-ODMDWqA", "qBTk1irwDc4", "DGLMxcXRRJ4", "DYC7byPyEnW"];
+  const preferred = ["DaBe_RIhl06", "ADKpionmFiw", "qBTk1irwDc4", "DUf-ODMDWqA", "DYC7byPyEnW", "DQfTWkhiK4k", "DXiIx4_kQ-0"];
   const library = [...projects, ...extraClips];
   const selected = preferred.map((id) => library.find((item) => item.id === id)).filter(Boolean);
-  const reel = selected.length >= 4 ? selected : library.filter((item) => item.preview).slice(0, 5);
+  const reel = selected.length >= 6 ? selected : library.filter((item) => item.preview).slice(0, 7);
+  const saveData = Boolean(navigator.connection?.saveData);
 
-  root.innerHTML = reel.map((item, index) => `
-    <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(item.orientation || "portrait")}">
-      <img src="${escapeHtml(item.cardImage)}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
-      <video src="${escapeHtml(item.preview)}" poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="${index < 2 ? "metadata" : "none"}" aria-hidden="true"></video>
-    </figure>`).join("");
+  root.innerHTML = reel.map((item, index) => {
+    const width = Number(item.heroWidth || 480);
+    const height = Number(item.heroHeight || (item.orientation === "landscape" ? 270 : 854));
+    return `
+      <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(item.orientation || "portrait")}">
+        <div class="hero-scene__dock">
+          <div class="hero-scene__media" style="--media-w:${width}px;--media-h:${height}px;--media-ratio:${width} / ${height}">
+            <img src="${escapeHtml(item.cardImage)}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
+            <video data-src="${escapeHtml(item.preview)}" poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="none" aria-hidden="true"></video>
+          </div>
+        </div>
+      </figure>`;
+  }).join("");
 
   const scenes = [...root.querySelectorAll(".hero-scene")];
   const playlist = document.querySelector("#hero-reel-playlist");
@@ -109,8 +118,24 @@ function renderHeroShowreel() {
     scenes,
     index: -1,
     timer: 0,
-    userPaused: motionReduced,
+    preloadTimer: 0,
+    userPaused: motionReduced || savedMotionMode === "paused",
     inView: true,
+  };
+
+  const loadScene = (index) => {
+    const normalized = (index + reel.length) % reel.length;
+    const video = scenes[normalized]?.querySelector("video");
+    if (!video || video.dataset.loaded === "true" || !video.dataset.src) return;
+    video.dataset.loaded = "true";
+    video.addEventListener("loadeddata", () => {
+      video.classList.add("is-ready");
+      if (heroReelState.index === normalized && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
+        video.play().catch(() => {});
+      }
+    }, { once: true });
+    video.src = video.dataset.src;
+    video.load();
   };
 
   const schedule = () => {
@@ -123,9 +148,10 @@ function renderHeroShowreel() {
     const toggle = document.querySelector("#hero-toggle");
     if (!toggle) return;
     const paused = heroReelState.userPaused || motionReduced;
-    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Ativar movimento" : "Pausar"}</span>`;
-    toggle.setAttribute("aria-label", paused ? "Ativar movimento do showreel" : "Pausar showreel");
+    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Ativar animações" : "Pausar animações"}</span>`;
+    toggle.setAttribute("aria-label", paused ? "Ativar todas as animações" : "Pausar todas as animações");
     toggle.setAttribute("aria-pressed", paused ? "true" : "false");
+    document.documentElement.classList.toggle("motion-paused", paused);
     refreshIcons();
   };
 
@@ -140,13 +166,14 @@ function renderHeroShowreel() {
   const activate = (nextIndex, restart = true) => {
     const normalized = (nextIndex + reel.length) % reel.length;
     heroReelState.index = normalized;
+    loadScene(normalized);
     scenes.forEach((scene, index) => {
       const video = scene.querySelector("video");
       const active = index === normalized;
       scene.classList.toggle("is-active", active);
       if (!video) return;
       if (active && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
-        if (restart) video.currentTime = 0;
+        if (restart && video.readyState > 0) video.currentTime = 0;
         video.play().catch(() => {});
       } else {
         video.pause();
@@ -168,6 +195,10 @@ function renderHeroShowreel() {
     });
     updateProgress();
     schedule();
+    window.clearTimeout(heroReelState.preloadTimer);
+    if (!saveData && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
+      heroReelState.preloadTimer = window.setTimeout(() => loadScene(normalized + 1), 900);
+    }
   };
 
   document.querySelector("#hero-prev")?.addEventListener("click", () => activate(heroReelState.index - 1));
@@ -180,10 +211,10 @@ function renderHeroShowreel() {
       motionReduced = false;
       heroReelState.userPaused = false;
       document.documentElement.classList.add("motion-enabled");
-      window.localStorage.setItem("portfolio-motion", "full");
     } else {
       heroReelState.userPaused = !heroReelState.userPaused;
     }
+    window.localStorage.setItem("portfolio-motion", heroReelState.userPaused ? "paused" : "full");
     updateToggle();
     activate(heroReelState.index, false);
   });
@@ -219,21 +250,14 @@ function tapeCard(item, index, duplicate = false) {
 function renderProofTape() {
   const root = document.querySelector("#proof-tape");
   if (!root) return;
-  const preferred = ["DaBe_RIhl06", "qBTk1irwDc4", "ADKpionmFiw", "DYC7byPyEnW", "DUf-ODMDWqA", "DQfTWkhiK4k"];
+  const preferred = ["DaBe_RIhl06", "qBTk1irwDc4", "ADKpionmFiw", "DYC7byPyEnW", "DUf-ODMDWqA", "DQfTWkhiK4k", "DXiIx4_kQ-0", "DUQ8YNYEc4z", "DSldztZCA9P", "DKkdTYyItAy"];
   const selected = preferred
     .map((id) => projects.find((item) => item.id === id))
     .filter(Boolean);
-  const visible = selected.length >= 4 ? selected : projects.slice(0, 6);
+  const visible = selected.length >= 8 ? selected : projects.filter((item) => item.preview).slice(0, 10);
   const group = (duplicate = false) => `<div class="proof-tape__group" ${duplicate ? 'aria-hidden="true"' : ""}>${visible.map((item, index) => tapeCard(item, index, duplicate)).join("")}</div>`;
   root.innerHTML = `<div class="proof-tape__track">${group()}${group(true)}</div>`;
   attachPreview(root);
-  document.querySelector("#tape-toggle")?.addEventListener("click", (event) => {
-    const button = event.currentTarget;
-    const paused = root.classList.toggle("is-paused");
-    button.setAttribute("aria-pressed", paused ? "true" : "false");
-    button.innerHTML = `${icon(paused ? "play" : "pause")} ${paused ? "Retomar faixa" : "Pausar faixa"}`;
-    refreshIcons();
-  });
 }
 
 function renderFlagship() {
@@ -247,7 +271,7 @@ function renderFlagship() {
       <span class="media-play">${icon("play")}</span>
     </a>
     <div class="flagship-copy reveal">
-      <p class="case-label">${escapeHtml(proof.client)} · edição completa do perfil</p>
+      <p class="case-label">${escapeHtml(proof.client)} · edição dos cortes do perfil</p>
       <h3>${escapeHtml(proof.title)}</h3>
       <p>${escapeHtml(proof.text)}</p>
       <div class="proof-signals">${proof.signals.map((signal) => `<span>${escapeHtml(signal)}</span>`).join("")}</div>
