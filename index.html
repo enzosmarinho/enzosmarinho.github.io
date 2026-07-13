@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260712-8">
+  <link rel="stylesheet" href="styles.css?v=20260712-9">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,15 +56,41 @@
       <div class="hero-showreel" id="hero-showreel" aria-hidden="true"></div>
       <div class="hero-shade" aria-hidden="true"></div>
 
-      <div class="hero-content">
-        <p class="eyebrow eyebrow--bright">Direção · cinema · conteúdo</p>
-        <h1>Enzo Marinho</h1>
-        <p class="hero-statement">Faço o vídeo que<br>a ideia pede.</p>
-        <p class="hero-lead">Do conteúdo que vende ao filme que posiciona. Estratégia, câmera, edição e automação com IA em um profissional só.</p>
-        <div class="hero-actions">
-          <a class="button button--primary" href="#trabalhos">Ver trabalhos <i data-lucide="play" aria-hidden="true"></i></a>
-          <a class="button button--ghost" href="#servicos">Ver serviços <i data-lucide="arrow-down" aria-hidden="true"></i></a>
+      <div class="hero-layout">
+        <div class="hero-content">
+          <p class="eyebrow eyebrow--bright hero-enter" style="--enter: 0">Direção · cinema · conteúdo</p>
+          <h1 class="hero-enter" style="--enter: 1">Enzo Marinho</h1>
+          <p class="hero-statement" aria-label="Faço o vídeo que a ideia pede.">
+            <span class="hero-line"><b>Faço o vídeo</b></span>
+            <span class="hero-line"><b>que a ideia pede.</b></span>
+          </p>
+          <p class="hero-lead hero-enter" style="--enter: 4">Do conteúdo que vende ao filme que posiciona. Estratégia, câmera, edição e automação com IA em um profissional só.</p>
+          <div class="hero-actions hero-enter" style="--enter: 5">
+            <a class="button button--primary" href="#trabalhos">Assistir trabalhos <i data-lucide="play" aria-hidden="true"></i></a>
+            <a class="button button--ghost" href="#servicos">Encontrar meu serviço <i data-lucide="arrow-down" aria-hidden="true"></i></a>
+          </div>
         </div>
+
+        <aside class="hero-reel-card hero-enter" style="--enter: 6" aria-label="Controle do showreel">
+          <div class="hero-reel-card__top">
+            <span><i aria-hidden="true"></i> Showreel ao vivo</span>
+            <span id="hero-reel-count">01 / 05</span>
+          </div>
+          <div class="hero-reel-card__copy" aria-live="polite">
+            <p id="hero-reel-client"></p>
+            <strong id="hero-reel-title"></strong>
+            <small id="hero-reel-role"></small>
+          </div>
+          <div class="hero-reel-card__bottom">
+            <div class="hero-reel-controls">
+              <button id="hero-prev" type="button" aria-label="Projeto anterior"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+              <button id="hero-toggle" type="button" aria-label="Pausar showreel"><i data-lucide="pause" aria-hidden="true"></i></button>
+              <button id="hero-next" type="button" aria-label="Próximo projeto"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
+            </div>
+            <div class="hero-reel-progress" aria-hidden="true"><span id="hero-reel-progress"></span></div>
+          </div>
+          <div class="hero-reel-playlist" id="hero-reel-playlist" aria-label="Selecionar projeto do showreel"></div>
+        </aside>
       </div>
 
       <div class="hero-meta">
@@ -78,7 +104,7 @@
       <div class="proof-tape__heading section-shell">
         <p class="eyebrow eyebrow--bright">Showreel vivo</p>
         <h2 id="proof-tape-title">Trabalho real, em movimento e com publicação original.</h2>
-        <p>Deslize para explorar. No computador, passe o cursor para assistir a um trecho antes de abrir a publicação.</p>
+        <p>Trabalhos reais, com acesso à publicação original. <button class="tape-toggle" id="tape-toggle" type="button" aria-pressed="false"><i data-lucide="pause" aria-hidden="true"></i> Pausar faixa</button></p>
       </div>
       <div class="proof-tape__viewport" id="proof-tape"></div>
     </section>
@@ -274,8 +300,8 @@
     <a href="#top" aria-label="Voltar ao topo"><i data-lucide="arrow-up" aria-hidden="true"></i></a>
   </footer>
 
-  <script src="cases.js?v=20260712-8"></script>
+  <script src="cases.js?v=20260712-9"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="render.js?v=20260712-8"></script>
+  <script src="render.js?v=20260712-9"></script>
 </body>
 </html>

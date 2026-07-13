@@ -73,13 +73,132 @@ function clipCard(item) {
     </a>`;
 }
 
+const systemReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const savedMotionMode = window.localStorage.getItem("portfolio-motion");
+let motionReduced = systemReduceMotion.matches && savedMotionMode !== "full";
+if (savedMotionMode === "full") document.documentElement.classList.add("motion-enabled");
+
+let heroReelState;
+
 function renderHeroShowreel() {
   const root = document.querySelector("#hero-showreel");
   if (!root) return;
-  root.innerHTML = `
-    <figure class="hero-frame hero-frame--profile is-active">
-      <img src="assets/resume-portrait.png" alt="" fetchpriority="high">
-    </figure>`;
+
+  const preferred = ["ADKpionmFiw", "DUf-ODMDWqA", "qBTk1irwDc4", "DGLMxcXRRJ4", "DYC7byPyEnW"];
+  const library = [...projects, ...extraClips];
+  const selected = preferred.map((id) => library.find((item) => item.id === id)).filter(Boolean);
+  const reel = selected.length >= 4 ? selected : library.filter((item) => item.preview).slice(0, 5);
+
+  root.innerHTML = reel.map((item, index) => `
+    <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(item.orientation || "portrait")}">
+      <img src="${escapeHtml(item.cardImage)}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
+      <video src="${escapeHtml(item.preview)}" poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="${index < 2 ? "metadata" : "none"}" aria-hidden="true"></video>
+    </figure>`).join("");
+
+  const scenes = [...root.querySelectorAll(".hero-scene")];
+  const playlist = document.querySelector("#hero-reel-playlist");
+  if (playlist) {
+    playlist.innerHTML = reel.map((item, index) => `
+      <button type="button" data-hero-scene="${index}" aria-label="Mostrar ${escapeHtml(item.title)}" aria-pressed="${index === 0 ? "true" : "false"}">
+        <span>${String(index + 1).padStart(2, "0")}</span><i></i>
+      </button>`).join("");
+  }
+
+  heroReelState = {
+    reel,
+    scenes,
+    index: -1,
+    timer: 0,
+    userPaused: motionReduced,
+    inView: true,
+  };
+
+  const schedule = () => {
+    window.clearTimeout(heroReelState.timer);
+    if (heroReelState.userPaused || !heroReelState.inView || document.hidden || motionReduced) return;
+    heroReelState.timer = window.setTimeout(() => activate((heroReelState.index + 1) % reel.length), 5600);
+  };
+
+  const updateToggle = () => {
+    const toggle = document.querySelector("#hero-toggle");
+    if (!toggle) return;
+    const paused = heroReelState.userPaused || motionReduced;
+    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Ativar movimento" : "Pausar"}</span>`;
+    toggle.setAttribute("aria-label", paused ? "Ativar movimento do showreel" : "Pausar showreel");
+    toggle.setAttribute("aria-pressed", paused ? "true" : "false");
+    refreshIcons();
+  };
+
+  const updateProgress = () => {
+    const progress = document.querySelector("#hero-reel-progress");
+    if (!progress) return;
+    progress.classList.remove("is-running");
+    void progress.offsetWidth;
+    if (!heroReelState.userPaused && !motionReduced && heroReelState.inView) progress.classList.add("is-running");
+  };
+
+  const activate = (nextIndex, restart = true) => {
+    const normalized = (nextIndex + reel.length) % reel.length;
+    heroReelState.index = normalized;
+    scenes.forEach((scene, index) => {
+      const video = scene.querySelector("video");
+      const active = index === normalized;
+      scene.classList.toggle("is-active", active);
+      if (!video) return;
+      if (active && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
+        if (restart) video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+
+    const item = reel[normalized];
+    const setText = (selector, value) => {
+      const node = document.querySelector(selector);
+      if (node) node.textContent = value;
+    };
+    setText("#hero-reel-count", `${String(normalized + 1).padStart(2, "0")} / ${String(reel.length).padStart(2, "0")}`);
+    setText("#hero-reel-client", `${item.client} · ${item.categoryLabel}`);
+    setText("#hero-reel-title", item.title);
+    setText("#hero-reel-role", item.role);
+    document.querySelectorAll("[data-hero-scene]").forEach((button, index) => {
+      button.classList.toggle("is-active", index === normalized);
+      button.setAttribute("aria-pressed", index === normalized ? "true" : "false");
+    });
+    updateProgress();
+    schedule();
+  };
+
+  document.querySelector("#hero-prev")?.addEventListener("click", () => activate(heroReelState.index - 1));
+  document.querySelector("#hero-next")?.addEventListener("click", () => activate(heroReelState.index + 1));
+  document.querySelectorAll("[data-hero-scene]").forEach((button) => {
+    button.addEventListener("click", () => activate(Number(button.dataset.heroScene)));
+  });
+  document.querySelector("#hero-toggle")?.addEventListener("click", () => {
+    if (motionReduced) {
+      motionReduced = false;
+      heroReelState.userPaused = false;
+      document.documentElement.classList.add("motion-enabled");
+      window.localStorage.setItem("portfolio-motion", "full");
+    } else {
+      heroReelState.userPaused = !heroReelState.userPaused;
+    }
+    updateToggle();
+    activate(heroReelState.index, false);
+  });
+
+  const hero = document.querySelector(".hero");
+  if (hero && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      heroReelState.inView = entry.isIntersecting;
+      activate(heroReelState.index, false);
+    }, { threshold: .18 });
+    observer.observe(hero);
+  }
+  document.addEventListener("visibilitychange", () => activate(heroReelState.index, false));
+  updateToggle();
+  activate(0);
 }
 
 function tapeCard(item, index, duplicate = false) {
@@ -108,6 +227,13 @@ function renderProofTape() {
   const group = (duplicate = false) => `<div class="proof-tape__group" ${duplicate ? 'aria-hidden="true"' : ""}>${visible.map((item, index) => tapeCard(item, index, duplicate)).join("")}</div>`;
   root.innerHTML = `<div class="proof-tape__track">${group()}${group(true)}</div>`;
   attachPreview(root);
+  document.querySelector("#tape-toggle")?.addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    const paused = root.classList.toggle("is-paused");
+    button.setAttribute("aria-pressed", paused ? "true" : "false");
+    button.innerHTML = `${icon(paused ? "play" : "pause")} ${paused ? "Retomar faixa" : "Pausar faixa"}`;
+    refreshIcons();
+  });
 }
 
 function renderFlagship() {
@@ -270,16 +396,21 @@ function attachPreview(root = document) {
       }
       const image = media.querySelector("img");
       if (image && !video.isConnected) image.insertAdjacentElement("afterend", video);
+      const show = () => video.classList.add("is-playing");
+      video.addEventListener("playing", show, { once: true });
       video.play().catch(() => {});
     };
     const stop = () => {
       if (!video) return;
+      video.classList.remove("is-playing");
       video.pause();
       video.currentTime = 0;
       video.remove();
     };
     media.addEventListener("mouseenter", start);
     media.addEventListener("mouseleave", stop);
+    media.closest("a")?.addEventListener("focus", start);
+    media.closest("a")?.addEventListener("blur", stop);
   });
 }
 
@@ -302,33 +433,63 @@ function refreshIcons() {
   if (window.lucide?.createIcons) window.lucide.createIcons();
 }
 
+async function swapCollection(root, render) {
+  if (!root || motionReduced) {
+    render();
+    return;
+  }
+  const version = Number(root.dataset.swapVersion || 0) + 1;
+  root.dataset.swapVersion = String(version);
+  root.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+  await Promise.all([...root.children].slice(0, 8).map((item, index) => item.animate([
+    { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
+    { opacity: 0, transform: "translateY(-6px)", filter: "blur(3px)" },
+  ], {
+    duration: 140,
+    delay: index * 16,
+    easing: "cubic-bezier(.4,0,1,1)",
+    fill: "forwards",
+  }).finished.catch(() => {})));
+  if (Number(root.dataset.swapVersion) !== version) return;
+  render();
+  [...root.children].forEach((item, index) => item.animate([
+    { opacity: 0, transform: "translateY(14px)", filter: "blur(5px)" },
+    { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
+  ], {
+    duration: 520,
+    delay: Math.min(index, 7) * 52,
+    easing: "cubic-bezier(.16,1,.3,1)",
+    fill: "both",
+  }));
+}
+
 function bindFilters() {
   document.querySelectorAll(".filter").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       document.querySelectorAll(".filter").forEach((item) => {
         item.classList.remove("is-active");
         item.setAttribute("aria-pressed", "false");
       });
       button.classList.add("is-active");
       button.setAttribute("aria-pressed", "true");
-      renderProjects(button.dataset.filter);
+      await swapCollection(document.querySelector("#project-grid"), () => renderProjects(button.dataset.filter));
     });
   });
 
   document.querySelectorAll(".service-tab").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       document.querySelectorAll(".service-tab").forEach((item) => {
         item.classList.remove("is-active");
         item.setAttribute("aria-selected", "false");
       });
       button.classList.add("is-active");
       button.setAttribute("aria-selected", "true");
-      renderServices(button.dataset.serviceFilter);
+      await swapCollection(document.querySelector("#service-list"), () => renderServices(button.dataset.serviceFilter));
     });
   });
 
   document.querySelectorAll("[data-service-guide]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const category = button.dataset.serviceGuide;
       document.querySelectorAll("[data-service-guide]").forEach((item) => {
         item.classList.remove("is-active");
@@ -341,8 +502,9 @@ function bindFilters() {
         item.classList.toggle("is-active", active);
         item.setAttribute("aria-selected", active ? "true" : "false");
       });
-      renderServices(category);
-      document.querySelector("#service-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const list = document.querySelector("#service-list");
+      await swapCollection(list, () => renderServices(category));
+      list?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "start" });
     });
   });
 }
@@ -364,14 +526,22 @@ function bindContact() {
 function bindScroll() {
   const bar = document.querySelector(".scroll-progress span");
   const nav = document.querySelector(".site-nav");
+  let ticking = false;
   const update = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    if (bar) bar.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+    if (bar) bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
     if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 24);
+    ticking = false;
+  };
+  const requestUpdate = () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
   };
   update();
-  window.addEventListener("scroll", update, { passive: true });
-  window.addEventListener("resize", update);
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
 }
 
 function init() {
