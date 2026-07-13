@@ -345,7 +345,7 @@ def build_visual():
     contact.paragraph_format.right_indent = Pt(12)
     contact.paragraph_format.space_after = Pt(6)
     shade_paragraph(contact, BLACK)
-    set_run_font(contact.add_run("Araçatuba/SP  |  (18) 98119-6746  |  enzo.marinho@hotmail.com  |  "), size=8.1, color=LIGHT)
+    set_run_font(contact.add_run("Araçatuba/SP  |  (18) 98119-6746  |  enzosmarinho@hotmail.com  |  "), size=8.1, color=LIGHT)
     add_hyperlink(contact, "enzosmarinho.github.io", "https://enzosmarinho.github.io/", color=LIME, bold=True, underline=False, size=8.1)
 
     table = doc.add_table(rows=1, cols=3)
@@ -353,7 +353,7 @@ def build_visual():
     mark_row_as_header(table.rows[0])
     proof = [
         ("ATUAÇÃO ATUAL", "VOTI Software · CLT desde fev/2025"),
-        ("SISTEMA DE CONTEÚDO", "Negócio Sem Filtro · vídeo longo + cortes + teasers"),
+        ("SISTEMA DE CONTEÚDO", "Negócio Sem Filtro · cortes + teasers + captação long-form"),
         ("PROVA PÚBLICA", "1.733 visualizações · campanha VOTI no YouTube"),
     ]
     for cell, (label, value) in zip(table.rows[0].cells, proof):
@@ -380,7 +380,7 @@ def build_visual():
     add_bullet(doc, "Tradução de temas de software e ERP em narrativas acessíveis para públicos não técnicos.", bullets, visual=True)
 
     add_role_header(doc, "Projetos independentes", "Produtor Audiovisual, Videomaker e Editor", "2025 - Atual")
-    add_bullet(doc, "Negócio Sem Filtro: edição do vídeo longo, de todos os cortes e teasers publicados, com seleção ranqueada de trechos apoiada por IA.", bullets, visual=True)
+    add_bullet(doc, "Negócio Sem Filtro: produção dos cortes e teasers publicados, mais captação em um episódio long-form, com seleção ranqueada de trechos apoiada por IA.", bullets, visual=True)
     add_bullet(doc, "Kayky Pitondo: estruturação de conteúdo long-form, correção de cor e adaptações verticais.", bullets, visual=True)
     add_bullet(doc, "Magnos Steel, 8848 Jiu-Jitsu e Lumiar Parfum (encerrado): anúncios, varejo, captação, esquetes e peças para redes sociais.", bullets, visual=True)
 
@@ -389,7 +389,7 @@ def build_visual():
     set_table_geometry(cases_table, [3120, 3120, 3120], indent_dxa=0)
     mark_row_as_header(cases_table.rows[0])
     selected_cases = [
-        ("NEGÓCIO SEM FILTRO", "Long-form · cortes · teasers", "Sistema contínuo de conteúdo"),
+        ("NEGÓCIO SEM FILTRO", "Cortes · teasers · captação long-form", "Sistema contínuo de conteúdo"),
         ("VOTI SOFTWARE", "Direção · captação · produto", "Campanhas, educação e bastidores"),
         ("KAYKY PITONDO", "Long-form · color · cortes", "Vídeo completo + adaptações verticais"),
     ]
@@ -436,7 +436,7 @@ def build_ats():
     set_run_font(headline.add_run("ESTRATÉGIA DE CONTEÚDO | PRODUÇÃO AUDIOVISUAL | EDIÇÃO DE VÍDEO"), size=9.6, color=CORAL_DARK, bold=True)
     contact = doc.add_paragraph()
     contact.paragraph_format.space_after = Pt(4)
-    set_run_font(contact.add_run("Araçatuba/SP | (18) 98119-6746 | enzo.marinho@hotmail.com | "), size=8.9, color=BLACK)
+    set_run_font(contact.add_run("Araçatuba/SP | (18) 98119-6746 | enzosmarinho@hotmail.com | "), size=8.9, color=BLACK)
     add_hyperlink(contact, "Portfólio", "https://enzosmarinho.github.io/", color=BLACK, underline=True, size=8.9)
     set_run_font(contact.add_run(" | "), size=8.9, color=BLACK)
     add_hyperlink(contact, "LinkedIn", "https://www.linkedin.com/in/enzo-marinho-727200320", color=BLACK, underline=True, size=8.9)
@@ -450,7 +450,7 @@ def build_ats():
 
     add_section_heading(doc, "Destaques profissionais")
     add_bullet(doc, "VOTI Software: atuação CLT em estratégia de conteúdo e produção audiovisual desde fevereiro de 2025.", bullets)
-    add_bullet(doc, "Negócio Sem Filtro: edição do vídeo longo, de todos os cortes e teasers publicados, incluindo seleção e ranking de trechos.", bullets)
+    add_bullet(doc, "Negócio Sem Filtro: produção dos cortes e teasers publicados, com seleção e ranking de trechos, além da captação em um episódio long-form.", bullets)
     add_bullet(doc, "Campanha sazonal da VOTI com 1.733 visualizações públicas no YouTube, verificada em julho de 2026.", bullets)
 
     add_section_heading(doc, "Experiência")
@@ -461,7 +461,7 @@ def build_ats():
     add_bullet(doc, "Criação de cortes verticais, campanhas e peças de produto, com acompanhamento de métricas e ajustes contínuos.", bullets)
 
     add_role_header(doc, "Projetos independentes", "Produtor Audiovisual, Videomaker e Editor", "2025 - Atual")
-    add_bullet(doc, "Negócio Sem Filtro: edição long-form, cortes, teasers e curadoria de trechos apoiada por IA.", bullets)
+    add_bullet(doc, "Negócio Sem Filtro: cortes, teasers, curadoria de trechos apoiada por IA e captação em um episódio long-form.", bullets)
     add_bullet(doc, "Kayky Pitondo: estruturação e edição de conteúdo long-form, correção de cor e cortes verticais.", bullets)
     add_bullet(doc, "Magnos Steel, 8848 Jiu-Jitsu e Lumiar Parfum (projeto encerrado): anúncios, varejo, captação e conteúdo social.", bullets)
 

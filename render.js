@@ -187,6 +187,15 @@ function renderHeroShowreel() {
     video.load();
   };
 
+  const releaseVideo = (video) => {
+    if (!video || (video.dataset.loaded !== "true" && !video.currentSrc)) return;
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.classList.remove("is-ready");
+    delete video.dataset.loaded;
+  };
+
   const queueVideo = (index, immediate = false) => {
     const task = () => {
       if (heroReelState.index === index && canPlayVideo()) loadVideo(index);
@@ -246,11 +255,18 @@ function renderHeroShowreel() {
       const active = index === normalized;
       scene.classList.toggle("is-active", active);
       if (!video) return;
+      window.clearTimeout(Number(video.dataset.releaseTimer || 0));
+      delete video.dataset.releaseTimer;
       if (active && canPlayVideo()) {
         if (restart && video.readyState > 0) video.currentTime = 0;
         if (video.dataset.loaded === "true") video.play().catch(() => {});
       } else {
         video.pause();
+        const releaseDelay = index === previousIndex ? 720 : 0;
+        video.dataset.releaseTimer = String(window.setTimeout(() => {
+          if (heroReelState.index !== index) releaseVideo(video);
+          delete video.dataset.releaseTimer;
+        }, releaseDelay));
       }
     });
 

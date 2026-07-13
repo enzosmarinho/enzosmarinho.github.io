@@ -429,7 +429,7 @@ window.PROFILE = {
     "instagram": "https://instagram.com/enzosmarinho",
     "linkedin": "https://www.linkedin.com/in/enzo-marinho-727200320",
     "youtube": "https://youtube.com/@votigestao",
-    "email": "enzo.marinho@hotmail.com"
+    "email": "enzosmarinho@hotmail.com"
   }
 };
 window.CASES = [
