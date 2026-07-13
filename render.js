@@ -28,7 +28,7 @@ function projectGroup(item) {
   return "independentes";
 }
 
-function projectCard(item) {
+function projectCard(item, index = 0) {
   const classes = [
     "project-card",
     item.layout === "wide" ? "project-card--wide" : "",
@@ -42,11 +42,17 @@ function projectCard(item) {
         <div class="project-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
           <img src="${escapeHtml(item.cardImage)}" alt="Capa do projeto ${escapeHtml(item.title)}" loading="lazy">
           <span class="project-card__tag">${escapeHtml(item.categoryLabel)}</span>
+          <span class="project-card__number">${String(index + 1).padStart(2, "0")}</span>
+          <span class="project-card__cover">
+            <strong>${escapeHtml(item.title)}</strong>
+            <small>${escapeHtml(item.role)}</small>
+          </span>
           <span class="media-play">${icon("arrow-up-right")}</span>
         </div>
         <div class="project-card__info">
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.direction || item.deliverable)}</p>
+          ${item.result ? `<p class="project-card__result">${icon("sparkles")} <span>${escapeHtml(item.result)}</span></p>` : ""}
           <div class="project-card__meta">
             <span>${escapeHtml(item.client)} · ${escapeHtml(item.status || item.year)}</span>
             <span>Publicação original</span>
@@ -72,8 +78,36 @@ function renderHeroShowreel() {
   if (!root) return;
   root.innerHTML = `
     <figure class="hero-frame hero-frame--profile is-active">
-      <img src="assets/instagram-profile.jpg" alt="" fetchpriority="high">
+      <img src="assets/resume-portrait.png" alt="" fetchpriority="high">
     </figure>`;
+}
+
+function tapeCard(item, index, duplicate = false) {
+  const title = escapeHtml(item.title);
+  const label = escapeHtml(item.categoryLabel);
+  const attrs = duplicate ? 'aria-hidden="true" tabindex="-1"' : `aria-label="Abrir ${title} na publicação original"`;
+  return `
+    <a class="tape-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" ${attrs}>
+      <div class="tape-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
+        <img src="${escapeHtml(item.cardImage)}" alt="${duplicate ? "" : `Frame do projeto ${title}`}" loading="lazy">
+        <span class="tape-card__index">${String(index + 1).padStart(2, "0")}</span>
+        <span class="tape-card__play">${icon("play")}</span>
+        <span class="tape-card__copy"><small>${label}</small><strong>${title}</strong></span>
+      </div>
+    </a>`;
+}
+
+function renderProofTape() {
+  const root = document.querySelector("#proof-tape");
+  if (!root) return;
+  const preferred = ["DaBe_RIhl06", "qBTk1irwDc4", "ADKpionmFiw", "DYC7byPyEnW", "DUf-ODMDWqA", "DQfTWkhiK4k"];
+  const selected = preferred
+    .map((id) => projects.find((item) => item.id === id))
+    .filter(Boolean);
+  const visible = selected.length >= 4 ? selected : projects.slice(0, 6);
+  const group = (duplicate = false) => `<div class="proof-tape__group" ${duplicate ? 'aria-hidden="true"' : ""}>${visible.map((item, index) => tapeCard(item, index, duplicate)).join("")}</div>`;
+  root.innerHTML = `<div class="proof-tape__track">${group()}${group(true)}</div>`;
+  attachPreview(root);
 }
 
 function renderFlagship() {
@@ -157,6 +191,7 @@ function renderServices(category = "conteudo") {
   if (!root) return;
   const selected = (profile.services || []).filter((service) => service.category === category);
   root.innerHTML = selected.map(serviceCard).join("");
+  root.dataset.activeCategory = category;
   observeReveals(root);
   refreshIcons();
 }
@@ -270,8 +305,12 @@ function refreshIcons() {
 function bindFilters() {
   document.querySelectorAll(".filter").forEach((button) => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".filter").forEach((item) => item.classList.remove("is-active"));
+      document.querySelectorAll(".filter").forEach((item) => {
+        item.classList.remove("is-active");
+        item.setAttribute("aria-pressed", "false");
+      });
       button.classList.add("is-active");
+      button.setAttribute("aria-pressed", "true");
       renderProjects(button.dataset.filter);
     });
   });
@@ -287,6 +326,25 @@ function bindFilters() {
       renderServices(button.dataset.serviceFilter);
     });
   });
+
+  document.querySelectorAll("[data-service-guide]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const category = button.dataset.serviceGuide;
+      document.querySelectorAll("[data-service-guide]").forEach((item) => {
+        item.classList.remove("is-active");
+        item.setAttribute("aria-pressed", "false");
+      });
+      button.classList.add("is-active");
+      button.setAttribute("aria-pressed", "true");
+      document.querySelectorAll(".service-tab").forEach((item) => {
+        const active = item.dataset.serviceFilter === category;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      renderServices(category);
+      document.querySelector("#service-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 }
 
 function bindContact() {
@@ -296,6 +354,7 @@ function bindContact() {
     if (node && href) node.href = href;
   };
   setHref("#contact-button", contact.whatsapp);
+  setHref("#nav-contact", contact.whatsapp);
   setHref("#email-link", `mailto:${contact.email}?subject=${encodeURIComponent("Projeto com Enzo Marinho")}`);
   setHref("#instagram-link", contact.instagram);
   setHref("#linkedin-link", contact.linkedin);
@@ -317,6 +376,7 @@ function bindScroll() {
 
 function init() {
   renderHeroShowreel();
+  renderProofTape();
   renderFlagship();
   renderProjects();
   renderExtras();

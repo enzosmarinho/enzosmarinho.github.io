@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0b0b">
   <title>Enzo Marinho | Direção, vídeo e conteúdo</title>
-  <meta name="description" content="Portfólio de Enzo Marinho: direção, captação, edição, cortes, campanhas e produtos digitais construídos com inteligência artificial e acabamento humano.">
+  <meta name="description" content="Direção, captação e edição com escopo claro, cases públicos e propostas objetivas. Veja trabalhos, serviços e como contratar Enzo Marinho.">
   <meta property="og:title" content="Enzo Marinho | Faço o vídeo que a ideia pede">
   <meta property="og:description" content="Do conteúdo que vende ao filme que posiciona. Estratégia, direção e edição em um profissional só.">
   <meta property="og:type" content="website">
@@ -15,9 +15,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260712-7">
+  <link rel="stylesheet" href="styles.css?v=20260712-8">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Enzo Marinho",
+      "url": "https://enzosmarinho.github.io/",
+      "image": "https://enzosmarinho.github.io/assets/resume-portrait.png",
+      "jobTitle": "Estrategista de Conteúdo e Produtor Audiovisual",
+      "homeLocation": {"@type": "Place", "name": "Araçatuba, SP"},
+      "sameAs": [
+        "https://instagram.com/enzosmarinho",
+        "https://www.linkedin.com/in/enzo-marinho-727200320",
+        "https://youtube.com/@votigestao"
+      ],
+      "knowsAbout": ["Direção audiovisual", "Edição de vídeo", "Estratégia de conteúdo", "Vídeo programático", "Inteligência artificial aplicada à produção"]
+    }
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <nav class="site-nav" aria-label="Navegação principal">
@@ -33,7 +51,7 @@
     <a class="nav-cta" id="nav-contact" href="#contato">Pedir proposta <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
   </nav>
 
-  <main>
+  <main id="conteudo">
     <header class="hero" id="top">
       <div class="hero-showreel" id="hero-showreel" aria-hidden="true"></div>
       <div class="hero-shade" aria-hidden="true"></div>
@@ -55,6 +73,15 @@
         <div><span>Disponibilidade</span><strong>Projetos selecionados</strong></div>
       </div>
     </header>
+
+    <section class="proof-tape" aria-labelledby="proof-tape-title">
+      <div class="proof-tape__heading section-shell">
+        <p class="eyebrow eyebrow--bright">Showreel vivo</p>
+        <h2 id="proof-tape-title">Trabalho real, em movimento e com publicação original.</h2>
+        <p>Deslize para explorar. No computador, passe o cursor para assistir a um trecho antes de abrir a publicação.</p>
+      </div>
+      <div class="proof-tape__viewport" id="proof-tape"></div>
+    </section>
 
     <section class="manifesto section-shell section-space" aria-labelledby="manifesto-title">
       <div class="section-index"><span>01</span><span>Posicionamento</span></div>
@@ -91,11 +118,11 @@
         </div>
 
         <div class="work-toolbar" role="group" aria-label="Filtrar trabalhos">
-          <button class="filter is-active" type="button" data-filter="todos">Todos</button>
-          <button class="filter" type="button" data-filter="sistemas">Cortes e séries</button>
-          <button class="filter" type="button" data-filter="voti">VOTI · CLT</button>
-          <button class="filter" type="button" data-filter="lumiar">Lumiar · histórico</button>
-          <button class="filter" type="button" data-filter="independentes">Independentes</button>
+          <button class="filter is-active" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+          <button class="filter" type="button" data-filter="sistemas" aria-pressed="false">Cortes e séries</button>
+          <button class="filter" type="button" data-filter="voti" aria-pressed="false">VOTI · CLT</button>
+          <button class="filter" type="button" data-filter="lumiar" aria-pressed="false">Lumiar · histórico</button>
+          <button class="filter" type="button" data-filter="independentes" aria-pressed="false">Independentes</button>
         </div>
         <p class="work-status" id="work-status" aria-live="polite"></p>
         <div class="project-grid" id="project-grid"></div>
@@ -117,6 +144,30 @@
               <h2 id="services-title">Escolha pelo resultado que você precisa agora.</h2>
             </div>
             <p>Preço, prazo, revisão e entregáveis aparecem antes do contato. Projetos maiores recebem proposta separada, sem surpresa no meio do trabalho.</p>
+          </div>
+
+          <div class="service-finder" aria-labelledby="service-finder-title">
+            <div class="service-finder__intro">
+              <p class="eyebrow eyebrow--bright">Comece pela decisão</p>
+              <h3 id="service-finder-title">Qual mudança precisa acontecer primeiro?</h3>
+            </div>
+            <div class="service-finder__options">
+              <button type="button" data-service-guide="conteudo" aria-pressed="false">
+                <span>01 · Conteúdo</span>
+                <strong>Transformar material em vídeos que já saem prontos para publicar.</strong>
+                <small>Auditoria, edição, cortes, campanhas e vídeo de venda.</small>
+              </button>
+              <button type="button" data-service-guide="presenca" aria-pressed="false">
+                <span>02 · Presença</span>
+                <strong>Fazer currículo, perfis e portfólio venderem a mesma história.</strong>
+                <small>Marca pessoal, LinkedIn, Instagram e site profissional.</small>
+              </button>
+              <button type="button" data-service-guide="presencial" aria-pressed="false">
+                <span>03 · Captação</span>
+                <strong>Gravar com direção e sair da sessão com uma frente de conteúdo.</strong>
+                <small>Atendimento presencial disponível em Araçatuba/SP.</small>
+              </button>
+            </div>
           </div>
 
           <div class="service-tabs" role="tablist" aria-label="Categorias de serviço">
@@ -198,6 +249,11 @@
         <p class="eyebrow eyebrow--bright">Próximo projeto</p>
         <h2 id="contact-title">Me diga o que precisa acontecer. Eu penso no formato.</h2>
         <p>Envie o objetivo, o prazo e o material que já existe. Se uma oferta fechada servir, eu confirmo o escopo. Se não servir, você recebe uma proposta objetiva.</p>
+        <div class="contact-brief" aria-label="O que enviar no primeiro contato">
+          <div><span>01</span><strong>Objetivo</strong><p>O que precisa mudar depois que o projeto for entregue.</p></div>
+          <div><span>02</span><strong>Prazo</strong><p>Quando o material precisa estar pronto ou publicado.</p></div>
+          <div><span>03</span><strong>Material</strong><p>Links, gravações, referências e o que já foi tentado.</p></div>
+        </div>
         <div class="contact-actions">
           <a class="button button--primary button--large" id="contact-button" href="#">Começar pelo WhatsApp <i data-lucide="message-circle" aria-hidden="true"></i></a>
           <a class="button button--ghost button--large" id="email-link" href="#">Enviar e-mail <i data-lucide="mail" aria-hidden="true"></i></a>
@@ -218,8 +274,8 @@
     <a href="#top" aria-label="Voltar ao topo"><i data-lucide="arrow-up" aria-hidden="true"></i></a>
   </footer>
 
-  <script src="cases.js?v=20260712-7"></script>
+  <script src="cases.js?v=20260712-8"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="render.js?v=20260712-7"></script>
+  <script src="render.js?v=20260712-8"></script>
 </body>
 </html>
