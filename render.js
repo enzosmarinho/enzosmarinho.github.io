@@ -110,12 +110,22 @@ function renderHeroShowreel() {
     const index = offset + (hasStaticScene ? 1 : 0);
     const width = Number(item.heroWidth || 480);
     const height = Number(item.heroHeight || (item.orientation === "landscape" ? 270 : 854));
+    const orientation = item.orientation || "portrait";
+    const format = orientation === "landscape" ? "16:9 · quadro horizontal" : "9:16 · quadro vertical";
+    const poster = escapeHtml(item.cardImage);
+    const posterSource = index === 0 ? `src="${poster}"` : `data-src="${poster}"`;
     return `
-      <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(item.orientation || "portrait")}">
+      <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(orientation)}" data-format="${format}">
         <div class="hero-scene__dock">
-          <div class="hero-scene__media" style="--media-w:${width}px;--media-h:${height}px;--media-ratio:${width} / ${height}">
-            <img ${index === 0 ? `src="${escapeHtml(item.cardImage)}" fetchpriority="high"` : `data-src="${escapeHtml(item.cardImage)}"`} width="${width}" height="${height}" alt="" decoding="async">
-            <video data-src="${escapeHtml(item.preview)}" data-poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="none" aria-hidden="true"></video>
+          <div class="hero-scene__stage">
+            <div class="hero-scene__ambient" aria-hidden="true">
+              <img ${posterSource} width="${width}" height="${height}" alt="" decoding="async">
+            </div>
+            <div class="hero-scene__screen">
+              <img class="hero-scene__poster" ${posterSource} width="${width}" height="${height}" alt="" decoding="async">
+              <video data-src="${escapeHtml(item.preview)}" data-poster="${poster}" muted loop playsinline preload="none" aria-hidden="true"></video>
+            </div>
+            <span class="hero-scene__format" aria-hidden="true">${format}</span>
           </div>
         </div>
       </figure>`;
@@ -154,11 +164,11 @@ function renderHeroShowreel() {
 
   const loadPoster = (index) => {
     const normalized = (index + reel.length) % reel.length;
-    const image = scenes[normalized]?.querySelector("img[data-src]");
-    if (image?.dataset.src) {
+    scenes[normalized]?.querySelectorAll("img[data-src]").forEach((image) => {
+      if (!image.dataset.src) return;
       image.src = image.dataset.src;
       image.removeAttribute("data-src");
-    }
+    });
   };
 
   const loadVideo = (index) => {
@@ -227,9 +237,11 @@ function renderHeroShowreel() {
 
   const activate = (nextIndex, restart = true, announce = false) => {
     const normalized = (nextIndex + reel.length) % reel.length;
+    const previousIndex = heroReelState.index;
     heroReelState.index = normalized;
     loadPoster(normalized);
     scenes.forEach((scene, index) => {
+      scene.querySelector(".hero-scene__ambient img")?.style.removeProperty("transform");
       const video = scene.querySelector("video");
       const active = index === normalized;
       scene.classList.toggle("is-active", active);
@@ -251,6 +263,20 @@ function renderHeroShowreel() {
     setText("#hero-reel-client", `${item.client} · ${item.categoryLabel}`);
     setText("#hero-reel-title", item.title);
     setText("#hero-reel-role", item.role);
+    if (previousIndex >= 0 && previousIndex !== normalized && !motionReduced && !heroReelState.userPaused) {
+      document.querySelectorAll(".hero-reel-card__copy > *").forEach((node, index) => {
+        node.getAnimations().forEach((animation) => animation.cancel());
+        node.animate([
+          { opacity: 0, transform: "translateY(8px)", filter: "blur(3px)" },
+          { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
+        ], {
+          duration: 360,
+          delay: index * 44,
+          easing: "cubic-bezier(.22,1,.36,1)",
+          fill: "none",
+        });
+      });
+    }
     if (announce) setText("#hero-reel-announcement", `Projeto ${normalized + 1} de ${reel.length}: ${item.title}. ${item.role}.`);
     document.querySelectorAll("[data-hero-scene]").forEach((button, index) => {
       button.classList.toggle("is-active", index === normalized);
@@ -281,6 +307,30 @@ function renderHeroShowreel() {
     window.localStorage.setItem("portfolio-motion", heroReelState.userPaused ? "paused" : "full");
     updateToggle();
     activate(heroReelState.index, false);
+  });
+
+  const finePointer = window.matchMedia("(pointer: fine)");
+  const stageMotion = { frame: 0, x: 0, y: 0 };
+  const paintStageMotion = () => {
+    stageMotion.frame = 0;
+    const ambient = scenes[heroReelState.index]?.querySelector(".hero-scene__ambient img");
+    if (!ambient) return;
+    ambient.style.transform = `translate3d(${stageMotion.x}px, ${stageMotion.y}px, 0) scale(1.12)`;
+  };
+  const heroMotionHost = document.querySelector(".hero") || root;
+  heroMotionHost.addEventListener("pointermove", (event) => {
+    if (!finePointer.matches || motionReduced || heroReelState.userPaused) return;
+    const stage = scenes[heroReelState.index]?.querySelector(".hero-scene__stage");
+    if (!stage) return;
+    const bounds = stage.getBoundingClientRect();
+    stageMotion.x = Math.max(-4, Math.min(4, ((event.clientX - bounds.left) / bounds.width - .5) * -8));
+    stageMotion.y = Math.max(-3, Math.min(3, ((event.clientY - bounds.top) / bounds.height - .5) * -6));
+    if (!stageMotion.frame) stageMotion.frame = window.requestAnimationFrame(paintStageMotion);
+  });
+  heroMotionHost.addEventListener("pointerleave", () => {
+    stageMotion.x = 0;
+    stageMotion.y = 0;
+    if (!stageMotion.frame) stageMotion.frame = window.requestAnimationFrame(paintStageMotion);
   });
 
   const hero = document.querySelector(".hero");
