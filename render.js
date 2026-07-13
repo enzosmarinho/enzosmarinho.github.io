@@ -9,7 +9,8 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#039;");
 
-const icon = (name) => `<i data-lucide="${name}" aria-hidden="true"></i>`;
+const ICON_SPRITE = "assets/icons.svg";
+const icon = (name) => `<svg class="lucide lucide-${escapeHtml(name)}" aria-hidden="true" focusable="false"><use href="${ICON_SPRITE}#${escapeHtml(name)}"></use></svg>`;
 
 function serviceHref(service) {
   const message = [
@@ -17,6 +18,8 @@ function serviceHref(service) {
     service.title,
     `Investimento anunciado: ${service.price}`,
     "Meu objetivo é:",
+    "Meu prazo é:",
+    "Material ou referências que já tenho:",
   ].join("\n");
   return `https://wa.me/5518981196746?text=${encodeURIComponent(message)}`;
 }
@@ -28,7 +31,15 @@ function projectGroup(item) {
   return "independentes";
 }
 
+function mediaDimensions(item) {
+  return {
+    width: Number(item.heroWidth || (item.orientation === "landscape" ? 1280 : 720)),
+    height: Number(item.heroHeight || (item.orientation === "landscape" ? 720 : 1280)),
+  };
+}
+
 function projectCard(item, index = 0) {
+  const { width, height } = mediaDimensions(item);
   const classes = [
     "project-card",
     item.layout === "wide" ? "project-card--wide" : "",
@@ -38,9 +49,9 @@ function projectCard(item, index = 0) {
 
   return `
     <article class="${classes}" data-group="${projectGroup(item)}">
-      <a class="project-card__link" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" aria-label="Abrir ${escapeHtml(item.title)} na publicação original">
+      <a class="project-card__link" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener">
         <div class="project-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
-          <img src="${escapeHtml(item.cardImage)}" alt="Capa do projeto ${escapeHtml(item.title)}" loading="lazy">
+          <img src="${escapeHtml(item.cardImage)}" width="${width}" height="${height}" alt="" loading="lazy" decoding="async">
           <span class="project-card__tag">${escapeHtml(item.categoryLabel)}</span>
           <span class="project-card__number">${String(index + 1).padStart(2, "0")}</span>
           <span class="project-card__cover">
@@ -63,10 +74,11 @@ function projectCard(item, index = 0) {
 }
 
 function clipCard(item) {
+  const { width, height } = mediaDimensions(item);
   return `
-    <a class="clip-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" aria-label="Abrir ${escapeHtml(item.title)} na publicação original">
+    <a class="clip-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener">
       <div class="clip-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
-        <img src="${escapeHtml(item.cardImage)}" alt="Capa de ${escapeHtml(item.title)}" loading="lazy">
+        <img src="${escapeHtml(item.cardImage)}" width="${width}" height="${height}" alt="" loading="lazy" decoding="async">
       </div>
       <h3>${escapeHtml(item.title)}</h3>
       <p>${escapeHtml(item.client)} · ${escapeHtml(item.status || "publicação original")}</p>
@@ -74,9 +86,13 @@ function clipCard(item) {
 }
 
 const systemReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const compactViewport = window.matchMedia("(max-width: 760px)");
+const saveData = Boolean(navigator.connection?.saveData);
 const savedMotionMode = window.localStorage.getItem("portfolio-motion");
 let motionReduced = systemReduceMotion.matches && savedMotionMode !== "full";
 if (savedMotionMode === "full") document.documentElement.classList.add("motion-enabled");
+if (savedMotionMode === "paused") document.documentElement.classList.add("motion-paused");
+if (saveData) document.documentElement.classList.add("save-data");
 
 let heroReelState;
 
@@ -88,29 +104,34 @@ function renderHeroShowreel() {
   const library = [...projects, ...extraClips];
   const selected = preferred.map((id) => library.find((item) => item.id === id)).filter(Boolean);
   const reel = selected.length >= 6 ? selected : library.filter((item) => item.preview).slice(0, 7);
-  const saveData = Boolean(navigator.connection?.saveData);
-
-  root.innerHTML = reel.map((item, index) => {
+  root.querySelectorAll(".hero-scene:not([data-hero-static])").forEach((scene) => scene.remove());
+  const hasStaticScene = Boolean(root.querySelector("[data-hero-static]"));
+  const dynamicScenes = reel.slice(hasStaticScene ? 1 : 0).map((item, offset) => {
+    const index = offset + (hasStaticScene ? 1 : 0);
     const width = Number(item.heroWidth || 480);
     const height = Number(item.heroHeight || (item.orientation === "landscape" ? 270 : 854));
     return `
       <figure class="hero-scene ${index === 0 ? "is-active" : ""}" data-orientation="${escapeHtml(item.orientation || "portrait")}">
         <div class="hero-scene__dock">
           <div class="hero-scene__media" style="--media-w:${width}px;--media-h:${height}px;--media-ratio:${width} / ${height}">
-            <img src="${escapeHtml(item.cardImage)}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
-            <video data-src="${escapeHtml(item.preview)}" poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="none" aria-hidden="true"></video>
+            <img ${index === 0 ? `src="${escapeHtml(item.cardImage)}" fetchpriority="high"` : `data-src="${escapeHtml(item.cardImage)}"`} width="${width}" height="${height}" alt="" decoding="async">
+            <video data-src="${escapeHtml(item.preview)}" data-poster="${escapeHtml(item.cardImage)}" muted loop playsinline preload="none" aria-hidden="true"></video>
           </div>
         </div>
       </figure>`;
   }).join("");
+  root.insertAdjacentHTML("beforeend", dynamicScenes);
 
   const scenes = [...root.querySelectorAll(".hero-scene")];
   const playlist = document.querySelector("#hero-reel-playlist");
   if (playlist) {
-    playlist.innerHTML = reel.map((item, index) => `
-      <button type="button" data-hero-scene="${index}" aria-label="Mostrar ${escapeHtml(item.title)}" aria-pressed="${index === 0 ? "true" : "false"}">
-        <span>${String(index + 1).padStart(2, "0")}</span><i></i>
-      </button>`).join("");
+    playlist.innerHTML = reel.map((item, index) => {
+      const number = String(index + 1).padStart(2, "0");
+      return `
+        <button type="button" data-hero-scene="${index}" aria-label="${number}: ${escapeHtml(item.title)}" aria-pressed="${index === 0 ? "true" : "false"}">
+          <span>${number}</span><i aria-hidden="true"></i>
+        </button>`;
+    }).join("");
   }
 
   heroReelState = {
@@ -119,18 +140,36 @@ function renderHeroShowreel() {
     index: -1,
     timer: 0,
     preloadTimer: 0,
+    progressAnimation: null,
     userPaused: motionReduced || savedMotionMode === "paused",
     inView: true,
+    autoRotate: !saveData && !compactViewport.matches,
   };
 
-  const loadScene = (index) => {
+  const canPlayVideo = () => !saveData
+    && !heroReelState.userPaused
+    && !motionReduced
+    && heroReelState.inView
+    && !document.hidden;
+
+  const loadPoster = (index) => {
+    const normalized = (index + reel.length) % reel.length;
+    const image = scenes[normalized]?.querySelector("img[data-src]");
+    if (image?.dataset.src) {
+      image.src = image.dataset.src;
+      image.removeAttribute("data-src");
+    }
+  };
+
+  const loadVideo = (index) => {
+    if (!canPlayVideo()) return;
     const normalized = (index + reel.length) % reel.length;
     const video = scenes[normalized]?.querySelector("video");
     if (!video || video.dataset.loaded === "true" || !video.dataset.src) return;
     video.dataset.loaded = "true";
     video.addEventListener("loadeddata", () => {
       video.classList.add("is-ready");
-      if (heroReelState.index === normalized && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
+      if (heroReelState.index === normalized && canPlayVideo()) {
         video.play().catch(() => {});
       }
     }, { once: true });
@@ -138,9 +177,22 @@ function renderHeroShowreel() {
     video.load();
   };
 
+  const queueVideo = (index, immediate = false) => {
+    const task = () => {
+      if (heroReelState.index === index && canPlayVideo()) loadVideo(index);
+    };
+    if (immediate) {
+      task();
+    } else if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(task, { timeout: 1800 });
+    } else {
+      window.setTimeout(task, 700);
+    }
+  };
+
   const schedule = () => {
     window.clearTimeout(heroReelState.timer);
-    if (heroReelState.userPaused || !heroReelState.inView || document.hidden || motionReduced) return;
+    if (!heroReelState.autoRotate || heroReelState.userPaused || !heroReelState.inView || document.hidden || motionReduced) return;
     heroReelState.timer = window.setTimeout(() => activate((heroReelState.index + 1) % reel.length), 5600);
   };
 
@@ -148,33 +200,43 @@ function renderHeroShowreel() {
     const toggle = document.querySelector("#hero-toggle");
     if (!toggle) return;
     const paused = heroReelState.userPaused || motionReduced;
-    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Ativar animações" : "Pausar animações"}</span>`;
-    toggle.setAttribute("aria-label", paused ? "Ativar todas as animações" : "Pausar todas as animações");
+    const label = paused ? "Ativar animações" : "Pausar animações";
+    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${label}</span>`;
+    toggle.setAttribute("aria-label", label);
     toggle.setAttribute("aria-pressed", paused ? "true" : "false");
     document.documentElement.classList.toggle("motion-paused", paused);
-    refreshIcons();
+    if (paused) {
+      stopAllPreviewVideos();
+      document.querySelectorAll(".reveal").forEach((item) => item.classList.add("is-visible"));
+    } else {
+      attachPreview();
+    }
   };
 
   const updateProgress = () => {
     const progress = document.querySelector("#hero-reel-progress");
     if (!progress) return;
-    progress.classList.remove("is-running");
-    void progress.offsetWidth;
-    if (!heroReelState.userPaused && !motionReduced && heroReelState.inView) progress.classList.add("is-running");
+    heroReelState.progressAnimation?.cancel();
+    progress.style.transform = "scaleX(0)";
+    if (!heroReelState.autoRotate || heroReelState.userPaused || motionReduced || !heroReelState.inView) return;
+    heroReelState.progressAnimation = progress.animate([
+      { transform: "scaleX(0)" },
+      { transform: "scaleX(1)" },
+    ], { duration: 5600, easing: "linear", fill: "forwards" });
   };
 
-  const activate = (nextIndex, restart = true) => {
+  const activate = (nextIndex, restart = true, announce = false) => {
     const normalized = (nextIndex + reel.length) % reel.length;
     heroReelState.index = normalized;
-    loadScene(normalized);
+    loadPoster(normalized);
     scenes.forEach((scene, index) => {
       const video = scene.querySelector("video");
       const active = index === normalized;
       scene.classList.toggle("is-active", active);
       if (!video) return;
-      if (active && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
+      if (active && canPlayVideo()) {
         if (restart && video.readyState > 0) video.currentTime = 0;
-        video.play().catch(() => {});
+        if (video.dataset.loaded === "true") video.play().catch(() => {});
       } else {
         video.pause();
       }
@@ -189,22 +251,24 @@ function renderHeroShowreel() {
     setText("#hero-reel-client", `${item.client} · ${item.categoryLabel}`);
     setText("#hero-reel-title", item.title);
     setText("#hero-reel-role", item.role);
+    if (announce) setText("#hero-reel-announcement", `Projeto ${normalized + 1} de ${reel.length}: ${item.title}. ${item.role}.`);
     document.querySelectorAll("[data-hero-scene]").forEach((button, index) => {
       button.classList.toggle("is-active", index === normalized);
       button.setAttribute("aria-pressed", index === normalized ? "true" : "false");
     });
+    if (canPlayVideo()) queueVideo(normalized, announce || normalized !== 0);
     updateProgress();
     schedule();
     window.clearTimeout(heroReelState.preloadTimer);
-    if (!saveData && !heroReelState.userPaused && !motionReduced && heroReelState.inView && !document.hidden) {
-      heroReelState.preloadTimer = window.setTimeout(() => loadScene(normalized + 1), 900);
+    if (heroReelState.autoRotate && canPlayVideo()) {
+      heroReelState.preloadTimer = window.setTimeout(() => loadPoster(normalized + 1), 3200);
     }
   };
 
-  document.querySelector("#hero-prev")?.addEventListener("click", () => activate(heroReelState.index - 1));
-  document.querySelector("#hero-next")?.addEventListener("click", () => activate(heroReelState.index + 1));
+  document.querySelector("#hero-prev")?.addEventListener("click", () => activate(heroReelState.index - 1, true, true));
+  document.querySelector("#hero-next")?.addEventListener("click", () => activate(heroReelState.index + 1, true, true));
   document.querySelectorAll("[data-hero-scene]").forEach((button) => {
-    button.addEventListener("click", () => activate(Number(button.dataset.heroScene)));
+    button.addEventListener("click", () => activate(Number(button.dataset.heroScene), true, true));
   });
   document.querySelector("#hero-toggle")?.addEventListener("click", () => {
     if (motionReduced) {
@@ -228,6 +292,17 @@ function renderHeroShowreel() {
     observer.observe(hero);
   }
   document.addEventListener("visibilitychange", () => activate(heroReelState.index, false));
+  compactViewport.addEventListener?.("change", () => {
+    heroReelState.autoRotate = !saveData && !compactViewport.matches;
+    activate(heroReelState.index, false);
+  });
+  systemReduceMotion.addEventListener?.("change", (event) => {
+    if (window.localStorage.getItem("portfolio-motion") === "full") return;
+    motionReduced = event.matches;
+    heroReelState.userPaused = event.matches || window.localStorage.getItem("portfolio-motion") === "paused";
+    updateToggle();
+    activate(heroReelState.index, false);
+  });
   updateToggle();
   activate(0);
 }
@@ -235,12 +310,14 @@ function renderHeroShowreel() {
 function tapeCard(item, index, duplicate = false) {
   const title = escapeHtml(item.title);
   const label = escapeHtml(item.categoryLabel);
-  const attrs = duplicate ? 'aria-hidden="true" tabindex="-1"' : `aria-label="Abrir ${title} na publicação original"`;
+  const number = String(index + 1).padStart(2, "0");
+  const { width, height } = mediaDimensions(item);
+  const attrs = duplicate ? 'aria-hidden="true" tabindex="-1"' : "";
   return `
     <a class="tape-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" ${attrs}>
       <div class="tape-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
-        <img src="${escapeHtml(item.cardImage)}" alt="${duplicate ? "" : `Frame do projeto ${title}`}" loading="lazy">
-        <span class="tape-card__index">${String(index + 1).padStart(2, "0")}</span>
+        <img data-src="${escapeHtml(item.cardImage)}" width="${width}" height="${height}" alt="" decoding="async">
+        <span class="tape-card__index">${number}</span>
         <span class="tape-card__play">${icon("play")}</span>
         <span class="tape-card__copy"><small>${label}</small><strong>${title}</strong></span>
       </div>
@@ -257,6 +334,7 @@ function renderProofTape() {
   const visible = selected.length >= 8 ? selected : projects.filter((item) => item.preview).slice(0, 10);
   const group = (duplicate = false) => `<div class="proof-tape__group" ${duplicate ? 'aria-hidden="true"' : ""}>${visible.map((item, index) => tapeCard(item, index, duplicate)).join("")}</div>`;
   root.innerHTML = `<div class="proof-tape__track">${group()}${group(true)}</div>`;
+  observeDeferredImages(root);
   attachPreview(root);
 }
 
@@ -353,6 +431,7 @@ function renderContinuity() {
     <div class="continuity-item">
       <div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.description)}</span></div>
       <b>${escapeHtml(item.price)}</b>
+      <a href="${serviceHref(item)}" target="_blank" rel="noopener" aria-label="Conversar sobre ${escapeHtml(item.title)}">Conversar ${icon("arrow-up-right")}</a>
     </div>`).join("");
 }
 
@@ -372,34 +451,65 @@ function renderFaq() {
   const root = document.querySelector("#faq-list");
   if (!root) return;
   root.innerHTML = (profile.faq || []).map((item, index) => `
-    <article class="faq-item ${index === 0 ? "is-open" : ""}">
-      <button type="button" aria-expanded="${index === 0 ? "true" : "false"}">
+    <details class="faq-item" ${index === 0 ? "open" : ""}>
+      <summary>
         <span>${String(index + 1).padStart(2, "0")}</span>
         <strong>${escapeHtml(item.question)}</strong>
         ${icon("plus")}
-      </button>
+      </summary>
       <div class="faq-item__body"><p>${escapeHtml(item.answer)}</p></div>
-    </article>`).join("");
+    </details>`).join("");
 
-  root.querySelectorAll(".faq-item button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const item = button.closest(".faq-item");
-      const willOpen = !item.classList.contains("is-open");
-      root.querySelectorAll(".faq-item").forEach((other) => {
-        other.classList.remove("is-open");
-        other.querySelector("button")?.setAttribute("aria-expanded", "false");
+  root.querySelectorAll(".faq-item").forEach((item) => {
+    item.addEventListener("toggle", () => {
+      if (!item.open) return;
+      root.querySelectorAll(".faq-item[open]").forEach((other) => {
+        if (other !== item) other.removeAttribute("open");
       });
-      if (willOpen) {
-        item.classList.add("is-open");
-        button.setAttribute("aria-expanded", "true");
-      }
     });
   });
-  refreshIcons();
+}
+
+let deferredImageObserver;
+function observeDeferredImages(root = document) {
+  const images = [...root.querySelectorAll("img[data-src]")];
+  if (!images.length) return;
+  const load = (image) => {
+    if (!image.dataset.src) return;
+    image.src = image.dataset.src;
+    image.removeAttribute("data-src");
+  };
+  if (!("IntersectionObserver" in window)) {
+    images.forEach(load);
+    return;
+  }
+  if (!deferredImageObserver) {
+    deferredImageObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        load(entry.target);
+        deferredImageObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: compactViewport.matches ? "140px 180px" : "500px 600px", threshold: .01 });
+  }
+  images.forEach((image) => deferredImageObserver.observe(image));
+}
+
+function isMotionPaused() {
+  return motionReduced || Boolean(heroReelState?.userPaused) || document.documentElement.classList.contains("motion-paused");
+}
+
+function stopAllPreviewVideos() {
+  document.querySelectorAll("[data-preview] > video").forEach((video) => {
+    video.classList.remove("is-playing");
+    video.pause();
+    video.currentTime = 0;
+    video.remove();
+  });
 }
 
 function attachPreview(root = document) {
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (saveData || motionReduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
   root.querySelectorAll("[data-preview]").forEach((media) => {
     const source = media.dataset.preview;
@@ -408,6 +518,7 @@ function attachPreview(root = document) {
 
     let video;
     const start = () => {
+      if (isMotionPaused()) return;
       if (!video) {
         video = document.createElement("video");
         video.src = source;
@@ -440,6 +551,10 @@ function attachPreview(root = document) {
 
 let revealObserver;
 function observeReveals(root = document) {
+  if (isMotionPaused()) {
+    root.querySelectorAll(".reveal").forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
   if (!revealObserver) {
     revealObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -454,11 +569,21 @@ function observeReveals(root = document) {
 }
 
 function refreshIcons() {
-  if (window.lucide?.createIcons) window.lucide.createIcons();
+  document.querySelectorAll("i[data-lucide]").forEach((node) => {
+    const name = node.dataset.lucide;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    svg.setAttribute("class", `lucide lucide-${name}`);
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    use.setAttribute("href", `${ICON_SPRITE}#${name}`);
+    svg.append(use);
+    node.replaceWith(svg);
+  });
 }
 
 async function swapCollection(root, render) {
-  if (!root || motionReduced) {
+  if (!root || isMotionPaused()) {
     render();
     return;
   }
@@ -467,24 +592,49 @@ async function swapCollection(root, render) {
   root.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
   await Promise.all([...root.children].slice(0, 8).map((item, index) => item.animate([
     { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
-    { opacity: 0, transform: "translateY(-6px)", filter: "blur(3px)" },
+    { opacity: 0, transform: "translateY(-4px)", filter: "blur(2px)" },
   ], {
-    duration: 140,
-    delay: index * 16,
+    duration: 120,
+    delay: index * 10,
     easing: "cubic-bezier(.4,0,1,1)",
     fill: "forwards",
   }).finished.catch(() => {})));
   if (Number(root.dataset.swapVersion) !== version) return;
   render();
   [...root.children].forEach((item, index) => item.animate([
-    { opacity: 0, transform: "translateY(14px)", filter: "blur(5px)" },
+    { opacity: 0, transform: "translateY(10px)", filter: "blur(2px)" },
     { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
   ], {
-    duration: 520,
-    delay: Math.min(index, 7) * 52,
+    duration: 360,
+    delay: Math.min(index, 7) * 24,
     easing: "cubic-bezier(.16,1,.3,1)",
     fill: "both",
   }));
+}
+
+function syncServiceTabs(category) {
+  document.querySelectorAll(".service-tab").forEach((item) => {
+    const active = item.dataset.serviceFilter === category;
+    item.classList.toggle("is-active", active);
+    item.setAttribute("aria-selected", active ? "true" : "false");
+    item.setAttribute("tabindex", active ? "0" : "-1");
+  });
+  const panel = document.querySelector("#service-list");
+  panel?.setAttribute("aria-labelledby", `service-tab-${category}`);
+}
+
+async function selectServiceCategory(category, scroll = false) {
+  const list = document.querySelector("#service-list");
+  if (!list) return;
+  if (list.dataset.activeCategory !== category) {
+    await swapCollection(list, () => {
+      syncServiceTabs(category);
+      renderServices(category);
+    });
+  } else {
+    syncServiceTabs(category);
+  }
+  if (scroll) list.scrollIntoView({ behavior: isMotionPaused() ? "auto" : "smooth", block: "start" });
 }
 
 function bindFilters() {
@@ -500,15 +650,22 @@ function bindFilters() {
     });
   });
 
-  document.querySelectorAll(".service-tab").forEach((button) => {
+  const serviceTabs = [...document.querySelectorAll(".service-tab")];
+  serviceTabs.forEach((button) => {
     button.addEventListener("click", async () => {
-      document.querySelectorAll(".service-tab").forEach((item) => {
-        item.classList.remove("is-active");
-        item.setAttribute("aria-selected", "false");
-      });
-      button.classList.add("is-active");
-      button.setAttribute("aria-selected", "true");
-      await swapCollection(document.querySelector("#service-list"), () => renderServices(button.dataset.serviceFilter));
+      await selectServiceCategory(button.dataset.serviceFilter);
+    });
+    button.addEventListener("keydown", (event) => {
+      const current = serviceTabs.indexOf(button);
+      let next = current;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (current + 1) % serviceTabs.length;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (current - 1 + serviceTabs.length) % serviceTabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = serviceTabs.length - 1;
+      else return;
+      event.preventDefault();
+      serviceTabs[next].focus();
+      serviceTabs[next].click();
     });
   });
 
@@ -521,16 +678,21 @@ function bindFilters() {
       });
       button.classList.add("is-active");
       button.setAttribute("aria-pressed", "true");
-      document.querySelectorAll(".service-tab").forEach((item) => {
-        const active = item.dataset.serviceFilter === category;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-selected", active ? "true" : "false");
-      });
-      const list = document.querySelector("#service-list");
-      await swapCollection(list, () => renderServices(category));
-      list?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "start" });
+      await selectServiceCategory(category, true);
     });
   });
+}
+
+function bindMoreWork() {
+  const details = document.querySelector(".more-work");
+  if (!details) return;
+  const ensureRendered = () => {
+    if (!details.open || details.dataset.rendered === "true") return;
+    details.dataset.rendered = "true";
+    renderExtras();
+  };
+  details.addEventListener("toggle", ensureRendered);
+  ensureRendered();
 }
 
 function bindContact() {
@@ -541,7 +703,8 @@ function bindContact() {
   };
   setHref("#contact-button", contact.whatsapp);
   setHref("#nav-contact", contact.whatsapp);
-  setHref("#email-link", `mailto:${contact.email}?subject=${encodeURIComponent("Projeto com Enzo Marinho")}`);
+  const emailBody = ["Objetivo:", "", "Prazo:", "", "Material ou referências:"].join("\n");
+  setHref("#email-link", `mailto:${contact.email}?subject=${encodeURIComponent("Projeto com Enzo Marinho")}&body=${encodeURIComponent(emailBody)}`);
   setHref("#instagram-link", contact.instagram);
   setHref("#linkedin-link", contact.linkedin);
   setHref("#youtube-link", contact.youtube);
@@ -550,10 +713,14 @@ function bindContact() {
 function bindScroll() {
   const bar = document.querySelector(".scroll-progress span");
   const nav = document.querySelector(".site-nav");
+  const nativeProgress = Boolean(window.CSS?.supports?.("animation-timeline", "scroll()"));
+  if (bar && nativeProgress) bar.classList.add("is-css-driven");
   let ticking = false;
   const update = () => {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    if (bar) bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    if (bar && !nativeProgress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    }
     if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 24);
     ticking = false;
   };
@@ -569,20 +736,20 @@ function bindScroll() {
 }
 
 function init() {
+  refreshIcons();
   renderHeroShowreel();
   renderProofTape();
   renderFlagship();
   renderProjects();
-  renderExtras();
   renderServices();
   renderContinuity();
   renderProcess();
   renderFaq();
   bindFilters();
+  bindMoreWork();
   bindContact();
   bindScroll();
   observeReveals();
-  refreshIcons();
   document.querySelector("#year").textContent = new Date().getFullYear();
 }
 

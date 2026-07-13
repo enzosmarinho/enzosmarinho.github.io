@@ -425,7 +425,7 @@ window.PROFILE = {
   },
   "testimonials": [],
   "contact": {
-    "whatsapp": "https://wa.me/5518981196746?text=Oi%20Enzo,%20vi%20seu%20portf%C3%B3lio%20e%20quero%20conversar.",
+    "whatsapp": "https://wa.me/5518981196746?text=Oi%20Enzo,%20vi%20seu%20portf%C3%B3lio%20e%20quero%20conversar.%0A%0AObjetivo%3A%20%0APrazo%3A%20%0AMaterial%20ou%20refer%C3%AAncias%3A%20",
     "instagram": "https://instagram.com/enzosmarinho",
     "linkedin": "https://www.linkedin.com/in/enzo-marinho-727200320",
     "youtube": "https://youtube.com/@votigestao",
@@ -451,9 +451,8 @@ window.CASES = [
     "orientation": "portrait",
     "featured": true,
     "thumb": "assets/thumbs/ig_DaBe_RIhl06.avif",
-    "poster": "assets/hero/negocio-sem-filtro-hd.jpg",
     "preview": "assets/hero/negocio-sem-filtro-hd.mp4",
-    "cardImage": "assets/hero/negocio-sem-filtro-hd.jpg",
+    "cardImage": "assets/hero/negocio-sem-filtro-hd.webp",
     "heroWidth": 720,
     "heroHeight": 1280
   },
@@ -474,9 +473,8 @@ window.CASES = [
     "featured": false,
     "permalink": "https://www.instagram.com/reel/DQfTWkhiK4k/",
     "thumb": "assets/thumbs/ig_DQfTWkhiK4k.jpg",
-    "poster": "assets/posters/DQfTWkhiK4k.jpg",
     "preview": "assets/previews/DQfTWkhiK4k.mp4",
-    "cardImage": "assets/posters/DQfTWkhiK4k.jpg"
+    "cardImage": "assets/posters/DQfTWkhiK4k.webp"
   },
   {
     "id": "DUf-ODMDWqA",
@@ -495,7 +493,6 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DUf-ODMDWqA/",
     "thumb": "assets/thumbs/ig_DUf-ODMDWqA.jpg",
-    "poster": "assets/posters/DUf-ODMDWqA.jpg",
     "preview": "assets/previews/DUf-ODMDWqA.mp4",
     "cardImage": "assets/thumbs/ig_DUf-ODMDWqA.jpg"
   },
@@ -515,9 +512,8 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://youtu.be/qBTk1irwDc4",
     "thumb": "assets/thumbs/qBTk1irwDc4.jpg",
-    "poster": "assets/hero/qBTk1irwDc4-hd.jpg",
     "preview": "assets/hero/qBTk1irwDc4-hd.mp4",
-    "cardImage": "assets/hero/qBTk1irwDc4-hd.jpg",
+    "cardImage": "assets/hero/qBTk1irwDc4-hd.webp",
     "heroWidth": 720,
     "heroHeight": 1280
   },
@@ -537,9 +533,8 @@ window.CASES = [
     "orientation": "landscape",
     "permalink": "https://youtu.be/ADKpionmFiw",
     "thumb": "assets/thumbs/ADKpionmFiw.jpg",
-    "poster": "assets/hero/ADKpionmFiw-hd.jpg",
     "preview": "assets/hero/ADKpionmFiw-hd.mp4",
-    "cardImage": "assets/hero/ADKpionmFiw-hd.jpg",
+    "cardImage": "assets/hero/ADKpionmFiw-hd.webp",
     "heroWidth": 1280,
     "heroHeight": 720
   },
@@ -559,7 +554,6 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DXiIx4_kQ-0/",
     "thumb": "assets/thumbs/ig_DXiIx4_kQ-0.jpg",
-    "poster": "assets/posters/DXiIx4_kQ-0.jpg",
     "preview": "assets/previews/DXiIx4_kQ-0.mp4",
     "cardImage": "assets/thumbs/ig_DXiIx4_kQ-0.jpg"
   },
@@ -579,7 +573,6 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DYC7byPyEnW/",
     "thumb": "assets/thumbs/ig_DYC7byPyEnW.jpg",
-    "poster": "assets/posters/DYC7byPyEnW.jpg",
     "preview": "assets/previews/DYC7byPyEnW.mp4",
     "cardImage": "assets/thumbs/ig_DYC7byPyEnW.jpg"
   },
@@ -599,10 +592,9 @@ window.CASES = [
     "layout": "tall",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DUQ8YNYEc4z/",
-    "thumb": "assets/thumbs/ig_DUQ8YNYEc4z.jpg",
-    "poster": "assets/posters/DUQ8YNYEc4z.jpg",
+    "thumb": "assets/thumbs/ig_DUQ8YNYEc4z.webp",
     "preview": "assets/previews/DUQ8YNYEc4z.mp4",
-    "cardImage": "assets/thumbs/ig_DUQ8YNYEc4z.jpg"
+    "cardImage": "assets/thumbs/ig_DUQ8YNYEc4z.webp"
   },
   {
     "id": "DSldztZCA9P",
@@ -620,7 +612,6 @@ window.CASES = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DSldztZCA9P/",
     "thumb": "assets/thumbs/ig_DSldztZCA9P.jpg",
-    "poster": "assets/posters/DSldztZCA9P.jpg",
     "preview": "assets/previews/DSldztZCA9P.mp4",
     "cardImage": "assets/thumbs/ig_DSldztZCA9P.jpg"
   },
@@ -639,10 +630,9 @@ window.CASES = [
     "layout": "wide",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DWpa8TQCKvX/",
-    "thumb": "assets/thumbs/ig_DWpa8TQCKvX.jpg",
-    "poster": "assets/posters/DWpa8TQCKvX.jpg",
+    "thumb": "assets/thumbs/ig_DWpa8TQCKvX.webp",
     "preview": "assets/previews/DWpa8TQCKvX.mp4",
-    "cardImage": "assets/thumbs/ig_DWpa8TQCKvX.jpg"
+    "cardImage": "assets/thumbs/ig_DWpa8TQCKvX.webp"
   },
   {
     "id": "DKkdTYyItAy",
@@ -660,10 +650,9 @@ window.CASES = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DKkdTYyItAy/",
-    "thumb": "assets/thumbs/ig_DKkdTYyItAy.jpg",
-    "poster": "assets/posters/DKkdTYyItAy.jpg",
+    "thumb": "assets/thumbs/ig_DKkdTYyItAy.webp",
     "preview": "assets/previews/DKkdTYyItAy.mp4",
-    "cardImage": "assets/thumbs/ig_DKkdTYyItAy.jpg"
+    "cardImage": "assets/thumbs/ig_DKkdTYyItAy.webp"
   }
 ];
 window.EXTRA_CLIPS = [
@@ -682,10 +671,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DUJfuJsCPir/",
-    "thumb": "assets/thumbs/ig_DUJfuJsCPir.jpg",
-    "poster": "assets/posters/DUJfuJsCPir.jpg",
+    "thumb": "assets/thumbs/ig_DUJfuJsCPir.webp",
     "preview": "assets/previews/DUJfuJsCPir.mp4",
-    "cardImage": "assets/thumbs/ig_DUJfuJsCPir.jpg"
+    "cardImage": "assets/thumbs/ig_DUJfuJsCPir.webp"
   },
   {
     "id": "DV9deuiCHea",
@@ -702,10 +690,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DV9deuiCHea/",
-    "thumb": "assets/thumbs/ig_DV9deuiCHea.jpg",
-    "poster": "assets/posters/DV9deuiCHea.jpg",
+    "thumb": "assets/thumbs/ig_DV9deuiCHea.webp",
     "preview": "assets/previews/DV9deuiCHea.mp4",
-    "cardImage": "assets/thumbs/ig_DV9deuiCHea.jpg"
+    "cardImage": "assets/thumbs/ig_DV9deuiCHea.webp"
   },
   {
     "id": "DW4c4OjkdA5",
@@ -724,7 +711,6 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/lumiar.parfum/reel/DW4c4OjkdA5/",
     "thumb": "assets/thumbs/ig_DW4c4OjkdA5.jpg",
-    "poster": "assets/posters/DW4c4OjkdA5.jpg",
     "preview": "assets/previews/DW4c4OjkdA5.mp4",
     "cardImage": "assets/thumbs/ig_DW4c4OjkdA5.jpg"
   },
@@ -744,10 +730,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DTgXN2FiDV6/",
-    "thumb": "assets/thumbs/ig_DTgXN2FiDV6.jpg",
-    "poster": "assets/posters/DTgXN2FiDV6.jpg",
+    "thumb": "assets/thumbs/ig_DTgXN2FiDV6.webp",
     "preview": "assets/previews/DTgXN2FiDV6.mp4",
-    "cardImage": "assets/thumbs/ig_DTgXN2FiDV6.jpg"
+    "cardImage": "assets/thumbs/ig_DTgXN2FiDV6.webp"
   },
   {
     "id": "blYFchVi4xg",
@@ -766,9 +751,8 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "permalink": "https://youtu.be/blYFchVi4xg",
     "thumb": "assets/thumbs/blYFchVi4xg.jpg",
-    "poster": "assets/posters/blYFchVi4xg.jpg",
     "preview": "assets/previews/blYFchVi4xg.mp4",
-    "cardImage": "assets/posters/blYFchVi4xg.jpg"
+    "cardImage": "assets/posters/blYFchVi4xg.webp"
   },
   {
     "id": "DGLMxcXRRJ4",
@@ -786,7 +770,6 @@ window.EXTRA_CLIPS = [
     "orientation": "landscape",
     "permalink": "https://www.instagram.com/reel/DGLMxcXRRJ4/",
     "thumb": "assets/thumbs/ig_DGLMxcXRRJ4.jpg",
-    "poster": "assets/posters/DGLMxcXRRJ4.jpg",
     "preview": "assets/previews/DGLMxcXRRJ4.mp4",
     "cardImage": "assets/posters/DGLMxcXRRJ4.jpg"
   },
@@ -805,10 +788,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DOzGHz2iLGz/",
-    "thumb": "assets/thumbs/ig_DOzGHz2iLGz.jpg",
-    "poster": "assets/posters/DOzGHz2iLGz.jpg",
+    "thumb": "assets/thumbs/ig_DOzGHz2iLGz.webp",
     "preview": "assets/previews/DOzGHz2iLGz.mp4",
-    "cardImage": "assets/thumbs/ig_DOzGHz2iLGz.jpg"
+    "cardImage": "assets/thumbs/ig_DOzGHz2iLGz.webp"
   },
   {
     "id": "DHtF3CvxAlF",
@@ -825,10 +807,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DHtF3CvxAlF/",
-    "thumb": "assets/thumbs/ig_DHtF3CvxAlF.jpg",
-    "poster": "assets/posters/DHtF3CvxAlF.jpg",
+    "thumb": "assets/thumbs/ig_DHtF3CvxAlF.webp",
     "preview": "assets/previews/DHtF3CvxAlF.mp4",
-    "cardImage": "assets/thumbs/ig_DHtF3CvxAlF.jpg"
+    "cardImage": "assets/thumbs/ig_DHtF3CvxAlF.webp"
   },
   {
     "id": "DV8UfkSDSa3",
@@ -846,10 +827,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DV8UfkSDSa3/",
-    "thumb": "assets/thumbs/ig_DV8UfkSDSa3.jpg",
-    "poster": "assets/posters/DV8UfkSDSa3.jpg",
+    "thumb": "assets/thumbs/ig_DV8UfkSDSa3.webp",
     "preview": "assets/previews/DV8UfkSDSa3.mp4",
-    "cardImage": "assets/thumbs/ig_DV8UfkSDSa3.jpg"
+    "cardImage": "assets/thumbs/ig_DV8UfkSDSa3.webp"
   },
   {
     "id": "DWozrqUjnsi",
@@ -867,10 +847,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DWozrqUjnsi/",
-    "thumb": "assets/thumbs/ig_DWozrqUjnsi.jpg",
-    "poster": "assets/posters/DWozrqUjnsi.jpg",
+    "thumb": "assets/thumbs/ig_DWozrqUjnsi.webp",
     "preview": "assets/previews/DWozrqUjnsi.mp4",
-    "cardImage": "assets/thumbs/ig_DWozrqUjnsi.jpg"
+    "cardImage": "assets/thumbs/ig_DWozrqUjnsi.webp"
   },
   {
     "id": "DT_OjkyEYwP",
@@ -888,10 +867,9 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DT_OjkyEYwP/",
-    "thumb": "assets/thumbs/ig_DT_OjkyEYwP.jpg",
-    "poster": "assets/posters/DT_OjkyEYwP.jpg",
+    "thumb": "assets/thumbs/ig_DT_OjkyEYwP.webp",
     "preview": "assets/previews/DT_OjkyEYwP.mp4",
-    "cardImage": "assets/thumbs/ig_DT_OjkyEYwP.jpg"
+    "cardImage": "assets/thumbs/ig_DT_OjkyEYwP.webp"
   },
   {
     "id": "DYBL_r1jP3A",
@@ -909,7 +887,6 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/p/DYBL_r1jP3A/",
     "thumb": "assets/thumbs/ig_DYBL_r1jP3A.jpg",
-    "poster": "assets/posters/DYBL_r1jP3A.jpg",
     "preview": "assets/previews/DYBL_r1jP3A.mp4",
     "cardImage": "assets/thumbs/ig_DYBL_r1jP3A.jpg"
   },
@@ -929,7 +906,6 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "thumb": "assets/thumbs/DZUo3jokhkP.jpg",
-    "poster": "assets/posters/DZUo3jokhkP.jpg",
     "preview": "assets/previews/DZUo3jokhkP.mp4",
     "cardImage": "assets/thumbs/DZUo3jokhkP.jpg"
   },
@@ -949,7 +925,6 @@ window.EXTRA_CLIPS = [
     "layout": "standard",
     "orientation": "portrait",
     "thumb": "assets/thumbs/DZGeYPdBiet.jpg",
-    "poster": "assets/posters/DZGeYPdBiet.jpg",
     "preview": "assets/previews/DZGeYPdBiet.mp4",
     "cardImage": "assets/thumbs/DZGeYPdBiet.jpg"
   }
