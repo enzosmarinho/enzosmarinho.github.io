@@ -1,14 +1,14 @@
-// AUTO-GERADO por build_cases.py. Nao editar manualmente.
+// Fonte de conteúdo do portfólio. Manter preços, escopos e provas alinhados ao site publicado.
 window.PROFILE = {
   "name": "Enzo Marinho",
   "initials": "EM",
-  "role": "Direção, conteúdo e produção audiovisual",
+  "role": "Conteúdo, sites e automações úteis",
   "location": "Araçatuba · SP",
-  "tagline_a": "Faço o vídeo que a ideia pede.",
-  "tagline_b": "Do conteúdo que vende ao filme que posiciona.",
+  "tagline_a": "Transformo ideias em conteúdo, páginas e sistemas que o cliente entende.",
+  "tagline_b": "Estratégia e execução no mesmo lugar, sem agência cara nem processo confuso.",
   "hero_title": "Enzo Marinho",
-  "hero_sub": "Estratégia, câmera, edição e automação com IA em um profissional só.",
-  "about": "Meu trabalho começa entendendo o que precisa acontecer depois do play. A partir daí, escolho o formato, dirijo a produção e uso automação para ganhar velocidade sem terceirizar o critério.",
+  "hero_sub": "Conteúdo, sites e automações com direção humana e escopo claro.",
+  "about": "Meu trabalho começa entendendo o que precisa mudar para o cliente. A partir daí, organizo a mensagem, escolho o formato e uso IA para acelerar o trabalho pesado sem terceirizar o critério.",
   "process": [
     "Estratégia",
     "Roteiro",
@@ -19,20 +19,20 @@ window.PROFILE = {
   ],
   "methods": [
     {
-      "title": "Objetivo antes do formato",
-      "text": "Entendo público, oferta, canal e referência antes de decidir se a ideia pede um corte, uma campanha ou uma peça autoral."
+      "title": "Problema antes da ferramenta",
+      "text": "Entendo público, oferta, rotina e resultado esperado antes de decidir se a solução pede conteúdo, uma página ou automação."
     },
     {
-      "title": "Direção com escopo claro",
-      "text": "Roteiro, materiais, prazo, aprovação e limites são definidos no início para o projeto avançar sem retrabalho escondido."
+      "title": "Escopo antes do sinal",
+      "text": "Entregáveis, materiais, prazo, aprovação e limites são definidos antes do pagamento para o projeto avançar sem surpresa."
     },
     {
       "title": "IA no trabalho pesado",
-      "text": "Pesquisa, transcrição, busca de trechos, variações e organização ganham velocidade com IA e pipelines próprios."
+      "text": "Pesquisa, transcrição, copy inicial, organização, variações e tarefas repetitivas ganham velocidade com Claude, Codex e fluxos próprios."
     },
     {
-      "title": "Acabamento humano",
-      "text": "Eu reviso narrativa, ritmo, imagem, legenda, áudio e contexto antes de qualquer peça chegar ao cliente ou ao público."
+      "title": "Decisão e revisão humanas",
+      "text": "Eu reviso mensagem, narrativa, design, código, ritmo e contexto antes de qualquer entrega chegar ao cliente ou ao público."
     }
   ],
   "experience": {
@@ -59,301 +59,183 @@ window.PROFILE = {
     {
       "number": "01",
       "category": "conteudo",
-      "categoryLabel": "Estratégia",
-      "title": "Raio-X do Instagram",
-      "description": "Uma leitura objetiva do perfil para descobrir o que está confundindo a mensagem, enfraquecendo a oferta ou desperdiçando conteúdo.",
-      "detail": "Auditoria · posicionamento · bio · plano de ação",
-      "price": "R$ 690",
+      "categoryLabel": "Conteúdo essencial",
+      "title": "Conteúdo que Já Sai Pronto",
+      "description": "Você envia o material. Eu encontro a mensagem, organizo o conteúdo e devolvo uma pequena campanha pronta para publicar.",
+      "detail": "4 vídeos · 2 carrosséis · legendas · capas · copy",
+      "price": "R$ 1.890",
       "payment": "50% no início · 50% na entrega",
-      "timeline": "5 dias úteis",
-      "revisions": "1 rodada de ajustes",
+      "timeline": "8 dias úteis",
+      "revisions": "1 rodada consolidada",
       "featured": false,
       "includes": [
-        "Análise de posicionamento e clareza da oferta",
-        "Reescrita de nome, bio e chamada principal",
-        "Leitura de destaques e caminho de contato",
-        "3 pilares de conteúdo com exemplos",
-        "Documento prático + reunião de 45 minutos"
+        "4 vídeos verticais de até 60 segundos",
+        "2 carrosséis de até 8 páginas",
+        "Aberturas, legendas e textos de apoio",
+        "Capas e direção visual no mesmo sistema",
+        "Arquivos organizados e prontos para publicar"
       ]
     },
     {
       "number": "02",
       "category": "conteudo",
-      "categoryLabel": "Edição",
-      "title": "4 Reels Prontos",
-      "description": "Você envia as gravações. Eu transformo o material em quatro peças curtas, com ritmo, legenda e acabamento consistentes.",
-      "detail": "Material enviado · edição · legendas · capas",
-      "price": "R$ 1.290",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "7 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "featured": false,
-      "includes": [
-        "4 vídeos verticais de até 60 segundos",
-        "Seleção de abertura e limpeza de ritmo",
-        "Legendas revisadas e safe zones",
-        "4 capas estáticas no mesmo padrão",
-        "Arquivos nomeados e prontos para publicar"
-      ]
-    },
-    {
-      "number": "03",
-      "category": "conteudo",
-      "categoryLabel": "IA aplicada",
-      "title": "Vídeo de Venda com IA",
-      "description": "Uma peça curta para apresentar uma oferta, um produto ou um serviço sem depender de uma produção presencial grande.",
-      "detail": "Roteiro · geração assistida · edição · voz · 2 formatos",
-      "price": "R$ 1.490",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "5 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "featured": false,
-      "includes": [
-        "Roteiro para vídeo de até 60 segundos",
-        "Geração de imagens ou cenas com IA",
-        "Edição, trilha, voz e legendas",
-        "Entrega em 9:16 e 16:9",
-        "Arquivo final pronto para anúncio ou postagem"
-      ]
-    },
-    {
-      "number": "04",
-      "category": "conteudo",
-      "categoryLabel": "Mais vendido",
+      "categoryLabel": "Mais completo",
+      "badge": "Melhor para conteúdo longo",
       "title": "Episódio em Campanha",
-      "description": "Você envia uma gravação longa. Eu organizo o episódio, encontro os melhores momentos e devolvo uma campanha pronta para publicar.",
+      "description": "Uma gravação longa vira o episódio principal e uma frente de conteúdo para continuar gerando atenção depois do play.",
       "detail": "Até 60 min · vídeo completo · 8 cortes · 2 teasers",
-      "price": "R$ 2.490",
+      "price": "R$ 2.990",
       "payment": "50% no início · 50% na entrega",
-      "timeline": "10 dias úteis",
-      "revisions": "1 rodada de ajustes",
+      "timeline": "12 dias úteis",
+      "revisions": "1 rodada consolidada",
       "featured": true,
       "includes": [
         "Edição de 1 vídeo de até 60 minutos",
         "Seleção e ranking dos melhores trechos",
-        "Até 8 cortes verticais legendados",
-        "2 teasers verticais para lançamento",
-        "Arquivos organizados por prioridade"
+        "8 cortes verticais com legendas revisadas",
+        "2 teasers para lançamento",
+        "Mapa de publicação por prioridade"
+      ]
+    },
+    {
+      "number": "03",
+      "category": "presenca",
+      "categoryLabel": "Página de venda",
+      "badge": "Entrada mais acessível",
+      "title": "Landing Page Estratégica",
+      "description": "Uma página enxuta para explicar a oferta, provar valor e levar o visitante até o contato sem distração.",
+      "detail": "Estratégia · copy · design · código · publicação",
+      "price": "R$ 2.990",
+      "payment": "50% no início · 50% na entrega",
+      "timeline": "10 dias úteis",
+      "revisions": "1 rodada consolidada",
+      "featured": true,
+      "includes": [
+        "Arquitetura e textos a partir do negócio real",
+        "Design responsivo e desenvolvimento",
+        "WhatsApp, formulário ou CTA principal",
+        "SEO técnico básico e compartilhamento social",
+        "Publicação + 30 dias de correções técnicas"
+      ]
+    },
+    {
+      "number": "04",
+      "category": "presenca",
+      "categoryLabel": "Site profissional",
+      "title": "Site Profissional Enxuto",
+      "description": "Um site pequeno, rápido e autoral para apresentar serviços, trabalhos e caminhos de contato com clareza.",
+      "detail": "Até 5 páginas · copy · design · código · publicação",
+      "price": "R$ 3.790",
+      "payment": "40% no início · 30% na aprovação · 30% na entrega",
+      "timeline": "15 dias úteis",
+      "revisions": "2 rodadas consolidadas",
+      "featured": false,
+      "includes": [
+        "Até 5 páginas ou seções principais",
+        "Textos humanos escritos com material real",
+        "Sistema visual responsivo e acessível",
+        "SEO básico, métricas e integrações essenciais",
+        "Publicação + 30 dias de correções técnicas"
       ]
     },
     {
       "number": "05",
-      "category": "presenca",
-      "categoryLabel": "Carreira",
-      "title": "Currículo + LinkedIn",
-      "description": "Reorganizo sua experiência para recrutadores e clientes entenderem rapidamente onde você gera valor.",
-      "detail": "Currículo ATS · versão visual · headline · resumo",
-      "price": "R$ 790",
-      "payment": "50% no início · 50% na entrega",
+      "category": "sistemas",
+      "categoryLabel": "Primeiro passo",
+      "badge": "Risco baixo",
+      "title": "Diagnóstico com Direção",
+      "description": "Para quem sabe que precisa melhorar, mas ainda não sabe se o próximo passo é conteúdo, site ou automação.",
+      "detail": "Leitura do negócio · prioridades · plano de 30 dias",
+      "price": "R$ 890",
+      "payment": "100% na reserva · abatível do projeto",
       "timeline": "5 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "featured": false,
+      "revisions": "1 ajuste no plano",
+      "scopeNote": "Abatido em projetos de R$ 2.990+",
+      "featured": true,
       "includes": [
-        "Currículo em DOCX compatível com ATS",
-        "Versão visual em PDF",
-        "Headline e resumo para LinkedIn",
-        "Organização de competências e palavras-chave",
-        "Arquivos editáveis e prontos para envio"
+        "Questionário e leitura do material atual",
+        "Reunião estratégica de até 60 minutos",
+        "Diagnóstico de mensagem, oferta e processo",
+        "3 prioridades com ordem e justificativa",
+        "Valor abatido se o projeto indicado for fechado"
       ]
     },
     {
       "number": "06",
-      "category": "presenca",
-      "categoryLabel": "Instagram",
-      "title": "Perfil Profissional Pronto",
-      "description": "Ajusto a entrada do seu Instagram para explicar quem você ajuda, o que oferece e qual é o próximo passo.",
-      "detail": "Bio · destaques · link · 12 pautas · direção visual",
-      "price": "R$ 990",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "6 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "featured": false,
-      "includes": [
-        "Nome de perfil, bio e chamada para ação",
-        "Estrutura de destaques e textos de apoio",
-        "Página simples de links",
-        "12 pautas alinhadas à oferta",
-        "Direção visual para capas e posts"
-      ]
-    },
-    {
-      "number": "07",
-      "category": "presenca",
-      "categoryLabel": "Marca pessoal",
-      "title": "Sprint de Branding",
-      "description": "Uma base de marca para parar de decidir tom, visual e posicionamento do zero a cada publicação.",
-      "detail": "Posicionamento · voz · identidade · aplicações",
-      "price": "R$ 1.690",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "8 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "featured": false,
-      "includes": [
-        "Posicionamento e frase central da marca",
-        "Tom de voz e mensagens essenciais",
-        "Paleta, tipografia e direção de imagem",
-        "Monograma ou assinatura tipográfica simples",
-        "Mini-guia com aplicações práticas"
-      ]
-    },
-    {
-      "number": "08",
-      "category": "presenca",
-      "categoryLabel": "Site",
-      "title": "Portfólio Profissional",
-      "description": "Uma página autoral como esta, construída para apresentar o trabalho com clareza, prova e caminho comercial.",
-      "detail": "Estratégia · copy · design · desenvolvimento · publicação",
-      "price": "R$ 2.690",
+      "category": "sistemas",
+      "categoryLabel": "IA aplicada",
+      "title": "Automação Útil com IA",
+      "description": "Automatizo uma tarefa repetitiva e bem definida para economizar tempo sem prometer um robô que toca a empresa sozinho.",
+      "detail": "Mapeamento · 1 fluxo · IA · documentação · suporte",
+      "price": "R$ 2.790",
       "payment": "50% no início · 50% na entrega",
       "timeline": "10 dias úteis",
       "revisions": "1 rodada de ajustes",
+      "scopeNote": "Uso de ferramentas pago pelo cliente",
       "featured": false,
       "includes": [
-        "Página responsiva e exclusiva",
-        "Textos escritos a partir do material real",
-        "Organização de até 12 trabalhos",
-        "WhatsApp, SEO básico e publicação",
-        "30 dias para correções técnicas"
-      ]
-    },
-    {
-      "number": "09",
-      "category": "presenca",
-      "categoryLabel": "Pacote completo",
-      "title": "Presença Profissional Completa",
-      "description": "Branding, currículo, LinkedIn, Instagram e portfólio construídos como um único sistema de apresentação e venda.",
-      "detail": "Marca · currículo · perfis · portfólio · publicação",
-      "price": "R$ 3.990",
-      "payment": "40% no início · 30% na aprovação · 30% na entrega",
-      "timeline": "15 dias úteis",
-      "revisions": "2 rodadas de ajustes",
-      "featured": true,
-      "includes": [
-        "Sprint de posicionamento e identidade",
-        "Currículo ATS + versão visual",
-        "Textos para LinkedIn e Instagram",
-        "Portfólio responsivo com até 12 trabalhos",
-        "Publicação e 30 dias de correções técnicas"
-      ]
-    },
-    {
-      "number": "10",
-      "category": "presencial",
-      "categoryLabel": "Araçatuba",
-      "title": "Sessão de Conteúdo Presencial",
-      "description": "Uma sessão concentrada para sair com material suficiente para várias semanas de publicação.",
-      "detail": "Até 4h · direção · captação · 8 vídeos curtos",
-      "price": "R$ 2.900",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "10 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "scopeNote": "Somente Araçatuba/SP",
-      "featured": false,
-      "includes": [
-        "Planejamento de até 8 roteiros curtos",
-        "Até 4 horas de direção e captação",
-        "Edição de 8 vídeos verticais",
-        "Legendas e organização para postagem",
-        "Deslocamento dentro de Araçatuba"
-      ]
-    },
-    {
-      "number": "11",
-      "category": "presencial",
-      "categoryLabel": "Araçatuba",
-      "title": "Podcast em Campanha",
-      "description": "Captação local, episódio finalizado e uma esteira de cortes para o conteúdo continuar depois da conversa.",
-      "detail": "Captação · episódio · 8 cortes · 2 teasers",
-      "price": "R$ 3.900",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "12 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "scopeNote": "Somente Araçatuba/SP",
-      "featured": true,
-      "includes": [
-        "Captação de até 90 minutos em estrutura local",
-        "Edição do episódio completo",
-        "Seleção e ranking de trechos",
-        "8 cortes legendados + 2 teasers",
-        "Arquivos organizados por prioridade"
-      ]
-    },
-    {
-      "number": "12",
-      "category": "presencial",
-      "categoryLabel": "Direção autoral",
-      "title": "Filme de Marca",
-      "description": "Uma peça única para posicionamento, campanha ou imagem, com conceito e direção cinematográfica.",
-      "detail": "Conceito · roteiro · direção · captação · finalização",
-      "price": "A partir de R$ 4.500",
-      "payment": "40% no início · 30% na captação · 30% na entrega",
-      "timeline": "15 a 25 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "scopeNote": "Custos de terceiros à parte",
-      "featured": false,
-      "includes": [
-        "Conceito criativo e roteiro",
-        "Pré-produção e direção",
-        "1 locação e 1 período de captação",
-        "Edição, tratamento de áudio e color grade",
-        "Versão principal + adaptação vertical"
+        "Mapeamento de um processo repetitivo",
+        "Uma automação ou assistente com escopo fechado",
+        "Testes com exemplos reais do cliente",
+        "Documentação simples e vídeo de passagem",
+        "14 dias de suporte para correções"
       ]
     }
   ],
   "continuity": [
     {
-      "title": "Plano Mensal de Tração",
-      "description": "8 vídeos, pauta mensal e acompanhamento básico.",
-      "price": "A partir de R$ 2.200/mês"
+      "title": "Operação de Conteúdo",
+      "description": "8 peças por mês, pauta, copy e organização de publicação.",
+      "price": "A partir de R$ 2.900/mês"
     },
     {
-      "title": "Operação Estratégica",
-      "description": "12 a 16 vídeos, estratégia, relatório e otimização.",
-      "price": "A partir de R$ 3.500/mês"
+      "title": "Operação de Marketing + IA",
+      "description": "12 a 16 peças, acompanhamento, página ativa e uma automação em melhoria contínua.",
+      "price": "A partir de R$ 4.500/mês"
     },
     {
-      "title": "Campanha Pontual",
-      "description": "Lançamento, ação sazonal ou campanha com escopo próprio.",
-      "price": "R$ 2.500 a R$ 4.500"
+      "title": "Captação em Araçatuba",
+      "description": "Direção, até 4 horas de captação e 8 vídeos prontos.",
+      "price": "A partir de R$ 3.290"
     },
     {
-      "title": "Enzo em Cena",
-      "description": "Participação como apresentador, com preparação e gravação.",
-      "price": "+ R$ 900 por sessão de até 4h"
+      "title": "Filme de Marca",
+      "description": "Conceito, roteiro, direção, captação e finalização de uma peça autoral.",
+      "price": "A partir de R$ 5.490"
     }
   ],
   "faq": [
     {
+      "question": "Não sei qual serviço escolher. Como começo?",
+      "answer": "Comece pelo Diagnóstico com Direção. Eu leio o negócio e o material atual, organizo as prioridades e digo com honestidade se o próximo passo deve ser conteúdo, site ou automação. Se você fechar um projeto de R$ 2.990 ou mais, os R$ 890 são abatidos."
+    },
+    {
       "question": "Tenho pouco material. Ainda dá para começar?",
-      "answer": "Sim. Em serviços de presença, começo com uma entrevista e com o que já existe. Em vídeo, avalio o material antes de fechar: se ele não sustentar a entrega prometida, eu proponho uma captação ou reduzo o escopo antes do pagamento."
+      "answer": "Sim. Em conteúdo, eu avalio o que você já tem antes de fechar. Em sites e diagnóstico, começo com entrevista, referências e materiais reais. Se a base não sustentar a entrega prometida, eu reduzo o escopo ou proponho o que falta antes do pagamento."
     },
     {
       "question": "O trabalho não vai ficar com cara de IA?",
-      "answer": "IA acelera pesquisa, transcrição, seleção, variações e partes da produção. A direção, a copy final, o ritmo, a identidade e a revisão são feitos por mim. O objetivo é ganhar eficiência, não entregar um resultado genérico."
+      "answer": "Não é esse o objetivo. Claude, Codex e outras ferramentas aceleram pesquisa, transcrição, organização, variações e tarefas repetitivas. A decisão, a copy final, o design, o corte e a revisão passam por mim antes da entrega."
+    },
+    {
+      "question": "A automação vai tocar minha empresa sozinha?",
+      "answer": "Não. Eu automatizo uma tarefa repetitiva e bem definida, com teste, documentação e limite claro. Decisões sensíveis continuam com uma pessoa. Prefiro uma automação pequena que funciona a prometer um agente autônomo que ninguém consegue confiar."
     },
     {
       "question": "Preciso contratar uma mensalidade?",
-      "answer": "Não. As ofertas principais são projetos únicos com começo, fim e preço definido. Os planos mensais só fazem sentido quando o cliente já sabe que precisa de uma operação recorrente."
-    },
-    {
-      "question": "Por que não contratar só uma edição mais barata?",
-      "answer": "Porque aqui o valor não está apenas no tempo de timeline. O escopo inclui decisão de formato, organização do material, copy quando indicada, acabamento e entrega pronta para uso. Quando você precisa apenas de um operador, eu também digo isso antes de vender um pacote maior."
+      "answer": "Não. As seis ofertas principais são projetos fechados, com começo, fim, preço, prazo e entregáveis definidos. A operação mensal só faz sentido quando você já sabe que precisa de produção e acompanhamento recorrentes."
     },
     {
       "question": "Como funcionam pagamento e alterações?",
-      "answer": "A maioria dos projetos começa com 50% e termina com 50% na aprovação. Cada oferta informa a condição exata e inclui uma rodada consolidada de ajustes. Mudanças de escopo são orçadas antes de serem feitas."
+      "answer": "Cada card informa a condição exata. A maioria dos projetos começa com 50% e termina com 50% na entrega. As revisões são consolidadas para evitar retrabalho; qualquer mudança de escopo é explicada e orçada antes de ser feita."
     },
     {
-      "question": "A captação presencial atende quais cidades?",
-      "answer": "Por enquanto, a captação presencial é oferecida somente em Araçatuba/SP. Projetos remotos de edição, conteúdo, branding, currículo e portfólio podem ser contratados de qualquer lugar."
+      "question": "Domínio, ferramentas e custos de IA estão incluídos?",
+      "answer": "Meu trabalho de estratégia, criação, implementação e publicação está no preço anunciado. Domínio, hospedagem paga, APIs e ferramentas de terceiros ficam na conta do cliente e só são usados com aprovação. Sempre mostro o custo recorrente antes de configurar."
     },
     {
-      "question": "Você pode aparecer como apresentador?",
-      "answer": "Sim, quando fizer sentido para a ideia. A participação em cena inclui preparação e gravação e custa R$ 900 por sessão de até quatro horas. Uso de imagem em mídia paga ou por períodos longos pode exigir licenciamento específico."
-    },
-    {
-      "question": "No portfólio, domínio e manutenção estão incluídos?",
-      "answer": "A publicação, o SEO básico e 30 dias de correções técnicas estão incluídos. Domínio próprio é pago pelo cliente diretamente ao registrador. Novas páginas, atualizações de conteúdo ou manutenção contínua são contratadas à parte."
+      "question": "Você atende de onde?",
+      "answer": "Conteúdo com material enviado, sites, diagnóstico e automações podem ser contratados de qualquer lugar do Brasil. Captação presencial é oferecida em Araçatuba/SP; deslocamentos para outras cidades são avaliados separadamente."
     }
   ],
   "automation": {
@@ -383,7 +265,7 @@ window.PROFILE = {
       "client": "Negócio Sem Filtro",
       "title": "Todos os cortes do perfil passaram pela minha edição.",
       "text": "No Negócio Sem Filtro, edito os cortes publicados do perfil, faço a seleção e o ranking dos trechos e produzo os teasers. Também participei da captação de um dos vídeos longos, sem ser responsável pela edição desse episódio completo.",
-      "poster": "assets/thumbs/ig_DaBe_RIhl06.avif",
+      "poster": "assets/thumbs/ig_DaBe_RIhl06.webp",
       "permalink": "https://www.instagram.com/reel/DaBe_RIhl06/",
       "profile": "https://www.instagram.com/onegociosemfiltro/",
       "signals": [
@@ -423,13 +305,11 @@ window.PROFILE = {
       ]
     }
   },
-  "testimonials": [],
   "contact": {
-    "whatsapp": "https://wa.me/5518981196746?text=Oi%20Enzo,%20vi%20seu%20portf%C3%B3lio%20e%20quero%20conversar.%0A%0AObjetivo%3A%20%0APrazo%3A%20%0AMaterial%20ou%20refer%C3%AAncias%3A%20",
+    "whatsapp": "https://wa.me/5518981196746?text=Oi%20Enzo%2C%20vi%20seu%20portf%C3%B3lio%20e%20quero%20entender%20meu%20pr%C3%B3ximo%20passo.%0A%0AO%20que%20precisa%20mudar%3A%20%0APrazo%3A%20%0AMaterial%20ou%20refer%C3%AAncias%3A%20",
     "instagram": "https://instagram.com/enzosmarinho",
     "linkedin": "https://www.linkedin.com/in/enzo-marinho-727200320",
-    "youtube": "https://youtube.com/@votigestao",
-    "email": "enzosmarinho@hotmail.com"
+    "email": "enzo.marinho@hotmail.com"
   }
 };
 window.CASES = [

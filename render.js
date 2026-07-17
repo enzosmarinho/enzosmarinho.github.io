@@ -49,7 +49,7 @@ function projectCard(item, index = 0) {
 
   return `
     <article class="${classes}" data-group="${projectGroup(item)}">
-      <a class="project-card__link" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener">
+      <a class="project-card__link" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" aria-label="${escapeHtml(item.title)} — abrir publicação original em nova aba">
         <div class="project-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
           <img src="${escapeHtml(item.cardImage)}" width="${width}" height="${height}" alt="" loading="lazy" decoding="async">
           <span class="project-card__tag">${escapeHtml(item.categoryLabel)}</span>
@@ -76,7 +76,7 @@ function projectCard(item, index = 0) {
 function clipCard(item) {
   const { width, height } = mediaDimensions(item);
   return `
-    <a class="clip-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener">
+    <a class="clip-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" aria-label="${escapeHtml(item.title)} — abrir publicação original em nova aba">
       <div class="clip-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
         <img src="${escapeHtml(item.cardImage)}" width="${width}" height="${height}" alt="" loading="lazy" decoding="async">
       </div>
@@ -88,7 +88,23 @@ function clipCard(item) {
 const systemReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const compactViewport = window.matchMedia("(max-width: 760px)");
 const saveData = Boolean(navigator.connection?.saveData);
-const savedMotionMode = window.localStorage.getItem("portfolio-motion");
+function readMotionPreference() {
+  try {
+    return window.localStorage.getItem("portfolio-motion");
+  } catch {
+    return null;
+  }
+}
+
+function saveMotionPreference(value) {
+  try {
+    window.localStorage.setItem("portfolio-motion", value);
+  } catch {
+    // The visual control still works for the current session when storage is blocked.
+  }
+}
+
+const savedMotionMode = readMotionPreference();
 let motionReduced = systemReduceMotion.matches && savedMotionMode !== "full";
 if (savedMotionMode === "full") document.documentElement.classList.add("motion-enabled");
 if (savedMotionMode === "paused") document.documentElement.classList.add("motion-paused");
@@ -320,7 +336,7 @@ function renderHeroShowreel() {
     } else {
       heroReelState.userPaused = !heroReelState.userPaused;
     }
-    window.localStorage.setItem("portfolio-motion", heroReelState.userPaused ? "paused" : "full");
+    saveMotionPreference(heroReelState.userPaused ? "paused" : "full");
     updateToggle();
     activate(heroReelState.index, false);
   });
@@ -363,9 +379,9 @@ function renderHeroShowreel() {
     activate(heroReelState.index, false);
   });
   systemReduceMotion.addEventListener?.("change", (event) => {
-    if (window.localStorage.getItem("portfolio-motion") === "full") return;
+    if (readMotionPreference() === "full") return;
     motionReduced = event.matches;
-    heroReelState.userPaused = event.matches || window.localStorage.getItem("portfolio-motion") === "paused";
+    heroReelState.userPaused = event.matches || readMotionPreference() === "paused";
     updateToggle();
     activate(heroReelState.index, false);
   });
@@ -378,7 +394,9 @@ function tapeCard(item, index, duplicate = false) {
   const label = escapeHtml(item.categoryLabel);
   const number = String(index + 1).padStart(2, "0");
   const { width, height } = mediaDimensions(item);
-  const attrs = duplicate ? 'aria-hidden="true" tabindex="-1"' : "";
+  const attrs = duplicate
+    ? 'aria-hidden="true" tabindex="-1"'
+    : `aria-label="${title} — abrir publicação original em nova aba"`;
   return `
     <a class="tape-card" href="${escapeHtml(item.permalink)}" target="_blank" rel="noopener" ${attrs}>
       <div class="tape-card__media" data-preview="${escapeHtml(item.preview || "")}" data-poster="${escapeHtml(item.cardImage)}">
@@ -410,8 +428,8 @@ function renderFlagship() {
   if (!root || !proof) return;
 
   root.innerHTML = `
-    <a class="flagship-media reveal" href="${escapeHtml(proof.permalink)}" target="_blank" rel="noopener" aria-label="Abrir um corte do Negócio Sem Filtro no Instagram">
-      <img src="${escapeHtml(proof.poster)}" alt="Corte editado para o perfil Negócio Sem Filtro">
+    <a class="flagship-media reveal" href="${escapeHtml(proof.permalink)}" target="_blank" rel="noopener" aria-label="Abrir um corte do Negócio Sem Filtro no Instagram em nova aba">
+      <img src="${escapeHtml(proof.poster)}" width="1284" height="2283" alt="Corte editado para o perfil Negócio Sem Filtro" loading="lazy" decoding="async">
       <span class="media-play">${icon("play")}</span>
     </a>
     <div class="flagship-copy reveal">
@@ -419,10 +437,10 @@ function renderFlagship() {
       <h3>${escapeHtml(proof.title)}</h3>
       <p>${escapeHtml(proof.text)}</p>
       <div class="proof-signals">${proof.signals.map((signal) => `<span>${escapeHtml(signal)}</span>`).join("")}</div>
-      <a class="button button--primary" href="${escapeHtml(proof.profile)}" target="_blank" rel="noopener">Ver perfil completo ${icon("instagram")}</a>
+      <a class="button button--primary" href="${escapeHtml(proof.profile)}" target="_blank" rel="noopener">Ver perfil completo <span class="sr-only">(abre em nova aba)</span> ${icon("instagram")}</a>
       <div class="original-links">
         ${proof.links.map((link, index) => `
-          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
+          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" aria-label="${escapeHtml(link.title)} — abrir publicação original em nova aba">
             <span>${String(index + 1).padStart(2, "0")}</span>
             <strong>${escapeHtml(link.title)}</strong>
             ${icon("arrow-up-right")}
@@ -442,8 +460,20 @@ function renderProjects(filter = "todos") {
     : pool.filter((item) => projectGroup(item) === filter);
 
   root.innerHTML = visible.map(projectCard).join("");
+  if (!visible.length) {
+    root.innerHTML = `
+      <div class="empty-state" role="status">
+        <strong>Nenhum trabalho neste filtro.</strong>
+        <span>Veja a seleção de projetos ou converse comigo sobre o formato que você procura.</span>
+        <button type="button" data-clear-work-filter>Ver seleção</button>
+      </div>`;
+    root.querySelector("[data-clear-work-filter]")?.addEventListener("click", () => {
+      document.querySelector('.filter[data-filter="todos"]')?.click();
+    });
+  }
   if (status) {
-    status.textContent = `${visible.length} ${visible.length === 1 ? "projeto" : "projetos"} · Todos abrem na publicação original`;
+    const label = document.querySelector(`.filter[data-filter="${filter}"]`)?.textContent?.trim() || "Seleção";
+    status.textContent = `${visible.length} ${visible.length === 1 ? "projeto" : "projetos"} · ${label} · publicação original`;
   }
   attachPreview(root);
   observeReveals(root);
@@ -458,7 +488,7 @@ function renderExtras() {
 }
 
 function serviceCard(service) {
-  const badge = service.featured ? "Escolha mais completa" : service.badge;
+  const badge = service.badge || (service.featured ? "Escolha recomendada" : service.categoryLabel);
   return `
     <article class="service-card ${service.featured ? "service-card--featured" : ""} reveal" data-category="${escapeHtml(service.category)}" data-scope="${escapeHtml(service.title)}">
       <div class="service-card__top">
@@ -476,7 +506,7 @@ function serviceCard(service) {
         <span>${escapeHtml(service.payment)}</span>
         <span>${escapeHtml(service.scopeNote || "Escopo fechado")}</span>
       </div>
-      <a class="service-cta" href="${serviceHref(service)}" target="_blank" rel="noopener">Quero este serviço ${icon("arrow-up-right")}</a>
+      <a class="service-cta" href="${serviceHref(service)}" target="_blank" rel="noopener" aria-label="Conversar sobre ${escapeHtml(service.title)} em nova aba">Quero conversar ${icon("arrow-up-right")}</a>
     </article>`;
 }
 
@@ -484,8 +514,22 @@ function renderServices(category = "conteudo") {
   const root = document.querySelector("#service-list");
   if (!root) return;
   const selected = (profile.services || []).filter((service) => service.category === category);
-  root.innerHTML = selected.map(serviceCard).join("");
+  root.dataset.count = String(selected.length);
+  root.innerHTML = selected.length
+    ? selected.map(serviceCard).join("")
+    : `
+      <div class="empty-state empty-state--dark" role="status">
+        <strong>Esta solução está sendo atualizada.</strong>
+        <span>Você ainda pode me contar o objetivo e receber uma orientação direta.</span>
+        <a href="${escapeHtml(profile.contact?.whatsapp || "#contato")}">Chamar no WhatsApp</a>
+      </div>`;
   root.dataset.activeCategory = category;
+  const activeTab = document.querySelector(`[data-service-filter="${category}"]`);
+  const status = document.querySelector("#service-status");
+  if (status) {
+    const label = activeTab?.textContent?.trim() || "Serviços";
+    status.textContent = `${label}: ${selected.length} ${selected.length === 1 ? "opção exibida" : "opções exibidas"}.`;
+  }
   observeReveals(root);
   refreshIcons();
 }
@@ -497,7 +541,7 @@ function renderContinuity() {
     <div class="continuity-item">
       <div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.description)}</span></div>
       <b>${escapeHtml(item.price)}</b>
-      <a href="${serviceHref(item)}" target="_blank" rel="noopener" aria-label="Conversar sobre ${escapeHtml(item.title)}">Conversar ${icon("arrow-up-right")}</a>
+      <a href="${serviceHref(item)}" target="_blank" rel="noopener" aria-label="Conversar sobre ${escapeHtml(item.title)} em nova aba">Conversar ${icon("arrow-up-right")}</a>
     </div>`).join("");
 }
 
@@ -610,14 +654,16 @@ function attachPreview(root = document) {
     };
     media.addEventListener("mouseenter", start);
     media.addEventListener("mouseleave", stop);
-    media.closest("a")?.addEventListener("focus", start);
-    media.closest("a")?.addEventListener("blur", stop);
   });
 }
 
 let revealObserver;
 function observeReveals(root = document) {
   if (isMotionPaused()) {
+    root.querySelectorAll(".reveal").forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+  if (!("IntersectionObserver" in window)) {
     root.querySelectorAll(".reveal").forEach((item) => item.classList.add("is-visible"));
     return;
   }
@@ -700,7 +746,10 @@ async function selectServiceCategory(category, scroll = false) {
   } else {
     syncServiceTabs(category);
   }
-  if (scroll) list.scrollIntoView({ behavior: isMotionPaused() ? "auto" : "smooth", block: "start" });
+  if (scroll) {
+    list.scrollIntoView({ behavior: isMotionPaused() ? "auto" : "smooth", block: "start" });
+    document.querySelector(`[data-service-filter="${category}"]`)?.focus({ preventScroll: true });
+  }
 }
 
 function bindFilters() {
@@ -773,7 +822,6 @@ function bindContact() {
   setHref("#email-link", `mailto:${contact.email}?subject=${encodeURIComponent("Projeto com Enzo Marinho")}&body=${encodeURIComponent(emailBody)}`);
   setHref("#instagram-link", contact.instagram);
   setHref("#linkedin-link", contact.linkedin);
-  setHref("#youtube-link", contact.youtube);
 }
 
 function bindScroll() {

@@ -792,13 +792,20 @@ h3 {
   gap: 1.5rem;
   overflow-x: auto;
   margin-bottom: 1.2rem;
-  padding-bottom: .35rem;
-  scrollbar-width: none;
+  padding-bottom: .7rem;
+  scrollbar-width: thin;
+  scrollbar-color: currentColor transparent;
 }
 
 .work-toolbar::-webkit-scrollbar,
 .service-tabs::-webkit-scrollbar {
-  display: none;
+  height: 4px;
+}
+
+.work-toolbar::-webkit-scrollbar-thumb,
+.service-tabs::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .filter,
@@ -3763,5 +3770,310 @@ html.save-data .hero-scene__screen > video {
 
   .hero-reel-card {
     bottom: 1.25rem;
+  }
+}
+
+/* Client-first commercial pass — 2026-07-17. */
+.hero-content {
+  max-width: 960px;
+}
+
+.no-script {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  gap: .8rem;
+  padding: 6.5rem var(--gutter) 2rem;
+  color: var(--white);
+  background: #111;
+}
+
+.no-script h2 {
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+}
+
+.no-script p {
+  max-width: 50rem;
+  color: rgba(255, 255, 255, .72);
+}
+
+.no-script a {
+  width: fit-content;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
+  color: #0b0b0b;
+  background: var(--primary-bright);
+  font: 700 .64rem/1 var(--mono);
+  text-transform: uppercase;
+}
+
+.not-found {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: start;
+  gap: 1rem;
+  padding: var(--gutter);
+  color: var(--white);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(215, 255, 69, .12), transparent 32rem),
+    #080808;
+}
+
+.not-found h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: .92;
+  letter-spacing: -.055em;
+}
+
+.not-found > p:not(.eyebrow) {
+  max-width: 38rem;
+  color: rgba(255, 255, 255, .72);
+  font-size: 1.05rem;
+}
+
+.hero-statement {
+  max-width: 940px;
+  font-size: clamp(4.15rem, min(6.35vw, 12.5vh), 8.1rem);
+}
+
+.hero-lead {
+  max-width: 43rem;
+  font-size: clamp(1rem, 1.12vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem 1.35rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  color: rgba(255, 255, 255, .76);
+  font: 500 .65rem/1.35 var(--mono);
+  letter-spacing: .015em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.hero-trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: .42rem;
+}
+
+.hero-trust li::before {
+  width: .35rem;
+  height: .35rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--primary-bright);
+  box-shadow: 0 0 0 4px rgba(215, 255, 69, .08);
+  content: "";
+}
+
+.hero-trust strong {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.services > .section-shell {
+  padding-top: clamp(4.75rem, 7vw, 7.75rem);
+}
+
+.service-finder {
+  margin-bottom: 1.25rem;
+}
+
+.service-safety {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 2.5rem;
+  border: 1px solid var(--line-light);
+  background: rgba(255, 255, 255, .025);
+}
+
+.service-safety span {
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  padding: .85rem 1rem;
+  color: rgba(255, 255, 255, .68);
+  font: 500 .64rem/1.5 var(--mono);
+  text-transform: uppercase;
+}
+
+.service-safety span + span {
+  border-left: 1px solid var(--line-light);
+}
+
+.service-safety strong {
+  margin-right: .35rem;
+  color: var(--primary-bright);
+  font-weight: 700;
+}
+
+.service-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.service-card {
+  min-height: 100%;
+}
+
+.service-card__badge {
+  color: var(--primary-bright);
+}
+
+.service-card__description {
+  max-width: 38rem;
+  font-size: clamp(.95rem, 1.05vw, 1.08rem);
+  line-height: 1.65;
+}
+
+.service-card__price {
+  letter-spacing: -.04em;
+}
+
+.service-cta {
+  min-height: 3rem;
+}
+
+.service-grid[data-count="1"] {
+  grid-template-columns: minmax(0, 48rem);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  min-height: 15rem;
+  display: grid;
+  place-content: center;
+  justify-items: start;
+  gap: .65rem;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  background: var(--paper-deep);
+}
+
+.empty-state strong {
+  font-size: 1.25rem;
+}
+
+.empty-state span {
+  max-width: 40rem;
+  color: var(--muted);
+}
+
+.empty-state :is(button, a) {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  margin-top: .5rem;
+  padding: 0 1rem;
+  border: 1px solid currentColor;
+  color: var(--ink);
+  background: transparent;
+  font: 700 .62rem/1 var(--mono);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.empty-state--dark {
+  border-color: var(--line-light);
+  color: var(--white);
+  background: rgba(255, 255, 255, .025);
+}
+
+.empty-state--dark span {
+  color: rgba(255, 255, 255, .66);
+}
+
+.empty-state--dark a {
+  color: var(--primary-bright);
+}
+
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--primary-bright);
+  outline-offset: 3px;
+}
+
+.service-finder__options button,
+.service-tab,
+.filter,
+.hero-reel-controls button,
+.hero-reel-playlist button,
+#hero-toggle {
+  min-height: 2.75rem;
+}
+
+@media (max-width: 980px) {
+  .service-safety {
+    grid-template-columns: 1fr;
+  }
+
+  .service-safety span + span {
+    border-top: 1px solid var(--line-light);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero,
+  .hero-layout {
+    min-height: auto;
+  }
+
+  .hero-showreel,
+  .hero-reel-card,
+  .hero-meta {
+    display: none;
+  }
+
+  .hero-shade {
+    background: #050505;
+  }
+
+  .hero-layout {
+    padding: 6.5rem 0 3.5rem;
+  }
+
+  .hero-content {
+    padding-top: 0;
+  }
+
+  .hero-statement {
+    max-width: 22rem;
+    font-size: clamp(3.05rem, 14.5vw, 4.35rem);
+    line-height: .91;
+  }
+
+  .hero-lead {
+    max-width: 33rem;
+    font-size: .98rem;
+    line-height: 1.6;
+  }
+
+  .hero-trust {
+    display: grid;
+    gap: .7rem;
+    margin-top: 1.25rem;
+    font-size: .58rem;
+  }
+
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-safety {
+    margin-bottom: 2rem;
+  }
+
+  .service-safety span {
+    min-height: 3.5rem;
+    font-size: .58rem;
   }
 }
