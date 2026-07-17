@@ -147,3 +147,16 @@ test("responsive and motion-sensitive controls keep explicit quality guards", ()
   assert.match(css, /\.hero-trust/);
   assert.match(css, /\.service-safety/);
 });
+
+test("the approved editorial identity is encoded as a reusable system", () => {
+  assert.match(html, /assets\/fonts\/anton-regular\.ttf/);
+  assert.match(html, /styles\.css\?v=20260717-2/);
+  assert.match(html, /Conteúdo <i aria-hidden="true">·<\/i> sites <i aria-hidden="true">·<\/i> automações úteis/);
+  assert.match(css, /font-family:\s*"Anton"/);
+  assert.match(css, /--ivory:\s*#f2eee6/);
+  assert.match(css, /--coral:\s*#ff5b4f/);
+  assert.match(css, /--cobalt-deep:\s*#293fbd/);
+  assert.match(css, /\.hero-showreel\s*\{[\s\S]*border-left:\s*4px solid var\(--coral\)/);
+  assert.match(css, /\.contact h2\s*\{[\s\S]*font-size:\s*clamp\(5rem,\s*8\.5vw,\s*10\.5rem\)/);
+  assert.ok(css.lastIndexOf("--primary-bright: var(--coral)") > css.indexOf("--primary-bright: #d7ff45"));
+});
