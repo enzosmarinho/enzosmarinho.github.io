@@ -11,6 +11,30 @@ const escapeHtml = (value = "") => String(value)
 
 const ICON_SPRITE = "assets/icons.svg";
 const icon = (name) => `<svg class="lucide lucide-${escapeHtml(name)}" aria-hidden="true" focusable="false"><use href="${ICON_SPRITE}#${escapeHtml(name)}"></use></svg>`;
+const SHOWCASE_EXTRA_IDS = ["blYFchVi4xg", "DTgXN2FiDV6"];
+const PROJECT_RANKING = [
+  "ADKpionmFiw",
+  "DQfTWkhiK4k",
+  "blYFchVi4xg",
+  "DaBe_RIhl06",
+  "DaQEv0Blj2s",
+  "DYDiclAOSod",
+  "DX_2dJiO8WZ",
+  "DSldztZCA9P",
+  "DTgXN2FiDV6",
+  "DWpa8TQCKvX",
+  "qBTk1irwDc4",
+  "DUf-ODMDWqA",
+];
+
+function rankProjects(items) {
+  return [...items].sort((a, b) => {
+    const aRank = PROJECT_RANKING.indexOf(a.id);
+    const bRank = PROJECT_RANKING.indexOf(b.id);
+    return (aRank < 0 ? PROJECT_RANKING.length : aRank)
+      - (bRank < 0 ? PROJECT_RANKING.length : bRank);
+  });
+}
 
 function serviceHref(service) {
   const message = [
@@ -411,11 +435,12 @@ function tapeCard(item, index, duplicate = false) {
 function renderProofTape() {
   const root = document.querySelector("#proof-tape");
   if (!root) return;
-  const preferred = ["DaBe_RIhl06", "qBTk1irwDc4", "ADKpionmFiw", "DYC7byPyEnW", "DUf-ODMDWqA", "DQfTWkhiK4k", "DXiIx4_kQ-0", "DUQ8YNYEc4z", "DSldztZCA9P", "DKkdTYyItAy"];
+  const preferred = ["ADKpionmFiw", "blYFchVi4xg", "DQfTWkhiK4k", "DTgXN2FiDV6", "DaBe_RIhl06", "DaQEv0Blj2s", "DYDiclAOSod", "DX_2dJiO8WZ", "DUf-ODMDWqA", "qBTk1irwDc4"];
+  const library = [...projects, ...extraClips];
   const selected = preferred
-    .map((id) => projects.find((item) => item.id === id))
+    .map((id) => library.find((item) => item.id === id))
     .filter(Boolean);
-  const visible = selected.length >= 8 ? selected : projects.filter((item) => item.preview).slice(0, 10);
+  const visible = selected.length >= 8 ? selected : rankProjects(library).slice(0, 10);
   const group = (duplicate = false) => `<div class="proof-tape__group" ${duplicate ? 'aria-hidden="true"' : ""}>${visible.map((item, index) => tapeCard(item, index, duplicate)).join("")}</div>`;
   root.innerHTML = `<div class="proof-tape__track">${group()}${group(true)}</div>`;
   observeDeferredImages(root);
@@ -454,10 +479,11 @@ function renderProjects(filter = "todos") {
   const status = document.querySelector("#work-status");
   if (!root) return;
 
-  const pool = filter === "lumiar" ? [...projects, ...extraClips] : projects;
+  const selectedExtras = extraClips.filter((item) => SHOWCASE_EXTRA_IDS.includes(item.id));
+  const pool = filter === "lumiar" ? [...projects, ...extraClips] : [...projects, ...selectedExtras];
   const visible = filter === "todos"
-    ? pool
-    : pool.filter((item) => projectGroup(item) === filter);
+    ? rankProjects(pool)
+    : rankProjects(pool.filter((item) => projectGroup(item) === filter));
 
   root.innerHTML = visible.map(projectCard).join("");
   if (!visible.length) {
@@ -483,7 +509,7 @@ function renderProjects(filter = "todos") {
 function renderExtras() {
   const root = document.querySelector("#clip-rail");
   if (!root) return;
-  root.innerHTML = extraClips.map(clipCard).join("");
+  root.innerHTML = extraClips.filter((item) => !SHOWCASE_EXTRA_IDS.includes(item.id)).map(clipCard).join("");
   attachPreview(root);
 }
 
@@ -810,6 +836,25 @@ function bindMoreWork() {
   ensureRendered();
 }
 
+function bindShowcaseToggle() {
+  const toggle = document.querySelector("#showcase-toggle");
+  const viewport = document.querySelector(".proof-tape__viewport");
+  if (!toggle || !viewport) return;
+
+  const renderState = (paused) => {
+    viewport.classList.toggle("is-paused", paused);
+    toggle.setAttribute("aria-pressed", paused ? "true" : "false");
+    toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Continuar faixa" : "Pausar faixa"}</span>`;
+  };
+
+  renderState(motionReduced || savedMotionMode === "paused");
+  toggle.addEventListener("click", () => {
+    const paused = !viewport.classList.contains("is-paused");
+    renderState(paused);
+    if (paused) stopAllPreviewVideos();
+  });
+}
+
 function bindContact() {
   const contact = profile.contact || {};
   const setHref = (selector, href) => {
@@ -861,8 +906,10 @@ function init() {
   renderFaq();
   bindFilters();
   bindMoreWork();
+  bindShowcaseToggle();
   bindContact();
   bindScroll();
+  attachPreview();
   observeReveals();
   document.querySelector("#year").textContent = new Date().getFullYear();
 }

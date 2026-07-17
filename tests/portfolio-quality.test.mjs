@@ -57,8 +57,9 @@ test("HTML preserves the essential accessibility and SEO contracts", () => {
 
 test("the client sees the commercial decision before the long portfolio", () => {
   assert.match(html, /Ideias que o cliente/);
-  assert.match(html, /Projetos a partir de <strong>R\$ 890<\/strong>/);
-  assert.match(html, /Escopo e prazo antes do sinal/);
+  assert.match(html, /Vídeo curto e long-form/);
+  assert.match(html, /Roteiro, captação e edição/);
+  assert.match(html, /Conteúdo B2B e cortes de podcast/);
   assert.ok(html.indexOf('id="servicos"') < html.indexOf('id="case-principal"'));
   assert.match(html, /Seis ofertas · escopo fechado · preço visível/);
   assert.match(html, /Sem caixa-preta/);
@@ -150,13 +151,46 @@ test("responsive and motion-sensitive controls keep explicit quality guards", ()
 
 test("the approved editorial identity is encoded as a reusable system", () => {
   assert.match(html, /assets\/fonts\/anton-regular\.ttf/);
-  assert.match(html, /styles\.css\?v=20260717-2/);
+  assert.match(html, /styles\.css\?v=20260717-5/);
   assert.match(html, /Conteúdo <i aria-hidden="true">·<\/i> sites <i aria-hidden="true">·<\/i> automações úteis/);
   assert.match(css, /font-family:\s*"Anton"/);
   assert.match(css, /--ivory:\s*#f2eee6/);
-  assert.match(css, /--coral:\s*#ff5b4f/);
-  assert.match(css, /--cobalt-deep:\s*#293fbd/);
-  assert.match(css, /\.hero-showreel\s*\{[\s\S]*border-left:\s*4px solid var\(--coral\)/);
+  assert.match(css, /--coral:\s*#e45b4e/);
+  assert.match(css, /--cobalt-deep:\s*#2946a8/);
+  assert.match(css, /--aubergine:\s*#5a3a5d/);
+  assert.match(css, /\.hero-collage\s*\{[\s\S]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /\.contact h2\s*\{[\s\S]*font-size:\s*clamp\(5rem,\s*8\.5vw,\s*10\.5rem\)/);
   assert.ok(css.lastIndexOf("--primary-bright: var(--coral)") > css.indexOf("--primary-bright: #d7ff45"));
+});
+
+test("the selected collage uses real work, restrained conversion colors and no normal resume", () => {
+  assert.match(html, /class="hero hero--collage"/);
+  assert.equal((html.match(/class="collage-card collage-card--/g) || []).length, 6);
+  for (const asset of [
+    "assets/hero/negocio-sem-filtro-hd.webp",
+    "assets/hero/ADKpionmFiw-hd.webp",
+    "assets/hero/qBTk1irwDc4-hd.webp",
+    "assets/thumbs/ig_DUf-ODMDWqA.jpg",
+    "assets/posters/DQfTWkhiK4k.webp",
+    "assets/posters/blYFchVi4xg.webp",
+  ]) {
+    assert.match(html, new RegExp(asset.replaceAll(".", "\\.")));
+  }
+  assert.doesNotMatch(html, /Enzo-Marinho-Curriculo-ATS\.pdf|>Versão ATS</);
+  assert.doesNotMatch(html.match(/<div class="nav-links">[\s\S]*?<\/div>/)?.[0] || "", /Currículo/);
+  assert.match(html, /id="showcase-toggle"[^>]+aria-pressed="false"/);
+  assert.match(renderSource, /function bindShowcaseToggle\(\)/);
+  assert.match(renderSource, /viewport\.classList\.toggle\("is-paused"/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*grid-auto-flow:\s*column/);
+});
+
+test("the work taxonomy keeps locations, clients and ranked public examples truthful", () => {
+  const library = [...projects, ...extraClips];
+  assert.equal(library.filter((item) => item.client === "8848 Jiu-Jitsu").length, 1);
+  assert.equal(library.find((item) => item.id === "qBTk1irwDc4")?.client, "VOTI Software");
+  assert.match(library.find((item) => item.id === "qBTk1irwDc4")?.direction || "", /Catvi foi o local da gravação, não minha contratante/);
+  assert.match(library.find((item) => item.id === "DKkdTYyItAy")?.direction || "", /Catvi foi o local da gravação, não minha contratante/);
+  assert.doesNotMatch(html, /VOTI × Catvi|collage-card--price|<strong>R\$ 890<\/strong>/);
+  assert.equal(library.filter((item) => item.client === "Negócio Sem Filtro").length, 7);
+  assert.match(renderSource, /const PROJECT_RANKING = \[[\s\S]*"ADKpionmFiw"[\s\S]*"DQfTWkhiK4k"[\s\S]*"blYFchVi4xg"/);
 });
