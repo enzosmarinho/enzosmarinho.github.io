@@ -151,7 +151,7 @@ test("responsive and motion-sensitive controls keep explicit quality guards", ()
 
 test("the approved editorial identity is encoded as a reusable system", () => {
   assert.match(html, /assets\/fonts\/anton-regular\.ttf/);
-  assert.match(html, /styles\.css\?v=20260717-5/);
+  assert.match(html, /styles\.css\?v=20260717-8/);
   assert.match(html, /Conteúdo <i aria-hidden="true">·<\/i> sites <i aria-hidden="true">·<\/i> automações úteis/);
   assert.match(css, /font-family:\s*"Anton"/);
   assert.match(css, /--ivory:\s*#f2eee6/);
@@ -181,7 +181,36 @@ test("the selected collage uses real work, restrained conversion colors and no n
   assert.match(html, /id="showcase-toggle"[^>]+aria-pressed="false"/);
   assert.match(renderSource, /function bindShowcaseToggle\(\)/);
   assert.match(renderSource, /viewport\.classList\.toggle\("is-paused"/);
+  assert.match(renderSource, /function observeAmbientVideos\(root = document\)/);
+  assert.match(renderSource, /dataset\.ambientVideo = "true"/);
+  assert.match(renderSource, /document\.documentElement\.classList\.toggle\("showcase-paused"/);
+  assert.match(css, /animation:\s*tape-scroll 44s linear infinite/);
+  assert.match(css, /\.service-safety,\s*\n\.service-safety span\s*\{[\s\S]*color:\s*rgba\(10,\s*10,\s*12,\s*\.68\)/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*grid-auto-flow:\s*column/);
+});
+
+test("the proof rail contains ten motion-ready real projects behind one reliable pause control", () => {
+  const proofBlock = renderSource.match(/function renderProofTape\(\)[\s\S]*?function renderFlagship\(\)/)?.[0] || "";
+  const preferredSource = proofBlock.match(/const preferred = (\[[^;]+\]);/)?.[1];
+  assert.ok(preferredSource, "proof rail preferred IDs must be explicit");
+
+  const preferredIds = JSON.parse(preferredSource);
+  assert.equal(preferredIds.length, 10);
+  assert.equal(new Set(preferredIds).size, preferredIds.length, "proof rail IDs must be unique");
+
+  const library = [...projects, ...extraClips];
+  for (const id of preferredIds) {
+    const item = library.find((candidate) => candidate.id === id);
+    assert.ok(item, `proof rail item must exist: ${id}`);
+    assert.ok(item.preview, `proof rail item must have a moving preview: ${id}`);
+    assert.ok(fs.existsSync(path.join(root, item.preview)), `proof rail preview must exist: ${item.preview}`);
+  }
+
+  assert.match(html, /id="showcase-toggle"[^>]+aria-label="Pausar faixa e vídeos"/);
+  assert.match(renderSource, /ambientVideoObserver = new IntersectionObserver/);
+  assert.match(renderSource, /if \(paused\) ambientVisibleMedia\.forEach\(pauseAmbientVideo\)/);
+  assert.match(renderSource, /else syncAmbientVideos\(\)/);
+  assert.match(css, /html\.showcase-paused \.proof-tape__track/);
 });
 
 test("the work taxonomy keeps locations, clients and ranked public examples truthful", () => {

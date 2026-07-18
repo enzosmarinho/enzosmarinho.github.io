@@ -131,7 +131,7 @@ function saveMotionPreference(value) {
 const savedMotionMode = readMotionPreference();
 let motionReduced = systemReduceMotion.matches && savedMotionMode !== "full";
 if (savedMotionMode === "full") document.documentElement.classList.add("motion-enabled");
-if (savedMotionMode === "paused") document.documentElement.classList.add("motion-paused");
+if (savedMotionMode === "paused") document.documentElement.classList.add("showcase-paused");
 if (saveData) document.documentElement.classList.add("save-data");
 
 let heroReelState;
@@ -435,7 +435,7 @@ function tapeCard(item, index, duplicate = false) {
 function renderProofTape() {
   const root = document.querySelector("#proof-tape");
   if (!root) return;
-  const preferred = ["ADKpionmFiw", "blYFchVi4xg", "DQfTWkhiK4k", "DTgXN2FiDV6", "DaBe_RIhl06", "DaQEv0Blj2s", "DYDiclAOSod", "DX_2dJiO8WZ", "DUf-ODMDWqA", "qBTk1irwDc4"];
+  const preferred = ["ADKpionmFiw", "blYFchVi4xg", "DQfTWkhiK4k", "DTgXN2FiDV6", "DaBe_RIhl06", "DUf-ODMDWqA", "qBTk1irwDc4", "DXiIx4_kQ-0", "DWpa8TQCKvX", "DKkdTYyItAy"];
   const library = [...projects, ...extraClips];
   const selected = preferred
     .map((id) => library.find((item) => item.id === id))
@@ -632,11 +632,14 @@ function observeDeferredImages(root = document) {
 }
 
 function isMotionPaused() {
-  return motionReduced || Boolean(heroReelState?.userPaused) || document.documentElement.classList.contains("motion-paused");
+  return motionReduced
+    || Boolean(heroReelState?.userPaused)
+    || document.documentElement.classList.contains("motion-paused")
+    || document.documentElement.classList.contains("showcase-paused");
 }
 
 function stopAllPreviewVideos() {
-  document.querySelectorAll("[data-preview] > video").forEach((video) => {
+  document.querySelectorAll("[data-preview] > video:not([data-ambient-video])").forEach((video) => {
     video.classList.remove("is-playing");
     video.pause();
     video.currentTime = 0;
@@ -644,10 +647,108 @@ function stopAllPreviewVideos() {
   });
 }
 
+const ambientVisibleMedia = new Set();
+let ambientVideoObserver;
+let ambientVisibilityBound = false;
+
+function ensureAmbientVideo(media) {
+  let video = media.querySelector(":scope > video[data-ambient-video]");
+  if (video) return video;
+
+  video = document.createElement("video");
+  video.dataset.ambientVideo = "true";
+  video.muted = true;
+  video.defaultMuted = true;
+  video.loop = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.poster = media.dataset.poster || "";
+  video.setAttribute("aria-hidden", "true");
+  video.setAttribute("tabindex", "-1");
+  const image = media.querySelector(":scope > img");
+  if (image) image.insertAdjacentElement("afterend", video);
+  else media.prepend(video);
+  return video;
+}
+
+function playAmbientVideo(media) {
+  if (saveData || isMotionPaused() || document.hidden) return;
+  const source = media.dataset.preview;
+  if (!source) return;
+
+  const video = ensureAmbientVideo(media);
+  if (!video.getAttribute("src")) {
+    video.src = source;
+    video.load();
+  }
+  const reveal = () => video.classList.add("is-playing");
+  video.addEventListener("playing", reveal, { once: true });
+  video.play().then(reveal).catch(() => {});
+}
+
+function pauseAmbientVideo(media) {
+  const video = media.querySelector(":scope > video[data-ambient-video]");
+  if (!video) return;
+  video.pause();
+}
+
+function syncAmbientVideos() {
+  ambientVisibleMedia.forEach((media) => {
+    if (isMotionPaused() || document.hidden) pauseAmbientVideo(media);
+    else playAmbientVideo(media);
+  });
+}
+
+function observeAmbientVideos(root = document) {
+  if (saveData) return;
+  const mediaItems = [...root.querySelectorAll(".hero-collage [data-preview], .proof-tape [data-preview]")]
+    .filter((media) => media.dataset.preview);
+  if (!mediaItems.length) return;
+
+  if (!("IntersectionObserver" in window)) {
+    mediaItems.forEach((media) => ambientVisibleMedia.add(media));
+    syncAmbientVideos();
+    return;
+  }
+
+  if (!ambientVideoObserver) {
+    ambientVideoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          ambientVisibleMedia.add(entry.target);
+          playAmbientVideo(entry.target);
+        } else {
+          ambientVisibleMedia.delete(entry.target);
+          pauseAmbientVideo(entry.target);
+        }
+      });
+    }, {
+      rootMargin: compactViewport.matches ? "80px 120px" : "140px 240px",
+      threshold: .02,
+    });
+  }
+
+  mediaItems.forEach((media) => {
+    if (media.dataset.ambientBound === "true") return;
+    media.dataset.ambientBound = "true";
+    ambientVideoObserver.observe(media);
+  });
+
+  if (!ambientVisibilityBound) {
+    ambientVisibilityBound = true;
+    document.addEventListener("visibilitychange", syncAmbientVideos);
+    systemReduceMotion.addEventListener?.("change", (event) => {
+      if (readMotionPreference() !== "full") motionReduced = event.matches;
+      syncAmbientVideos();
+    });
+  }
+}
+
 function attachPreview(root = document) {
   if (saveData || motionReduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
   root.querySelectorAll("[data-preview]").forEach((media) => {
+    if (media.closest(".hero-collage, .proof-tape")) return;
     const source = media.dataset.preview;
     if (!source || media.dataset.bound === "true") return;
     media.dataset.bound = "true";
@@ -843,15 +944,24 @@ function bindShowcaseToggle() {
 
   const renderState = (paused) => {
     viewport.classList.toggle("is-paused", paused);
+    document.documentElement.classList.toggle("showcase-paused", paused);
     toggle.setAttribute("aria-pressed", paused ? "true" : "false");
+    toggle.setAttribute("aria-label", paused ? "Continuar faixa e vídeos" : "Pausar faixa e vídeos");
     toggle.innerHTML = `${icon(paused ? "play" : "pause")}<span>${paused ? "Continuar faixa" : "Pausar faixa"}</span>`;
+    if (paused) ambientVisibleMedia.forEach(pauseAmbientVideo);
+    else syncAmbientVideos();
   };
 
   renderState(motionReduced || savedMotionMode === "paused");
   toggle.addEventListener("click", () => {
     const paused = !viewport.classList.contains("is-paused");
+    if (!paused) {
+      motionReduced = false;
+      document.documentElement.classList.add("motion-enabled");
+      document.documentElement.classList.remove("motion-paused");
+    }
+    saveMotionPreference(paused ? "paused" : "full");
     renderState(paused);
-    if (paused) stopAllPreviewVideos();
   });
 }
 
@@ -907,6 +1017,7 @@ function init() {
   bindFilters();
   bindMoreWork();
   bindShowcaseToggle();
+  observeAmbientVideos();
   bindContact();
   bindScroll();
   attachPreview();
