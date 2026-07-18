@@ -7,6 +7,9 @@
 - Faixa de trabalhos: `.qa/implementation-proof-tape.png`
 - Serviços e contraste: `.qa/implementation-services.png`
 - Comparação conjunta normalizada: `.qa/comparison-final.png`
+- Estado anterior à revisão tipográfica: `.qa/typography-before.png`
+- Implementação após ajuste óptico: `.qa/typography-after-v1.jpg`
+- Comparação tipográfica lado a lado: `.qa/typography-comparison-final.jpg`
 
 ## Comparação visual
 
@@ -15,6 +18,8 @@
 3. Faixa — passed. Título, explicação, controle e cards formam três zonas claras. Os dez projetos escolhidos têm MP4 local verificado e a faixa percorre o viewport continuamente.
 4. Serviços — passed. O sistema marfim/preto/coral/cobalto foi preservado; a faixa `Sem surpresa / Sem fidelidade / Sem caixa-preta` passou de branco invisível para texto escuro sobre marfim.
 5. Fidelidade — passed. Catvi permanece descrita como local de uma visita da VOTI, não como cliente. Negócio Sem Filtro, VOTI, 8848 Jiu-Jitsu e os projetos independentes mantêm seus créditos reais.
+6. Tipografia — passed. O nome usa Anton com kerning nativo e `letter-spacing: .012em` em desktop e mobile; “MARINHO” deixa de formar blocos colados sem perder a densidade editorial. Títulos de seção recebem o mesmo ajuste óptico, enquanto Manrope permanece na argumentação e IBM Plex Mono nos sinais operacionais.
+7. Estratégia da primeira dobra — passed. A promessa explica a transformação, a ação principal ajuda o visitante a encontrar a oferta adequada, a ação secundária leva à prova em movimento e os três sinais de confiança reduzem risco antes do primeiro scroll.
 
 ## Movimento e controle
 
@@ -29,6 +34,7 @@
 
 Verificado no navegador real em:
 
+- `320 × 800`
 - `360 × 800`
 - `390 × 844`
 - `768 × 1024`
@@ -40,6 +46,8 @@ Verificado no navegador real em:
 - `3840 × 2160`
 
 Resultado em todas as resoluções: sem overflow horizontal, sem interseção entre texto e colagem e com cards maiores que a área mínima de leitura. Em 4K, o palco cresce para `3200 × 1440` em vez de ficar preso à escala 2K.
+
+Na revisão tipográfica final, `ENZO MARINHO` manteve tracking positivo em toda a matriz: `0.9984px` em `320px`, `1.1232px` em `390px`, `1.776px` em `1920px` e `2.304px` em `3840px`.
 
 ## Qualidade técnica
 
@@ -59,5 +67,8 @@ Resultado em todas as resoluções: sem overflow horizontal, sem interseção en
 - P1 corrigido: texto branco sobre fundo marfim nos argumentos de segurança.
 - P2 corrigido: palco subdimensionado em 4K.
 - P2 corrigido: seleção da faixa incluía cards sem preview local.
+- P1 corrigido: tracking negativo unia visualmente as letras do nome, principalmente em “MARINHO”.
+- P2 corrigido: títulos internos usavam espaçamentos ópticos diferentes entre seções.
+- P2 corrigido: a primeira dobra descrevia capacidades antes de deixar claro o próximo passo do cliente.
 
 final result: passed

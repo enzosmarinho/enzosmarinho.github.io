@@ -6440,6 +6440,13 @@ html.motion-paused .collage-card__copy {
   --section: clamp(4.75rem, 7vw, 8rem);
 }
 
+body {
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
 .hero--collage .hero-layout {
   width: min(2400px, 100%);
   height: clamp(50rem, calc(100svh - 4.75rem), 68rem);
@@ -6458,8 +6465,9 @@ html.motion-paused .collage-card__copy {
   max-width: 100%;
   margin-bottom: clamp(1.5rem, 2.5vh, 2.2rem);
   font-size: clamp(7rem, 8.5vw, 9.25rem);
-  line-height: .85;
-  letter-spacing: -.012em;
+  line-height: .87;
+  letter-spacing: .012em;
+  font-feature-settings: "kern" 1;
 }
 
 .hero--collage h1 span + span {
@@ -6468,11 +6476,46 @@ html.motion-paused .collage-card__copy {
 
 .hero--collage .hero-statement {
   font-size: clamp(1.75rem, 1.8vw, 2.55rem);
+  line-height: 1.06;
+  letter-spacing: -.024em;
 }
 
 .hero--collage .hero-lead {
-  max-width: 38rem;
+  max-width: 39rem;
   font-size: clamp(.94rem, .88vw, 1.08rem);
+  line-height: 1.62;
+}
+
+.hero--collage .hero-trust {
+  font-weight: 600;
+  letter-spacing: .035em;
+}
+
+.proof-tape__heading h2,
+.section-heading h2,
+.manifesto-copy h2,
+.flagship-head h2,
+.about-grid h2,
+.faq-heading h2,
+.contact h2 {
+  line-height: .92;
+  letter-spacing: .004em;
+  font-feature-settings: "kern" 1;
+}
+
+.service-card h3,
+.project-card__info h3,
+.flagship-copy h3,
+.process-card h3,
+.project-card__cover strong,
+.collage-card__copy strong,
+.tape-card__copy strong {
+  letter-spacing: .012em;
+  font-feature-settings: "kern" 1;
+}
+
+.service-card__price {
+  letter-spacing: 0;
 }
 
 .hero-collage {
@@ -6533,7 +6576,7 @@ html.motion-paused .collage-card__copy {
 .proof-tape__heading h2 {
   max-width: 11ch;
   font-size: clamp(3.75rem, 4.6vw, 6.75rem);
-  line-height: .88;
+  line-height: .92;
 }
 
 .proof-tape__intro {
@@ -6674,7 +6717,7 @@ html.showcase-paused [data-ambient-video] {
     margin-bottom: 1.5rem;
     font-size: clamp(5.2rem, 24vw, 6.7rem);
     line-height: .86;
-    letter-spacing: -.01em;
+    letter-spacing: .012em;
   }
 
   .hero-collage {

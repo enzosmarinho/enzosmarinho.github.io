@@ -57,9 +57,11 @@ test("HTML preserves the essential accessibility and SEO contracts", () => {
 
 test("the client sees the commercial decision before the long portfolio", () => {
   assert.match(html, /Ideias que o cliente/);
-  assert.match(html, /Vídeo curto e long-form/);
-  assert.match(html, /Roteiro, captação e edição/);
-  assert.match(html, /Conteúdo B2B e cortes de podcast/);
+  assert.match(html, /Trabalhos publicados/);
+  assert.match(html, /Escopo e prazo definidos/);
+  assert.match(html, /Você fala direto comigo/);
+  assert.match(html, /Encontrar meu próximo passo/);
+  assert.match(html, /Ver trabalhos em movimento/);
   assert.ok(html.indexOf('id="servicos"') < html.indexOf('id="case-principal"'));
   assert.match(html, /Seis ofertas · escopo fechado · preço visível/);
   assert.match(html, /Sem caixa-preta/);
@@ -151,9 +153,13 @@ test("responsive and motion-sensitive controls keep explicit quality guards", ()
 
 test("the approved editorial identity is encoded as a reusable system", () => {
   assert.match(html, /assets\/fonts\/anton-regular\.ttf/);
-  assert.match(html, /styles\.css\?v=20260717-8/);
+  assert.match(html, /styles\.css\?v=20260718-2/);
   assert.match(html, /Conteúdo <i aria-hidden="true">·<\/i> sites <i aria-hidden="true">·<\/i> automações úteis/);
   assert.match(css, /font-family:\s*"Anton"/);
+  assert.match(css, /font-kerning:\s*normal/);
+  assert.match(css, /font-optical-sizing:\s*auto/);
+  assert.match(css, /\.hero--collage h1\s*\{[\s\S]*letter-spacing:\s*\.012em/);
+  assert.match(css, /\.hero--collage \.hero-statement\s*\{[\s\S]*letter-spacing:\s*-\s*\.024em/);
   assert.match(css, /--ivory:\s*#f2eee6/);
   assert.match(css, /--coral:\s*#e45b4e/);
   assert.match(css, /--cobalt-deep:\s*#2946a8/);
