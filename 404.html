@@ -4,18 +4,156 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#08080a">
+  <meta name="theme-color" content="#f1eee8">
   <title>Página não encontrada | Enzo Marinho</title>
   <link rel="canonical" href="https://enzosmarinho.github.io/">
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/anton-latin.woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.css?v=20260718-6">
+  <!--
+    Estilo inline de proposito: a pagina de erro precisa desenhar inteira num
+    request so, sem depender do CSS do site. Antes puxava /styles.css (132 KB,
+    folha da versao antiga ESCURA) para desenhar cinco linhas — pesado e
+    visualmente inconsistente com o site atual, que e claro. Tokens abaixo
+    copiados do estado vivo (getComputedStyle em 25/07/2026).
+  -->
+  <style>
+    @font-face {
+      font-family: "Anton";
+      src: url("/assets/fonts/anton-latin.woff2") format("woff2");
+      font-display: fallback;
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Manrope";
+      src: url("/assets/fonts/manrope-latin.woff2") format("woff2");
+      font-display: swap;
+      font-weight: 200 800;
+    }
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("/assets/fonts/ibm-plex-mono-500.woff2") format("woff2");
+      font-display: swap;
+      font-weight: 500;
+    }
+
+    :root {
+      --paper: #f1eee8;
+      --ink: #171719;
+      --accent: #b13a33;
+      --muted: #6b6862;
+      --line: rgba(23, 23, 25, .16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: clamp(1.5rem, 6vw, 5rem);
+      background: var(--paper);
+      color: var(--ink);
+      font: 400 clamp(1rem, .95rem + .3vw, 1.125rem)/1.6 "Manrope", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .not-found {
+      width: min(46rem, 100%);
+      display: grid;
+      gap: clamp(1.25rem, 2.5vw, 1.75rem);
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Anton", "Arial Narrow", sans-serif;
+      font-weight: 400;
+      font-size: clamp(2.75rem, 1.5rem + 6.5vw, 6.5rem);
+      line-height: .92;
+      letter-spacing: -.015em;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    p.lead {
+      margin: 0;
+      max-width: 42ch;
+      color: var(--muted);
+      text-wrap: pretty;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1.25rem;
+      align-items: center;
+      margin-top: .5rem;
+      padding-top: clamp(1.25rem, 2.5vw, 1.75rem);
+      border-top: 1px solid var(--line);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .85rem 1.5rem;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: transform 160ms cubic-bezier(.2,.8,.2,1), background-color 160ms;
+    }
+    .button:hover { background: var(--accent); transform: translateY(-1px); }
+    .button:active { transform: translateY(0); }
+
+    .link {
+      color: var(--ink);
+      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-underline-offset: .3em;
+      text-decoration-color: var(--line);
+    }
+    .link:hover { color: var(--accent); text-decoration-color: currentColor; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .button { transition: none; }
+      .button:hover { transform: none; }
+    }
+  </style>
 </head>
 <body>
   <main class="not-found">
-    <p class="eyebrow eyebrow--bright">Erro 404</p>
+    <p class="eyebrow">Erro 404</p>
     <h1>Esta página não existe.</h1>
-    <p>O portfólio, os trabalhos, as propostas e os caminhos de contato continuam disponíveis na página principal.</p>
-    <a class="button button--primary" href="/">Voltar ao portfólio</a>
+    <p class="lead">
+      O portfólio, os trabalhos, as propostas e os caminhos de contato continuam
+      disponíveis na página principal.
+    </p>
+    <div class="actions">
+      <a class="button" href="/">Voltar ao portfólio</a>
+      <a class="link" href="mailto:enzosmarinho@hotmail.com">enzosmarinho@hotmail.com</a>
+    </div>
   </main>
 </body>
 </html>
