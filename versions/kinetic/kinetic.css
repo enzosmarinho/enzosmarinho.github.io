@@ -98,6 +98,21 @@ a { color: inherit; }
   margin-inline: auto;
 }
 
+/* atalho de teclado: fica fora da tela até receber foco */
+.skip-link {
+  position: absolute;
+  left: var(--s-2);
+  top: -4rem;
+  z-index: 50;
+  padding: .7rem 1.1rem;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  transition: top var(--dur-fast) var(--ease);
+}
+.skip-link:focus-visible { top: 0; }
+
 .mono {
   font-family: "IBM Plex Mono", Consolas, monospace;
   font-size: var(--t--1);
@@ -405,6 +420,185 @@ a { color: inherit; }
 .is-in .reveal, .reveal.is-in { opacity: 1; transform: none; }
 
 /* ==========================================================================
+   NAV — fina, fixa, sem peso visual
+   ========================================================================== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-block: var(--s-2);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__brand {
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: var(--t-1);
+  text-transform: uppercase;
+  letter-spacing: .01em;
+  text-decoration: none;
+}
+.nav__links { display: flex; gap: var(--s-3); }
+.nav__links a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  transition: color var(--dur-fast) ease;
+}
+.nav__links a:hover { color: var(--accent); }
+@media (max-width: 720px) { .nav__links { display: none; } }
+
+/* ==========================================================================
+   SEÇÃO — cabeçalho editorial reutilizável
+   ========================================================================== */
+.band { padding-block: var(--s-6); border-top: 1px solid var(--line); }
+.band__head {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: var(--s-2) var(--gutter);
+  margin-bottom: var(--s-4);
+}
+.band__kicker { grid-column: 1 / span 3; color: var(--accent); margin: 0; }
+.band__title {
+  grid-column: 4 / span 7;
+  margin: 0;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-3);
+  line-height: .96;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.band__lead {
+  grid-column: 4 / span 6;
+  margin: var(--s-2) 0 0;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+@media (max-width: 1080px) {
+  .band__kicker, .band__title, .band__lead { grid-column: 1 / -1; }
+}
+
+/* ==========================================================================
+   OBJETIVOS — três rotas de entrada
+   ========================================================================== */
+.goals { display: grid; gap: 0; }
+.goal {
+  display: grid;
+  grid-template-columns: minmax(0, 22ch) minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  padding-block: var(--s-3);
+  border-top: 1px solid var(--line);
+  text-decoration: none;
+  transition: background-color var(--dur) ease, padding-inline var(--dur) var(--ease);
+}
+.goal:last-child { border-bottom: 1px solid var(--line); }
+.goal:hover { background: var(--paper-deep); padding-inline: var(--s-2); }
+.goal strong { font-size: var(--t-1); font-weight: 600; line-height: 1.25; }
+.goal p { margin: 0; color: var(--ink-soft); }
+.goal span { color: var(--ink-soft); white-space: nowrap; }
+.goal i { font-style: normal; color: var(--accent); font-size: var(--t-1); }
+@media (max-width: 900px) {
+  .goal { grid-template-columns: 1fr auto; }
+  .goal p, .goal span { grid-column: 1 / -1; }
+}
+
+/* ==========================================================================
+   PROPOSTAS — a oferta, com preço legível
+   ========================================================================== */
+.offers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s-3);
+}
+.offer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 60%, #fff);
+  transition: border-color var(--dur) ease, transform var(--dur) var(--ease);
+}
+.offer:hover { border-color: var(--ink); transform: translateY(-3px); }
+.offer__top { display: flex; justify-content: space-between; gap: var(--s-2); color: var(--ink-soft); }
+.offer__n { color: var(--accent); }
+.offer__title {
+  margin: 0;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-2);
+  line-height: 1;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.offer__desc { margin: 0; color: var(--ink-soft); }
+.offer__list { margin: 0; padding: 0; list-style: none; display: grid; gap: .4rem; }
+.offer__list li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: var(--t--1);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.offer__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .62em;
+  width: .5rem;
+  height: 1px;
+  background: var(--accent);
+}
+.offer__foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.offer__price {
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-2);
+  line-height: 1;
+}
+.offer__foot span { color: var(--ink-soft); }
+
+/* planos de continuidade */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.plan { display: grid; gap: .4rem; align-content: start; }
+.plan h4 { margin: 0; font-size: var(--t-1); font-weight: 600; }
+.plan p { margin: 0; color: var(--ink-soft); }
+.plan strong { color: var(--accent); }
+
+/* ==========================================================================
+   MÉTODO
+   ========================================================================== */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--s-4) var(--s-3);
+  counter-reset: step;
+}
+.step { display: grid; gap: .45rem; align-content: start; }
+.step__n { color: var(--accent); }
+.step h4 { margin: 0; font-size: var(--t-1); font-weight: 600; line-height: 1.25; text-wrap: balance; }
+.step p { margin: 0; color: var(--ink-soft); text-wrap: pretty; }
+
+/* ==========================================================================
    CONTATO
    ========================================================================== */
 .contact {
@@ -426,6 +620,13 @@ a { color: inherit; }
   line-height: .9;
   text-transform: uppercase;
   text-wrap: balance;
+}
+.contact__lead {
+  grid-column: 1 / span 7;
+  margin: var(--s-2) 0 0;
+  max-width: 56ch;
+  color: var(--ink-soft);
+  text-wrap: pretty;
 }
 .contact__actions {
   grid-column: 8 / -1;
@@ -470,7 +671,7 @@ a { color: inherit; }
   .hero__lead  { grid-column: 1 / -1; }
   .chapter__id { grid-column: 1 / -1; position: static; }
   .chapter__pieces { grid-column: 1 / -1; }
-  .contact__title, .contact__actions { grid-column: 1 / -1; }
+  .contact__title, .contact__lead, .contact__actions { grid-column: 1 / -1; }
   .spine { display: none; }
 }
 

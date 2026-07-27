@@ -212,6 +212,78 @@
     atualizar();
   }
 
+  /* --------------------------------------------------- seções comerciais
+     O portfólio existe para vender. Trabalho sem oferta é galeria.        */
+
+  function montarObjetivos() {
+    const alvo = document.querySelector("[data-goals]");
+    if (!alvo) return;
+    const trilhas = [
+      { rota: "conteudo", titulo: "Manter o conteúdo em movimento",
+        texto: "Transformo gravações, ideias e rotina em peças prontas para publicar com consistência.",
+        tags: "Roteiro · edição · distribuição" },
+      { rota: "presenca", titulo: "Explicar melhor e vender com clareza",
+        texto: "Organizo oferta, mensagem e página para conduzir a conversa até o próximo passo.",
+        tags: "Copy · design · desenvolvimento" },
+      { rota: "sistemas", titulo: "Tirar o operacional do caminho",
+        texto: "Construo uma automação útil a partir do gargalo real, com limite claro e sem promessa mágica.",
+        tags: "Diagnóstico · IA · automação" },
+    ];
+    alvo.innerHTML = trilhas.map((t, i) => `
+      <a class="goal reveal" style="--i:${i}" href="#propostas">
+        <strong>${esc(t.titulo)}</strong>
+        <p>${esc(t.texto)}</p>
+        <span class="mono">${esc(t.tags)}</span>
+        <i aria-hidden="true">↘</i>
+      </a>`).join("");
+  }
+
+  function montarPropostas() {
+    const alvo = document.querySelector("[data-offers]");
+    if (!alvo) return;
+    const servicos = profile.services || [];
+    alvo.innerHTML = servicos.map((s, i) => `
+      <article class="offer reveal" style="--i:${i}">
+        <header class="offer__top">
+          <span class="offer__n mono">${esc(s.number)}</span>
+          <span class="offer__cat mono">${esc(s.categoryLabel || "")}</span>
+        </header>
+        <h3 class="offer__title">${esc(s.title)}</h3>
+        <p class="offer__desc">${esc(s.description)}</p>
+        <ul class="offer__list">
+          ${(s.includes || []).map((it) => `<li>${esc(it)}</li>`).join("")}
+        </ul>
+        <div class="rule"></div>
+        <footer class="offer__foot">
+          <strong class="offer__price">${esc(s.price)}</strong>
+          <span class="mono">${esc(s.timeline)} · ${esc(s.revisions || "")}</span>
+        </footer>
+      </article>`).join("");
+  }
+
+  function montarContinuidade() {
+    const alvo = document.querySelector("[data-continuity]");
+    if (!alvo) return;
+    const planos = profile.continuity || [];
+    alvo.innerHTML = planos.map((p, i) => `
+      <div class="plan reveal" style="--i:${i}">
+        <h4>${esc(p.title)}</h4>
+        <p>${esc(p.description)}</p>
+        <strong class="mono">${esc(p.price)}</strong>
+      </div>`).join("");
+  }
+
+  function montarMetodo() {
+    const alvo = document.querySelector("[data-method]");
+    if (!alvo) return;
+    alvo.innerHTML = (profile.methods || []).map((m, i) => `
+      <div class="step reveal" style="--i:${i}">
+        <span class="step__n mono">${String(i + 1).padStart(2, "0")}</span>
+        <h4>${esc(m.title)}</h4>
+        <p>${esc(m.text)}</p>
+      </div>`).join("");
+  }
+
   /* ------------------------------------------------------------- perfil */
 
   function preencherPerfil() {
@@ -232,7 +304,11 @@
     preencherPerfil();
     montarTicker();
     montarPalco();
+    montarObjetivos();
     montarTrabalho();
+    montarPropostas();
+    montarContinuidade();
+    montarMetodo();
     revelar();
     espinha();
     playbackAutomatico();

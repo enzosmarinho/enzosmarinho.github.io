@@ -1,56 +1,50 @@
-# Kinetic — protótipo de redesign (não publicado)
+# Kinetic — versão oficial do portfólio
 
-Abrir: `versions/kinetic/index.html`. **Não está no ar** e não está no chooser —
-o teste `four complete portfolio versions and one comparison page exist` trava o
-chooser em exatamente 4 cartões.
+**No ar desde 26/07/2026** em `https://enzosmarinho.github.io`.
+A raiz (`index.html`) carrega `kinetic.css` + `kinetic.js` + `cases.js`. Nada mais.
 
-## O que este protótipo responde
+Este diretório **não** é protótipo. Para o laboratório, ver `versions/fable/`,
+`showreel/`, `direcao/` e `editorial/` — todos `noindex` e fora do ar.
 
-| Pedido | Como foi resolvido |
+## O que esta versão resolve
+
+| Decisão | Como |
 |---|---|
-| "as linhas realmente se mexessem" | `.runner` (filete que corre em loop, 5.5s) · `.ticker` (nomes de cliente em marquee, 38s) · `.rule` (régua que se desenha ao entrar em cena) · `.spine` (linha vertical que preenche com o progresso da leitura) |
-| "não tem botões de ativação/desativação" | **Zero `<button>` na página.** `IntersectionObserver` + `requestAnimationFrame` escolhem a peça mais próxima do centro da tela; ela toca, as outras pausam e soltam o decodificador |
-| "projetos organizados de forma mais inteligente" | Capítulos por cliente, ordenados por volume: VOTI 13 · Negócio Sem Filtro 07 · Lumiar 05 · Kayky 03 · Magnos 02 · 8848 01 |
-| "proporções perfeitas" | Escala tipográfica de razão fixa 1.333 (quarta justa), ritmo vertical em múltiplos de 8, grade de 12 colunas |
+| Linhas que se mexem de verdade | `.runner` (filete em loop, 5,5s) · `.ticker` (marquee de clientes, 38s) · `.rule` (régua que se desenha) · `.spine` (progresso vertical da leitura) |
+| Zero controle de playback | `IntersectionObserver` + `rAF`: toca a peça mais próxima do centro, pausa as outras e solta o decodificador. Aba escondida para tudo |
+| Projetos com inteligência | Capítulos por cliente ordenados por volume — VOTI 13 · Negócio Sem Filtro 07 · Lumiar 05 · Kayky 03 · Magnos 02 · 8848 01 |
+| Proporção previsível | Escala tipográfica de razão 1.333, ritmo em múltiplos de 8, grade de 12 colunas |
+| Estratégia de venda | Objetivos (3 rotas) → Trabalhos (prova) → Propostas (6 ofertas com preço + 4 planos) → Método (4 decisões) → Contato |
 
-## Verificado
+## Estrutura de arquivos
 
-- 31 peças, 6 clientes, 45 tiles renderizados; 0 erro de console
-- **0 botões** na página
-- Overflow horizontal: **0px** em 1265px de viewport
-- Grade resolve 12 colunas; 4 peças por linha nos capítulos
-- Keyframes `runner` e `ticker` declarados e ativos
-- Clipe de vídeo carrega (720×1280) pelo mesmo caminho de asset do site
+| Arquivo | Papel |
+|---|---|
+| `kinetic.css` | sistema completo: tokens, escala, grade, linhas vivas, seções, responsivo, reduced-motion |
+| `kinetic.js` | render (ticker, palco, capítulos, objetivos, propostas, planos, método) + playback automático + espinha + reveal |
+| `index.html` | cópia de laboratório com `noindex`. **A página pública é a raiz do repo** |
+
+Toda a copy e todos os dados vêm de `cases.js` — não escrever conteúdo direto no JS.
+
+## Verificado em 26/07/2026
+
+- `node --test` **18/18**
+- 1 `<h1>` · **0 `<button>`** · 6 seções na ordem contratada
+- 6 capítulos de cliente · 6 propostas com preço · 4 planos · 4 passos · 3 objetivos
+- 14 peças no palco · 12 itens no ticker
+- Desktop 1425px: **overflow 0** · h1 134px / entrelinha 115px (.86) · corpo 17/26 (1.53)
+- Mobile 375px: **overflow 0** · h1 58px e cabe · botão 54px (alvo ≥44) · 2 colunas ·
+  espinha e nav colapsam
+- Keyframes `runner` e `ticker` ativos; clipe carrega em 720×1280
 - `prefers-reduced-motion` desliga ticker, runner, reveal, espinha e playback
 
-## Não verificado
+**Não observado rodando:** o painel desta máquina tem `prefers-reduced-motion: reduce`
+e não compõe frames, então o movimento foi provado por declaração e por carga de vídeo,
+não por observação visual. Conferir num navegador normal após publicar.
 
-O painel de preview desta máquina roda com `prefers-reduced-motion: reduce` e não
-compõe frames, então **o movimento em si não foi observado rodando** — só provado
-que está declarado e que o mecanismo de vídeo funciona. Antes de promover, abrir
-num navegador normal.
+## Ao mexer aqui
 
-## O que falta para virar a página pública
-
-O contrato em `tests/portfolio-quality.test.mjs` fixa a raiz na Fable:
-
-```
-<body data-version="fable" data-asset-prefix="">
-versions/shared.css?v=20260720-5 · versions/fable/fable.css?v=20260720-5
-versions/shared.js?v=20260720-5  · versions/fable/fable.js?v=20260720-5
-```
-
-E exige: 1 único `<h1>`, menos de 500 palavras visíveis, primeira pessoa
-(Transformo/Organizo/Construo/Entrego/Leio), **sem segunda pessoa** ("você",
-"seu") e **sem preço** na home.
-
-Dois caminhos:
-
-1. **Portar o design para dentro da Fable** — reescrever `fable.css` e `fable.js`
-   mantendo os nomes de arquivo fixados. Nada quebra e a home muda de cara.
-   É o caminho recomendado.
-2. **Trocar a raiz e atualizar os testes** — só se a decisão de aposentar a Fable
-   for consciente; os testes existem para impedir troca acidental.
-
-Este protótipo dropou as seções comerciais (objetivos, propostas, método). Elas
-convertem e precisam voltar em qualquer versão que vá ao ar.
+Os testes em `tests/portfolio-quality.test.mjs` são o contrato da página pública:
+sem botão, sem preço no HTML, primeira pessoa, verbos-âncora, três compromissos
+comerciais, ordem das seções, `skip-link`. Eles existem para impedir regressão
+acidental — mudar o contrato é decisão consciente, não conveniência.

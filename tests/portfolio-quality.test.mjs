@@ -33,17 +33,16 @@ function visibleWords(source) {
     .filter(Boolean);
 }
 
-test("the public root is the selected Fable portfolio", () => {
+test("the public root is the selected Kinetic portfolio", () => {
   assert.match(html, /<html lang="pt-BR">/);
-  assert.match(html, /<body data-version="fable" data-asset-prefix="">/);
+  assert.match(html, /<body data-version="kinetic" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.doesNotMatch(html, /noindex|version-switch|Comparar versões/);
   assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
-  assert.match(html, /versions\/shared\.css\?v=20260720-5/);
-  assert.match(html, /versions\/fable\/fable\.css\?v=20260720-5/);
-  assert.match(html, /versions\/shared\.js\?v=20260720-5/);
-  assert.match(html, /versions\/fable\/fable\.js\?v=20260720-5/);
+  assert.match(html, /versions\/kinetic\/kinetic\.css\?v=/);
+  assert.match(html, /versions\/kinetic\/kinetic\.js\?v=/);
+  assert.match(html, /class="skip-link"/);
 });
 
 test("the public narrative is concise, authored and commercially intentional", () => {
@@ -69,9 +68,14 @@ test("the public information architecture stays complete and ordered", () => {
   assert.ok(html.indexOf('id="trabalhos"') < html.indexOf('id="servicos"'));
   assert.ok(html.indexOf('id="servicos"') < html.indexOf('id="processo"'));
   assert.ok(html.indexOf('id="processo"') < html.indexOf('id="contato"'));
-  assert.match(html, /data-motion-toggle/);
-  assert.match(html, /class="reel-track js-reel-track"/);
-  assert.match(html, /class="proposal-routes js-proposal-routes"/);
+  // Playback automatico por design: a pagina publica nao tem controle de play.
+  assert.doesNotMatch(html, /data-motion-toggle|<button/);
+  assert.match(html, /class="stage__strip" data-stage/);
+  assert.match(html, /class="ticker" data-ticker/);
+  assert.match(html, /class="offers proposal-routes js-proposal-routes" data-offers/);
+  assert.match(html, /data-goals/);
+  assert.match(html, /data-work/);
+  assert.match(html, /data-method/);
 });
 
 test("decorative numbering stays out of the selected Fable experience", () => {
