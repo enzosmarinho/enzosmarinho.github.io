@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f1eee8">
+  <meta name="theme-color" content="#08080a">
   <meta name="robots" content="index,follow">
   <title>Enzo Marinho | Conteúdo, sites e automações</title>
   <meta name="description" content="Transformo ideias soltas em conteúdo, páginas e sistemas prontos para avançar, com trabalhos publicados, escopo claro e acompanhamento direto.">
@@ -28,9 +28,9 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-mono-500.woff2" crossorigin>
   <link rel="preload" as="image" href="assets/hero/negocio-sem-filtro-hd.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/hero/ADKpionmFiw-hd.webp" fetchpriority="high">
-  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260726-1">
+  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260726-2">
   <script defer src="cases.js?v=20260718-1"></script>
-  <script defer src="versions/kinetic/kinetic.js?v=20260726-1"></script>
+  <script defer src="versions/kinetic/kinetic.js?v=20260726-2"></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -74,25 +74,28 @@
 
   <main id="conteudo">
 
-    <header class="hero shell" id="top">
-      <div class="hero__grid">
+    <header class="hero" id="top">
+      <div class="hero__wall" data-wall aria-hidden="true"></div>
+      <div class="hero__inner">
         <p class="hero__kicker mono" data-role>Direção · conteúdo · sites · automações</p>
 
         <h1 class="hero__title">Ideia solta<br>vira <em>coisa publicada</em>.</h1>
 
-        <p class="hero__lead" data-lead>
-          Transformo material bruto em conteúdo, página e automação com escopo
-          definido, prazo combinado e prova pública.
-        </p>
-
-        <div class="hero__meta mono">
-          <span><b data-total>00</b> peças publicadas</span>
-          <span><b data-clientes>00</b> clientes</span>
-          <span data-location>Araçatuba · SP</span>
+        <div class="hero__row">
+          <p class="hero__lead" data-lead>
+            Transformo material bruto em conteúdo, página e automação com escopo
+            definido, prazo combinado e prova pública.
+          </p>
+          <div class="hero__meta mono">
+            <span><b data-total>00</b> peças publicadas</span>
+            <span><b data-clientes>00</b> clientes</span>
+            <span data-location>Araçatuba · SP</span>
+          </div>
         </div>
       </div>
-      <div class="runner" aria-hidden="true" style="margin-top:var(--s-4)"></div>
     </header>
+
+    <div class="runner" aria-hidden="true"></div>
 
     <div class="ticker" data-ticker aria-hidden="true"></div>
 

@@ -77,6 +77,22 @@
     }).join("");
   }
 
+  /* --------------------------------------------------- muro de mídia do hero
+     O trabalho aparece antes da frase. Doze quadros em preto e branco atrás
+     do título; o que estiver no centro ganha cor e movimento.              */
+
+  function montarMuro() {
+    const alvo = document.querySelector("[data-wall]");
+    if (!alvo) return;
+    const selecao = pecas.filter((p) => imagem(p)).slice(0, 12);
+    alvo.innerHTML = selecao.map((p, i) => `
+      <figure${clipe(p) ? ` data-video="${esc(clipe(p))}"` : ""}>
+        <img src="${prefixo}${esc(imagem(p))}" alt=""
+             width="720" height="1280"
+             ${i < 3 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+      </figure>`).join("");
+  }
+
   function montarPalco() {
     const alvo = document.querySelector("[data-stage]");
     if (!alvo) return;
@@ -105,8 +121,10 @@
   function playbackAutomatico() {
     if (semMovimento.matches) return;
 
-    const tiles = [...document.querySelectorAll(".tile[data-video]")]
-      .filter((t) => t.dataset.video);
+    const tiles = [
+      ...document.querySelectorAll(".tile[data-video]"),
+      ...document.querySelectorAll(".hero__wall figure[data-video]"),
+    ].filter((t) => t.dataset.video);
     if (!tiles.length) return;
 
     const visiveis = new Set();
@@ -302,6 +320,7 @@
 
   function iniciar() {
     preencherPerfil();
+    montarMuro();
     montarTicker();
     montarPalco();
     montarObjetivos();
