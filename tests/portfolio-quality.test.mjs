@@ -70,11 +70,12 @@ test("the public information architecture stays complete and ordered", () => {
   assert.ok(html.indexOf('id="processo"') < html.indexOf('id="contato"'));
   // Playback automatico por design: a pagina publica nao tem controle de play.
   assert.doesNotMatch(html, /data-motion-toggle|<button/);
-  assert.match(html, /class="stage__strip" data-stage/);
-  assert.match(html, /class="ticker" data-ticker/);
+  // Monitor de programa, legenda de categoria e timeline por cliente.
+  assert.match(html, /class="monitor" data-monitor/);
+  assert.match(html, /class="legend mono" data-legend/);
+  assert.match(html, /data-timeline/);
   assert.match(html, /class="offers proposal-routes js-proposal-routes" data-offers/);
   assert.match(html, /data-goals/);
-  assert.match(html, /data-work/);
   assert.match(html, /data-method/);
 });
 

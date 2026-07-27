@@ -1,7 +1,7 @@
 /* ==========================================================================
-   KINETIC — comportamento
-   Regra central: nada aqui pede clique. O que toca, toca porque está sendo
-   olhado; o que entra, entra porque foi alcançado pelo scroll.
+   SALA DE CORTE — comportamento
+   Nada aqui pede clique. O monitor troca de peça sozinho, o playhead segue a
+   leitura e os clipes reagem ao ponteiro. Sem botão de play em lugar nenhum.
    ========================================================================== */
 (() => {
   "use strict";
@@ -19,34 +19,32 @@
 
   const imagem = (p) => p?.cardImage || p?.thumb || p?.poster || "";
   const destino = (p) => p?.permalink || "#contato";
-  // o campo do clipe curto no cases.js chama `preview` (mp4), nao `video`
   const clipe = (p) => p?.preview || p?.video || "";
 
-  /* ---------------------------------------------------------------- peças */
+  /* -------------------------------------------------- código de categoria
+     A cor não é enfeite: é a legenda que atravessa a página inteira.     */
 
-  function tile(p, i, largura) {
-    const img = imagem(p);
-    if (!img) return "";
-    const wide = largura === "wide" || p.orientation === "landscape" || p.layout === "wide";
-    const w = wide ? 1280 : 720;
-    const h = wide ? 720 : 1280;
-    return `
-      <a class="tile${wide ? " tile--wide" : ""} reveal" style="--i:${i}"
-         href="${esc(destino(p))}" target="_blank" rel="noopener"
-         data-video="${esc(clipe(p))}"
-         aria-label="${esc(p.title)} — ${esc(p.client)}, ${esc(p.deliverable || p.format || "peça")}">
-        <img src="${prefixo}${esc(img)}" width="${w}" height="${h}" alt=""
-             loading="lazy" decoding="async">
-        <span class="tile__label">
-          <strong>${esc(p.title)}</strong>
-          <span>${esc(p.categoryLabel || p.category || "")} · ${esc(p.year || "")}</span>
-        </span>
-      </a>`;
-  }
+  const CATEGORIAS = {
+    conteudo:  { rotulo: "Conteúdo",  cor: "var(--c-conteudo)" },
+    anuncios:  { rotulo: "Anúncios",  cor: "var(--c-anuncios)" },
+    direcao:   { rotulo: "Direção",   cor: "var(--c-direcao)" },
+    "long-form": { rotulo: "Long-form", cor: "var(--c-longform)" },
+    automacao: { rotulo: "Automação", cor: "var(--c-automacao)" },
+  };
+  const cor = (cat) => CATEGORIAS[cat]?.cor || "var(--c-default)";
 
-  /* ------------------------------------------------- organização por cliente
-     A ordem é por volume de trabalho: quem tem mais peças aparece primeiro.
-     Isso mostra profundidade de relação em vez de uma grade solta.        */
+  /* ------------------------------------------------------- timecode real
+     Deriva de posição e duração aparente. Não é decoração: dá ao visitante
+     a mesma leitura que Enzo tem na mesa dele.                            */
+  const tc = (i, total) => {
+    const seg = Math.round((i / Math.max(1, total)) * 90);
+    const mm = String(Math.floor(seg / 60)).padStart(2, "0");
+    const ss = String(seg % 60).padStart(2, "0");
+    const ff = String((i * 7) % 24).padStart(2, "0");
+    return `00:${mm}:${ss}:${ff}`;
+  };
+
+  /* ---------------------------------------------- agrupamento por cliente */
 
   function porCliente() {
     const mapa = new Map();
@@ -58,200 +56,143 @@
     return [...mapa.entries()].sort((a, b) => b[1].length - a[1].length);
   }
 
-  function montarTrabalho() {
-    const alvo = document.querySelector("[data-work]");
+  /* ------------------------------------------------------------ monitor */
+
+  function montarMonitor() {
+    const alvo = document.querySelector("[data-monitor]");
     if (!alvo) return;
-    alvo.innerHTML = porCliente().map(([cliente, lista]) => {
-      const rotulos = [...new Set(lista.map((p) => p.categoryLabel || p.category).filter(Boolean))];
-      return `
-        <article class="chapter">
-          <div class="chapter__id">
-            <span class="chapter__count">${String(lista.length).padStart(2, "0")}</span>
-            <h3 class="chapter__name">${esc(cliente)}</h3>
-            <p class="chapter__tags mono">${rotulos.map(esc).join(" · ")}</p>
-          </div>
-          <div class="chapter__pieces">
-            ${lista.map((p, i) => tile(p, i)).join("")}
-          </div>
-        </article>`;
-    }).join("");
-  }
+    const fila = pecas.filter((p) => imagem(p) && clipe(p)).slice(0, 10);
+    if (!fila.length) return;
 
-  /* --------------------------------------------------- muro de mídia do hero
-     O trabalho aparece antes da frase. Doze quadros em preto e branco atrás
-     do título; o que estiver no centro ganha cor e movimento.              */
+    alvo.innerHTML = `
+      <div class="monitor__bar mono">
+        <span class="nav__rec"></span><b>PROGRAMA</b>
+        <span class="sep"></span>
+        <span data-mon-res>1080×1920 · 9:16</span>
+      </div>
+      <div class="monitor__frame" data-mon-frame>
+        <img src="${prefixo}${esc(imagem(fila[0]))}" alt="" width="720" height="1280" fetchpriority="high" decoding="async">
+      </div>
+      <div class="monitor__tc mono tc">
+        <span class="now" data-mon-tc>00:00:00:00</span>
+        <span data-mon-title>${esc(fila[0].title)}</span>
+        <span class="cat" data-mon-cat>${esc(CATEGORIAS[fila[0].category]?.rotulo || "")}</span>
+      </div>`;
 
-  function montarMuro() {
-    const alvo = document.querySelector("[data-wall]");
-    if (!alvo) return;
-    const selecao = pecas.filter((p) => imagem(p)).slice(0, 12);
-    alvo.innerHTML = selecao.map((p, i) => `
-      <figure${clipe(p) ? ` data-video="${esc(clipe(p))}"` : ""}>
-        <img src="${prefixo}${esc(imagem(p))}" alt=""
-             width="720" height="1280"
-             ${i < 3 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
-      </figure>`).join("");
-  }
+    const frame = alvo.querySelector("[data-mon-frame]");
+    const img = frame.querySelector("img");
+    const elTc = alvo.querySelector("[data-mon-tc]");
+    const elTitulo = alvo.querySelector("[data-mon-title]");
+    const elCat = alvo.querySelector("[data-mon-cat]");
 
-  function montarPalco() {
-    const alvo = document.querySelector("[data-stage]");
-    if (!alvo) return;
-    const destaque = pecas
-      .filter((p) => imagem(p))
-      .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
-      .slice(0, 14);
-    alvo.innerHTML = destaque.map((p, i) => tile(p, i)).join("");
-  }
+    let i = 0;
+    let video = null;
 
-  function montarTicker() {
-    const alvo = document.querySelector("[data-ticker]");
-    if (!alvo) return;
-    const linha = porCliente()
-      .map(([c, l]) => `<span class="ticker__item">${esc(c)}<b>${String(l.length).padStart(2, "0")}</b></span>`)
-      .join("");
-    // duas cópias: a animação translada -100% da primeira, emendando sem salto
-    alvo.innerHTML = `<div class="ticker__row">${linha}</div><div class="ticker__row" aria-hidden="true">${linha}</div>`;
-  }
+    const trocar = (n) => {
+      i = n % fila.length;
+      const p = fila[i];
+      img.src = prefixo + imagem(p);
+      elTitulo.textContent = p.title;
+      elCat.textContent = CATEGORIAS[p.category]?.rotulo || "";
+      elTc.textContent = tc(i, fila.length);
+      alvo.style.setProperty("--cat", cor(p.category));
 
-  /* ------------------------------------------------------ playback sozinho
-     Sem botão. Um observer marca o que está visível; a cada quadro de scroll
-     o mais próximo do centro vira o que toca. Os outros pausam e soltam o
-     decodificador — 31 vídeos tocando junto derrubariam o celular.        */
+      if (video) { video.pause(); video.remove(); video = null; }
+      frame.classList.remove("is-playing");
+      if (semMovimento.matches) return;
 
-  function playbackAutomatico() {
+      video = document.createElement("video");
+      video.muted = true; video.loop = true; video.playsInline = true;
+      video.preload = "auto"; video.setAttribute("aria-hidden", "true");
+      video.src = prefixo + clipe(p);
+      frame.appendChild(video);
+      video.play().then(() => frame.classList.add("is-playing")).catch(() => {});
+    };
+
+    trocar(0);
     if (semMovimento.matches) return;
 
-    const tiles = [
-      ...document.querySelectorAll(".tile[data-video]"),
-      ...document.querySelectorAll(".hero__wall figure[data-video]"),
-    ].filter((t) => t.dataset.video);
-    if (!tiles.length) return;
-
-    const visiveis = new Set();
-    let tocando = null;
-
-    const parar = (t) => {
-      const v = t.querySelector("video");
-      if (!v) return;
-      v.pause();
-      v.removeAttribute("src");
-      v.load();
-      v.remove();
-      t.classList.remove("is-playing");
-    };
-
-    const tocar = (t) => {
-      if (t === tocando) return;
-      if (tocando) parar(tocando);
-      tocando = t;
-      const v = document.createElement("video");
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      v.preload = "auto";
-      v.setAttribute("aria-hidden", "true");
-      v.src = prefixo + t.dataset.video;
-      t.appendChild(v);
-      v.play().then(() => t.classList.add("is-playing")).catch(() => {});
-    };
-
-    const escolher = () => {
-      if (!visiveis.size) {
-        if (tocando) { parar(tocando); tocando = null; }
-        return;
-      }
-      const centro = window.innerHeight / 2;
-      let melhor = null, menor = Infinity;
-      visiveis.forEach((t) => {
-        const r = t.getBoundingClientRect();
-        const d = Math.abs(r.top + r.height / 2 - centro);
-        if (d < menor) { menor = d; melhor = t; }
-      });
-      if (melhor) tocar(melhor);
-    };
-
-    const obs = new IntersectionObserver((entradas) => {
-      entradas.forEach((e) => {
-        if (e.isIntersecting) visiveis.add(e.target);
-        else visiveis.delete(e.target);
-      });
-      escolher();
-    }, { threshold: 0.55 });
-
-    tiles.forEach((t) => obs.observe(t));
-
-    let travado = false;
-    addEventListener("scroll", () => {
-      if (travado) return;
-      travado = true;
-      requestAnimationFrame(() => { escolher(); travado = false; });
-    }, { passive: true });
-
-    // aba escondida não gasta bateria decodificando vídeo
+    let timer = setInterval(() => trocar(i + 1), 5200);
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden && tocando) { parar(tocando); tocando = null; }
-      else escolher();
+      if (document.hidden) {
+        clearInterval(timer);
+        if (video) video.pause();
+      } else {
+        if (video) video.play().catch(() => {});
+        timer = setInterval(() => trocar(i + 1), 5200);
+      }
     });
   }
 
-  /* --------------------------------------------------------- linhas vivas */
+  /* ------------------------------------------------------------ legenda */
 
-  function revelar() {
-    if (semMovimento.matches) {
-      document.querySelectorAll(".reveal, .rule").forEach((e) => e.classList.add("is-in"));
-      return;
-    }
-    const obs = new IntersectionObserver((entradas) => {
-      entradas.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("is-in");
-        obs.unobserve(e.target);
-      });
-    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
-    document.querySelectorAll(".reveal, .rule, [data-reveal-group]")
-      .forEach((e) => obs.observe(e));
+  function montarLegenda() {
+    const alvo = document.querySelector("[data-legend]");
+    if (!alvo) return;
+    const usadas = [...new Set(pecas.map((p) => p.category))].filter((c) => CATEGORIAS[c]);
+    alvo.innerHTML = usadas.map((c) => {
+      const n = pecas.filter((p) => p.category === c).length;
+      return `<span class="legend__item mono" style="--cat:${cor(c)}">
+        <i class="legend__swatch"></i>${esc(CATEGORIAS[c].rotulo)} <b class="tc">${String(n).padStart(2, "0")}</b>
+      </span>`;
+    }).join("");
   }
 
-  function espinha() {
-    const el = document.querySelector(".spine");
-    if (!el || semMovimento.matches) return;
-    let travado = false;
-    const atualizar = () => {
-      const alcance = document.documentElement.scrollHeight - window.innerHeight;
-      const p = alcance > 0 ? Math.min(1, Math.max(0, scrollY / alcance)) : 0;
-      el.style.setProperty("--progress", p.toFixed(4));
-      travado = false;
-    };
-    addEventListener("scroll", () => {
-      if (travado) return;
-      travado = true;
-      requestAnimationFrame(atualizar);
-    }, { passive: true });
-    atualizar();
+  /* ----------------------------------------------------------- timeline */
+
+  function montarTimeline() {
+    const alvo = document.querySelector("[data-timeline]");
+    if (!alvo) return;
+    const trilhas = porCliente();
+
+    const anos = [...new Set(pecas.map((p) => String(p.year)).filter(Boolean))].sort();
+    const regua = `
+      <div class="tl__ruler mono" style="--head: clamp(9rem, 15vw, 15rem)">
+        <span style="padding:.45rem .6rem">Trilhas</span>
+        <span class="tl__ruler-years">${anos.map((a) => `<b>${esc(a)}</b>`).join("")}</span>
+      </div>`;
+
+    const corpo = trilhas.map(([cliente, lista], t) => {
+      const ordenada = [...lista].sort((a, b) => String(a.year).localeCompare(String(b.year)));
+      const clipes = ordenada.map((p, i) => `
+        <a class="clip" style="--cat:${cor(p.category)}" href="${esc(destino(p))}"
+           target="_blank" rel="noopener"
+           aria-label="${esc(p.title)} — ${esc(cliente)}, ${esc(p.categoryLabel || p.category || "")}, ${esc(p.year || "")}">
+          <img src="${prefixo}${esc(imagem(p))}" alt="" width="720" height="1280" loading="lazy" decoding="async">
+          <span class="clip__tip">${esc(p.title)}</span>
+        </a>`).join("");
+      return `
+        <div class="track">
+          <div class="track__head">
+            <span class="track__id mono tc">V${t + 1}</span>
+            <h3 class="track__name">${esc(cliente)}</h3>
+            <span class="track__n mono tc">${String(lista.length).padStart(2, "0")} peças</span>
+          </div>
+          <div class="track__lane">${clipes}</div>
+        </div>`;
+    }).join("");
+
+    alvo.innerHTML = `${regua}<div class="tl" style="position:relative">${corpo}
+      <div class="tl__playhead" aria-hidden="true"></div></div>`;
   }
 
-  /* --------------------------------------------------- seções comerciais
-     O portfólio existe para vender. Trabalho sem oferta é galeria.        */
+  /* ------------------------------------------------- seções comerciais */
 
   function montarObjetivos() {
     const alvo = document.querySelector("[data-goals]");
     if (!alvo) return;
     const trilhas = [
-      { rota: "conteudo", titulo: "Manter o conteúdo em movimento",
-        texto: "Transformo gravações, ideias e rotina em peças prontas para publicar com consistência.",
-        tags: "Roteiro · edição · distribuição" },
-      { rota: "presenca", titulo: "Explicar melhor e vender com clareza",
-        texto: "Organizo oferta, mensagem e página para conduzir a conversa até o próximo passo.",
-        tags: "Copy · design · desenvolvimento" },
-      { rota: "sistemas", titulo: "Tirar o operacional do caminho",
-        texto: "Construo uma automação útil a partir do gargalo real, com limite claro e sem promessa mágica.",
-        tags: "Diagnóstico · IA · automação" },
+      { cat: "conteudo", titulo: "Manter o conteúdo em movimento",
+        texto: "Transformo gravações, ideias e rotina em peças prontas para publicar com consistência." },
+      { cat: "anuncios", titulo: "Explicar melhor e vender com clareza",
+        texto: "Organizo oferta, mensagem e página para conduzir a conversa até o próximo passo." },
+      { cat: "automacao", titulo: "Tirar o operacional do caminho",
+        texto: "Construo uma automação a partir do gargalo real, com limite claro e sem promessa mágica." },
     ];
     alvo.innerHTML = trilhas.map((t, i) => `
-      <a class="goal reveal" style="--i:${i}" href="#propostas">
+      <a class="goal reveal" style="--i:${i}; --cat:${cor(t.cat)}" href="#servicos">
         <strong>${esc(t.titulo)}</strong>
         <p>${esc(t.texto)}</p>
-        <span class="mono">${esc(t.tags)}</span>
         <i aria-hidden="true">↘</i>
       </a>`).join("");
   }
@@ -259,22 +200,18 @@
   function montarPropostas() {
     const alvo = document.querySelector("[data-offers]");
     if (!alvo) return;
-    const servicos = profile.services || [];
-    alvo.innerHTML = servicos.map((s, i) => `
-      <article class="offer reveal" style="--i:${i}">
-        <header class="offer__top">
-          <span class="offer__n mono">${esc(s.number)}</span>
-          <span class="offer__cat mono">${esc(s.categoryLabel || "")}</span>
+    alvo.innerHTML = (profile.services || []).map((s, i) => `
+      <article class="offer reveal" style="--i:${i}; --cat:${cor(s.category)}">
+        <header class="offer__top mono">
+          <span class="offer__cat">${esc(s.categoryLabel || "")}</span>
+          <span class="tc">${esc(s.timeline || "")}</span>
         </header>
         <h3 class="offer__title">${esc(s.title)}</h3>
         <p class="offer__desc">${esc(s.description)}</p>
-        <ul class="offer__list">
-          ${(s.includes || []).map((it) => `<li>${esc(it)}</li>`).join("")}
-        </ul>
-        <div class="rule"></div>
+        <ul class="offer__list">${(s.includes || []).map((it) => `<li>${esc(it)}</li>`).join("")}</ul>
         <footer class="offer__foot">
           <strong class="offer__price">${esc(s.price)}</strong>
-          <span class="mono">${esc(s.timeline)} · ${esc(s.revisions || "")}</span>
+          <span class="mono">${esc(s.revisions || "")}</span>
         </footer>
       </article>`).join("");
   }
@@ -282,8 +219,7 @@
   function montarContinuidade() {
     const alvo = document.querySelector("[data-continuity]");
     if (!alvo) return;
-    const planos = profile.continuity || [];
-    alvo.innerHTML = planos.map((p, i) => `
+    alvo.innerHTML = (profile.continuity || []).map((p, i) => `
       <div class="plan reveal" style="--i:${i}">
         <h4>${esc(p.title)}</h4>
         <p>${esc(p.description)}</p>
@@ -296,42 +232,71 @@
     if (!alvo) return;
     alvo.innerHTML = (profile.methods || []).map((m, i) => `
       <div class="step reveal" style="--i:${i}">
-        <span class="step__n mono">${String(i + 1).padStart(2, "0")}</span>
+        <span class="step__n mono tc">${String(i + 1).padStart(2, "0")} / 04</span>
         <h4>${esc(m.title)}</h4>
         <p>${esc(m.text)}</p>
       </div>`).join("");
   }
 
-  /* ------------------------------------------------------------- perfil */
+  /* -------------------------------------------------------- playhead */
+
+  function playhead() {
+    const el = document.querySelector(".tl__playhead");
+    const tl = document.querySelector(".tl");
+    if (!el || !tl || semMovimento.matches) return;
+    let travado = false;
+    const atualizar = () => {
+      const r = tl.getBoundingClientRect();
+      const total = r.height + window.innerHeight;
+      const p = Math.min(1, Math.max(0, (window.innerHeight - r.top) / total));
+      el.style.setProperty("--play", p.toFixed(4));
+      travado = false;
+    };
+    addEventListener("scroll", () => {
+      if (travado) return;
+      travado = true;
+      requestAnimationFrame(atualizar);
+    }, { passive: true });
+    atualizar();
+  }
+
+  function revelar() {
+    if (semMovimento.matches) {
+      document.querySelectorAll(".reveal").forEach((e) => e.classList.add("is-in"));
+      return;
+    }
+    const obs = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("is-in");
+        obs.unobserve(e.target);
+      });
+    }, { threshold: .12, rootMargin: "0px 0px -6% 0px" });
+    document.querySelectorAll(".reveal").forEach((e) => obs.observe(e));
+  }
 
   function preencherPerfil() {
-    const set = (sel, valor) => {
-      const el = document.querySelector(sel);
-      if (el && valor) el.textContent = valor;
-    };
+    const set = (sel, v) => { const e = document.querySelector(sel); if (e && v) e.textContent = v; };
     set("[data-role]", profile.role);
     set("[data-location]", profile.location);
-    set("[data-lead]", profile.hero_sub || profile.tagline_a);
     const total = document.querySelector("[data-total]");
     if (total) total.textContent = String(pecas.length).padStart(2, "0");
-    const clientes = document.querySelector("[data-clientes]");
-    if (clientes) clientes.textContent = String(porCliente().length).padStart(2, "0");
+    const cl = document.querySelector("[data-clientes]");
+    if (cl) cl.textContent = String(porCliente().length).padStart(2, "0");
   }
 
   function iniciar() {
     preencherPerfil();
-    montarMuro();
-    montarTicker();
-    montarPalco();
+    montarMonitor();
+    montarLegenda();
     montarObjetivos();
-    montarTrabalho();
+    montarTimeline();
     montarPropostas();
     montarContinuidade();
     montarMetodo();
     revelar();
-    espinha();
-    playbackAutomatico();
-    document.documentElement.classList.add("kinetic-pronto");
+    playhead();
+    document.documentElement.classList.add("pronto");
   }
 
   if (document.readyState === "loading") {

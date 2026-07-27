@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08080a">
+  <meta name="theme-color" content="#15171b">
   <meta name="robots" content="index,follow">
   <title>Enzo Marinho | Conteúdo, sites e automações</title>
   <meta name="description" content="Transformo ideias soltas em conteúdo, páginas e sistemas prontos para avançar, com trabalhos publicados, escopo claro e acompanhamento direto.">
@@ -28,9 +28,9 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-mono-500.woff2" crossorigin>
   <link rel="preload" as="image" href="assets/hero/negocio-sem-filtro-hd.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/hero/ADKpionmFiw-hd.webp" fetchpriority="high">
-  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260726-2">
+  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260726-3">
   <script defer src="cases.js?v=20260718-1"></script>
-  <script defer src="versions/kinetic/kinetic.js?v=20260726-2"></script>
+  <script defer src="versions/kinetic/kinetic.js?v=20260726-3"></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -59,10 +59,9 @@
 <body data-version="kinetic" data-asset-prefix="">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-  <div class="spine" aria-hidden="true"></div>
-
-  <nav class="nav shell" aria-label="Navegação principal">
+  <nav class="nav" aria-label="Navegação principal">
     <a class="nav__brand" href="#top">Enzo Marinho</a>
+    <span class="nav__rec mono">Sessão aberta</span>
     <div class="nav__links mono">
       <a href="#objetivos">Objetivos</a>
       <a href="#trabalhos">Trabalhos</a>
@@ -74,20 +73,18 @@
 
   <main id="conteudo">
 
-    <header class="hero" id="top">
-      <div class="hero__wall" data-wall aria-hidden="true"></div>
-      <div class="hero__inner">
-        <p class="hero__kicker mono" data-role>Direção · conteúdo · sites · automações</p>
-
-        <h1 class="hero__title">Ideia solta<br>vira <em>coisa publicada</em>.</h1>
-
-        <div class="hero__row">
-          <p class="hero__lead" data-lead>
+    <header class="hero shell" id="top">
+      <div class="hero__grid">
+        <div class="monitor" data-monitor></div>
+        <div class="hero__copy">
+          <p class="hero__kicker mono" data-role>Direção · conteúdo · sites · automações</p>
+          <h1 class="hero__title">Ideia solta<br>vira <em>coisa publicada</em>.</h1>
+          <p class="hero__lead">
             Transformo material bruto em conteúdo, página e automação com escopo
             definido, prazo combinado e prova pública.
           </p>
-          <div class="hero__meta mono">
-            <span><b data-total>00</b> peças publicadas</span>
+          <div class="hero__meta mono tc">
+            <span><b data-total>00</b> peças</span>
             <span><b data-clientes>00</b> clientes</span>
             <span data-location>Araçatuba · SP</span>
           </div>
@@ -95,17 +92,7 @@
       </div>
     </header>
 
-    <div class="runner" aria-hidden="true"></div>
-
-    <div class="ticker" data-ticker aria-hidden="true"></div>
-
-    <section class="stage shell" aria-labelledby="palco-t">
-      <div class="stage__head">
-        <h2 id="palco-t" class="mono">Em movimento</h2>
-        <p class="mono">Toca sozinho · a peça que está no centro da tela</p>
-      </div>
-      <div class="stage__strip" data-stage></div>
-    </section>
+    <div class="shell"><div class="legend mono" data-legend></div></div>
 
     <section class="band shell" id="objetivos" aria-labelledby="objetivos-t">
       <div class="band__head">
@@ -124,12 +111,11 @@
         <p class="band__kicker mono">Prova pública</p>
         <h2 class="band__title" id="trabalhos-t">Entrego trabalho que já está no ar.</h2>
         <p class="band__lead">
-          Cada peça abaixo abre a publicação original. Organizei por cliente e
-          por volume, do relacionamento mais longo ao mais recente.
+          Uma trilha por cliente, ordenada por volume. A cor de cada clipe é o
+          tipo de trabalho — e cada clipe abre a publicação original.
         </p>
       </div>
-      <div class="rule" style="margin-bottom:var(--s-4)"></div>
-      <div data-work></div>
+      <div data-timeline></div>
     </section>
 
     <section class="band shell" id="servicos" aria-labelledby="servicos-t">
@@ -163,7 +149,7 @@
 
   <section class="contact shell" id="contato">
     <div class="contact__grid">
-      <h2 class="contact__title">Me conta o que<br>precisa mudar.</h2>
+      <h2 class="contact__title">Me conta o que precisa mudar.</h2>
       <p class="contact__lead">
         Leio o objetivo, o prazo e o material disponível, e respondo com o
         caminho mais honesto — se for melhor, reduzo o escopo antes de começar.
@@ -173,7 +159,6 @@
         <a class="btn btn--ghost" href="mailto:enzo.marinho@hotmail.com">enzo.marinho@hotmail.com</a>
       </div>
     </div>
-    <div class="runner" aria-hidden="true" style="margin-top:var(--s-5)"></div>
     <div class="foot mono">
       <span>Enzo Marinho · Araçatuba · SP</span>
       <span><a href="https://instagram.com/enzosmarinho" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/in/enzo-marinho-727200320" target="_blank" rel="noopener">LinkedIn</a></span>
