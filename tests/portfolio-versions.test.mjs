@@ -128,13 +128,14 @@ test("typography and spatial contracts prevent the reported collisions", () => {
   assert.match(sharedCss, /--shell:\s*min\(112rem/);
 });
 
-test("public versions keep commercial values for the conversation", () => {
+test("public versions keep commercial values out of static files", () => {
   for (const [name, html] of Object.entries(pages)) {
     assert.doesNotMatch(html, /R\$\s*[\d.]+/, `${name} must not expose a numeric price`);
   }
   assert.doesNotMatch(sharedJs, /service\.price|Investimento anunciado/);
   assert.doesNotMatch(fableJs, /service\.price|R\$\s*[\d.]+/);
-  assert.ok(context.window.PROFILE.services.every((service) => /^R\$/.test(service.price)), "approved prices must remain stored in data");
+  assert.ok(context.window.PROFILE.services.every((service) => !("price" in service)), "prototype services must not carry fixed prices");
+  assert.doesNotMatch(dataSource, /"price"\s*:/);
 });
 
 test("the Fable cut removes decorative numbering and speaks with authored first-person verbs", () => {

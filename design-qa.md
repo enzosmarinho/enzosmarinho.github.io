@@ -1,74 +1,99 @@
-# Design QA — proporção e movimento multirresolução
+# Design QA: portfólio orientado por diagnóstico
 
-- Referência editorial escolhida: `.qa/selected-option-2-refined.png`
-- Defeitos reportados: `codex-clipboard-67c0cf2a-70ce-427a-abcb-505b8b992af6.png`, `codex-clipboard-ba6ac3d3-fa6a-42b1-89ba-5c6a9696dff9.png` e `codex-clipboard-95524960-9924-4545-9daf-652e7fc8d0b6.png`
-- Implementação desktop: `.qa/implementation-desktop.png`
-- Implementação mobile: `.qa/implementation-mobile.png`
-- Faixa de trabalhos: `.qa/implementation-proof-tape.png`
-- Serviços e contraste: `.qa/implementation-services.png`
-- Comparação conjunta normalizada: `.qa/comparison-final.png`
-- Estado anterior à revisão tipográfica: `.qa/typography-before.png`
-- Implementação após ajuste óptico: `.qa/typography-after-v1.jpg`
-- Comparação tipográfica lado a lado: `.qa/typography-comparison-final.jpg`
+Data da verificação: 28/07/2026.
 
-## Comparação visual
+## Tese validada
 
-1. Nome e hero — passed. `ENZO` e `MARINHO` têm respiro próprio, não invadem a colagem e mantêm uma escala editorial coerente. A divisão usa `40/60` no desktop, uma pilha em tablet e fluxo vertical com galeria horizontal no mobile.
-2. Colagem — passed. Os seis quadrados usam trabalhos reais, separadores constantes de `2–4px`, cópia marfim sobre base escura e recortes independentes por formato. A composição continua assimétrica, mas cada bloco tem área legível.
-3. Faixa — passed. Título, explicação, controle e cards formam três zonas claras. Os dez projetos escolhidos têm MP4 local verificado e a faixa percorre o viewport continuamente.
-4. Serviços — passed. O sistema marfim/preto/coral/cobalto foi preservado; a faixa `Sem surpresa / Sem fidelidade / Sem caixa-preta` passou de branco invisível para texto escuro sobre marfim.
-5. Fidelidade — passed. Catvi permanece descrita como local de uma visita da VOTI, não como cliente. Negócio Sem Filtro, VOTI, 8848 Jiu-Jitsu e os projetos independentes mantêm seus créditos reais.
-6. Tipografia — passed. O nome usa Anton com kerning nativo e `letter-spacing: .012em` em desktop e mobile; “MARINHO” deixa de formar blocos colados sem perder a densidade editorial. Títulos de seção recebem o mesmo ajuste óptico, enquanto Manrope permanece na argumentação e IBM Plex Mono nos sinais operacionais.
-7. Estratégia da primeira dobra — passed. A promessa explica a transformação, a ação principal ajuda o visitante a encontrar a oferta adequada, a ação secundária leva à prova em movimento e os três sinais de confiança reduzem risco antes do primeiro scroll.
+A página funciona como uma sala de diagnóstico:
 
-## Movimento e controle
+1. O hero rejeita o pacote genérico e abre com trabalho real em vídeo.
+2. Quatro casos explicam problema, decisão, papel e prova original.
+3. A análise coleta contexto sem calcular ou prometer preço.
+4. O arquivo preserva os 31 trabalhos catalogados.
+5. Capacidade, método e papéis de IA aparecem depois da prova.
+6. A ação principal é sempre pedir uma análise.
 
-- Hero desktop: `6/6` vídeos simultaneamente em reprodução.
-- Faixa: `10/10` cards principais têm preview em movimento; a cópia duplicada é usada apenas para continuidade.
-- Pausar: o botão altera `aria-pressed`, nome acessível, texto visível, estado da animação e pausa todos os vídeos observados.
-- Retomar: a faixa volta a avançar e os vídeos visíveis voltam a tocar.
-- Estabilidade: o transform permanece igual durante a pausa; a correção removeu o salto causado por regras concorrentes de `prefers-reduced-motion`.
-- Eficiência: vídeos fora do viewport são pausados por `IntersectionObserver`; a preferência de movimento reduzido continua respeitada até o visitante pedir movimento explicitamente.
+VOTI aparece como experiência CLT. Projetos independentes e o histórico encerrado
+da Lumiar usam etiquetas diferentes. Os cortes do Negócio Sem Filtro aparecem
+como edição e curadoria, não como automação.
+
+## Auditoria visual
+
+- Direção: editorial, cinematográfica, fundo quase preto, ação lima e sinal laranja.
+- Mídia: apenas trabalho real já presente no repositório.
+- Hero: CTA e prova visíveis no desktop; CTA, promessa e números visíveis no mobile.
+- Casos: altura limitada a 800px no desktop para evitar rolagem inflada.
+- Diagnóstico: fundo claro cria uma mudança de ritmo e deixa o formulário legível.
+- Arquivo: duas colunas em mobile, três em tablet e quatro em desktop.
+- Sem gradiente decorativo, glassmorphism, mockup falso ou brilho genérico.
 
 ## Matriz responsiva
 
-Verificado no navegador real em:
+Verificado no Chrome real em:
 
-- `320 × 800`
-- `360 × 800`
-- `390 × 844`
-- `768 × 1024`
-- `1024 × 768`
-- `1280 × 720`
-- `1440 × 900`
-- `1920 × 1080`
-- `2560 × 1440`
-- `3840 × 2160`
+- 320 x 800
+- 390 x 844
+- 768 x 1024
+- 1024 x 768
+- 1280 x 720
+- 1440 x 900
+- 1920 x 1080
 
-Resultado em todas as resoluções: sem overflow horizontal, sem interseção entre texto e colagem e com cards maiores que a área mínima de leitura. Em 4K, o palco cresce para `3200 × 1440` em vez de ficar preso à escala 2K.
+Resultado: zero overflow horizontal, hero e CTA dentro do viewport e 31 trabalhos
+renderizados em todas as resoluções.
 
-Na revisão tipográfica final, `ENZO MARINHO` manteve tracking positivo em toda a matriz: `0.9984px` em `320px`, `1.1232px` em `390px`, `1.776px` em `1920px` e `2.304px` em `3840px`.
+## Interação e acessibilidade
 
-## Qualidade técnica
+- Skip link é o primeiro foco e entra completamente no viewport.
+- Alvos de ação têm no mínimo 44px; radios invisíveis usam labels de 52px.
+- Formulário usa `fieldset`, `legend`, labels e status `aria-live`.
+- Pedido preenchido gera a URL correta do WhatsApp e não envia automaticamente.
+- Filtro `Edição` mostra exatamente 7 trabalhos e atualiza `aria-pressed`.
+- Movimento reduzido pausa o vídeo, remove revelações e desativa o progresso animado.
+- Movimento normal tem controle de pausa; aba oculta e hero fora da tela pausam o vídeo.
+- Zero listener de `scroll`; revelações usam `IntersectionObserver`.
+- Contraste mínimo corrigido para mais de 4.5:1 em texto normal.
+- Lighthouse de acessibilidade: 100.
 
-- Console após rolagem completa: zero erros.
-- Imagens após rolagem completa: zero arquivos quebrados.
-- Contraste crítico corrigido: texto da faixa de segurança em `rgba(10, 10, 12, .68)` sobre `#f2eee6`.
-- Foco visível, skip link, tabs com setas, status vivo e alvos interativos permanecem preservados.
-- `npm run check`: `11/11` testes aprovados.
-- `git diff --check`: sem erro.
+## Mídia e proveniência
 
-## Histórico de correções
+- 31 permalinks: 28 respostas HTTP 200 e 3 redirecionamentos YouTube 303 válidos.
+- 36 imagens carregadas após rolagem completa.
+- Zero imagem quebrada.
+- Um vídeo no hero, mudo, com poster, controle e pausa por visibilidade.
+- Inventário interno sem autoria demonstrada continua fora da página pública.
 
-- P1 corrigido: nome comprimido e sobreposto à colagem.
-- P1 corrigido: colagem estreita, alta e mal distribuída em 2K.
-- P1 corrigido: faixa com animação declarada, porém parada pela cascata de movimento reduzido.
-- P1 corrigido: vídeos dependentes de hover e cards imóveis no primeiro contato.
-- P1 corrigido: texto branco sobre fundo marfim nos argumentos de segurança.
-- P2 corrigido: palco subdimensionado em 4K.
-- P2 corrigido: seleção da faixa incluía cards sem preview local.
-- P1 corrigido: tracking negativo unia visualmente as letras do nome, principalmente em “MARINHO”.
-- P2 corrigido: títulos internos usavam espaçamentos ópticos diferentes entre seções.
-- P2 corrigido: a primeira dobra descrevia capacidades antes de deixar claro o próximo passo do cliente.
+## Performance
 
-final result: passed
+Lighthouse local, perfil padrão:
+
+- Performance: 99
+- Acessibilidade: 100
+- Boas práticas: 100
+- SEO: 100
+- FCP: 0,9s
+- LCP: 2,0s
+- TBT: 0ms
+- CLS: 0
+
+Medição adicional em navegador local:
+
+- 9 recursos na primeira dobra
+- 1,38MB transferidos com o vídeo em reprodução
+- 0 long tasks
+- 0 layout shift
+
+## Gates de código
+
+- `npm run check`: 20 de 20 testes aprovados.
+- `git diff --check`: sem erro de whitespace.
+- Console do navegador: zero erros no desktop e no mobile.
+- Nenhum preço fixo ou campo `price`/`payment` em dados comerciais.
+- Nenhuma dependência de runtime adicionada.
+
+## Publicação
+
+O resultado está numa worktree e branch local. Nenhum push, merge em `main` ou
+alteração do GitHub Pages foi feito.
+
+Resultado do QA do portfólio: aprovado para revisão humana antes de publicar.

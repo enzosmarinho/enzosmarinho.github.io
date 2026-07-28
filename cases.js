@@ -1,11 +1,11 @@
-// Fonte de conteúdo do portfólio. Manter preços, escopos e provas alinhados ao site publicado.
+// Fonte pública do portfólio. Só entram trabalhos, papéis e relações verificáveis.
 window.PROFILE = {
   "name": "Enzo Marinho",
   "initials": "EM",
-  "role": "Conteúdo, sites e automações úteis",
+  "role": "Estratégia, conteúdo e sistemas digitais",
   "location": "Araçatuba · SP",
   "tagline_a": "Transformo ideias em conteúdo, páginas e sistemas que o cliente entende.",
-  "tagline_b": "Estratégia e execução no mesmo lugar, sem agência cara nem processo confuso.",
+  "tagline_b": "Estratégia e execução no mesmo lugar, com proposta construída a partir do negócio real.",
   "hero_title": "Enzo Marinho",
   "hero_sub": "Conteúdo, sites e automações com direção humana e escopo claro.",
   "about": "Meu trabalho começa entendendo o que precisa mudar para o cliente. A partir daí, organizo a mensagem, escolho o formato e uso IA para acelerar o trabalho pesado sem terceirizar o critério.",
@@ -55,187 +55,118 @@ window.PROFILE = {
     "Negócio Sem Filtro",
     "Magnos Steel"
   ],
+  "capabilities": [
+    {
+      "id": "conteudo",
+      "label": "Conteúdo e vídeo",
+      "title": "Uma ideia vira uma frente de conteúdo.",
+      "text": "Estratégia, roteiro, captação, edição, cortes e peças de campanha definidos a partir do material e do canal que precisam funcionar."
+    },
+    {
+      "id": "presenca",
+      "label": "Sites e páginas",
+      "title": "A oferta ganha uma presença clara.",
+      "text": "Arquitetura, copy, design e código responsivo para explicar valor e conduzir a conversa até o próximo passo."
+    },
+    {
+      "id": "sistemas",
+      "label": "Sistemas e IA",
+      "title": "O gargalo repetitivo vira um fluxo confiável.",
+      "text": "Automação aplicada a uma tarefa definida, com testes, documentação, limites e decisão humana onde ela importa."
+    }
+  ],
   "services": [
     {
-      "number": "01",
       "category": "conteudo",
-      "categoryLabel": "Conteúdo essencial",
-      "title": "Conteúdo que Já Sai Pronto",
-      "description": "Você envia o material. Eu encontro a mensagem, organizo o conteúdo e devolvo uma pequena campanha pronta para publicar.",
-      "detail": "4 vídeos · 2 carrosséis · legendas · capas · copy",
-      "price": "R$ 1.890",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "8 dias úteis",
-      "revisions": "1 rodada consolidada",
-      "featured": false,
+      "categoryLabel": "Conteúdo e vídeo",
+      "title": "Frente de Conteúdo Sob Medida",
+      "description": "Estratégia, roteiro, captação e edição combinados depois da leitura do material, do canal e da cadência necessária.",
+      "detail": "Escopo construído após análise",
+      "timeline": "Prazo definido pelo escopo",
+      "revisions": "Aprovação definida na proposta",
       "includes": [
-        "4 vídeos verticais de até 60 segundos",
-        "2 carrosséis de até 8 páginas",
-        "Aberturas, legendas e textos de apoio",
-        "Capas e direção visual no mesmo sistema",
-        "Arquivos organizados e prontos para publicar"
+        "Objetivo e público",
+        "Formatos e volume",
+        "Material de origem",
+        "Cadência e aprovação"
       ]
     },
     {
-      "number": "02",
-      "category": "conteudo",
-      "categoryLabel": "Mais completo",
-      "badge": "Melhor para conteúdo longo",
-      "title": "Episódio em Campanha",
-      "description": "Uma gravação longa vira o episódio principal e uma frente de conteúdo para continuar gerando atenção depois do play.",
-      "detail": "Até 60 min · vídeo completo · 8 cortes · 2 teasers",
-      "price": "R$ 2.990",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "12 dias úteis",
-      "revisions": "1 rodada consolidada",
-      "featured": true,
-      "includes": [
-        "Edição de 1 vídeo de até 60 minutos",
-        "Seleção e ranking dos melhores trechos",
-        "8 cortes verticais com legendas revisadas",
-        "2 teasers para lançamento",
-        "Mapa de publicação por prioridade"
-      ]
-    },
-    {
-      "number": "03",
       "category": "presenca",
-      "categoryLabel": "Página de venda",
-      "badge": "Entrada mais acessível",
-      "title": "Landing Page Estratégica",
-      "description": "Uma página enxuta para explicar a oferta, provar valor e levar o visitante até o contato sem distração.",
-      "detail": "Estratégia · copy · design · código · publicação",
-      "price": "R$ 2.990",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "10 dias úteis",
-      "revisions": "1 rodada consolidada",
-      "featured": true,
+      "categoryLabel": "Sites e páginas",
+      "title": "Presença Digital Sob Medida",
+      "description": "Arquitetura, copy, design e código dimensionados a partir da oferta, das integrações e do próximo passo esperado.",
+      "detail": "Escopo construído após análise",
+      "timeline": "Prazo definido pelo escopo",
+      "revisions": "Aprovação definida na proposta",
       "includes": [
-        "Arquitetura e textos a partir do negócio real",
-        "Design responsivo e desenvolvimento",
-        "WhatsApp, formulário ou CTA principal",
-        "SEO técnico básico e compartilhamento social",
-        "Publicação + 30 dias de correções técnicas"
+        "Mensagem e arquitetura",
+        "Design responsivo",
+        "Desenvolvimento",
+        "Publicação combinada"
       ]
     },
     {
-      "number": "04",
-      "category": "presenca",
-      "categoryLabel": "Site profissional",
-      "title": "Site Profissional Enxuto",
-      "description": "Um site pequeno, rápido e autoral para apresentar serviços, trabalhos e caminhos de contato com clareza.",
-      "detail": "Até 5 páginas · copy · design · código · publicação",
-      "price": "R$ 3.790",
-      "payment": "40% no início · 30% na aprovação · 30% na entrega",
-      "timeline": "15 dias úteis",
-      "revisions": "2 rodadas consolidadas",
-      "featured": false,
-      "includes": [
-        "Até 5 páginas ou seções principais",
-        "Textos humanos escritos com material real",
-        "Sistema visual responsivo e acessível",
-        "SEO básico, métricas e integrações essenciais",
-        "Publicação + 30 dias de correções técnicas"
-      ]
-    },
-    {
-      "number": "05",
       "category": "sistemas",
-      "categoryLabel": "Primeiro passo",
-      "badge": "Risco baixo",
-      "title": "Diagnóstico com Direção",
-      "description": "Para quem sabe que precisa melhorar, mas ainda não sabe se o próximo passo é conteúdo, site ou automação.",
-      "detail": "Leitura do negócio · prioridades · plano de 30 dias",
-      "price": "R$ 890",
-      "payment": "100% na reserva · abatível do projeto",
-      "timeline": "5 dias úteis",
-      "revisions": "1 ajuste no plano",
-      "scopeNote": "Abatido em projetos de R$ 2.990+",
-      "featured": true,
+      "categoryLabel": "Sistemas e IA",
+      "title": "Sistema Útil Sob Medida",
+      "description": "Uma tarefa repetitiva vira um fluxo testável quando o ganho, os limites e as responsabilidades estão claros.",
+      "detail": "Escopo construído após análise",
+      "timeline": "Prazo definido pelo escopo",
+      "revisions": "Aprovação definida na proposta",
       "includes": [
-        "Questionário e leitura do material atual",
-        "Reunião estratégica de até 60 minutos",
-        "Diagnóstico de mensagem, oferta e processo",
-        "3 prioridades com ordem e justificativa",
-        "Valor abatido se o projeto indicado for fechado"
-      ]
-    },
-    {
-      "number": "06",
-      "category": "sistemas",
-      "categoryLabel": "IA aplicada",
-      "title": "Automação Útil com IA",
-      "description": "Automatizo uma tarefa repetitiva e bem definida para economizar tempo sem prometer um robô que toca a empresa sozinho.",
-      "detail": "Mapeamento · 1 fluxo · IA · documentação · suporte",
-      "price": "R$ 2.790",
-      "payment": "50% no início · 50% na entrega",
-      "timeline": "10 dias úteis",
-      "revisions": "1 rodada de ajustes",
-      "scopeNote": "Uso de ferramentas pago pelo cliente",
-      "featured": false,
-      "includes": [
-        "Mapeamento de um processo repetitivo",
-        "Uma automação ou assistente com escopo fechado",
-        "Testes com exemplos reais do cliente",
-        "Documentação simples e vídeo de passagem",
-        "14 dias de suporte para correções"
+        "Mapeamento do gargalo",
+        "Fluxo e integrações",
+        "Testes com exemplos reais",
+        "Documentação e limites"
       ]
     }
   ],
-  "continuity": [
+  "diagnostic": {
+    "factors": [
+      {
+        "title": "Resultado",
+        "text": "O que precisa mudar no negócio e como vamos reconhecer avanço."
+      },
+      {
+        "title": "Porte",
+        "text": "Tamanho da operação, responsabilidade e impacto de uma decisão errada."
+      },
+      {
+        "title": "Volume",
+        "text": "Quantidade real de entregas, formatos, canais e material de origem."
+      },
+      {
+        "title": "Velocidade",
+        "text": "Prazo, data fixa e custo de reorganizar a agenda para atender a urgência."
+      },
+      {
+        "title": "Complexidade",
+        "text": "Aprovações, integrações, deslocamento, risco técnico e coordenação envolvida."
+      }
+    ],
+    "promise": "Depois da leitura, o plano mostra objetivo, entregáveis, limites, prazo, responsabilidades e investimento. Sem tabela genérica e sem inflar um projeto pequeno."
+  },
+  "aiRoles": [
     {
-      "title": "Operação de Conteúdo",
-      "description": "8 peças por mês, pauta, copy e organização de publicação.",
-      "price": "A partir de R$ 2.900/mês"
+      "owner": "Enzo",
+      "role": "Decisão humana",
+      "text": "Diagnóstico do negócio, direção criativa, contato, captação e aprovação final."
     },
     {
-      "title": "Operação de Marketing + IA",
-      "description": "12 a 16 peças, acompanhamento, página ativa e uma automação em melhoria contínua.",
-      "price": "A partir de R$ 4.500/mês"
+      "owner": "GPT-5.6 Codex",
+      "role": "Engenharia principal",
+      "text": "Arquitetura, implementação, testes, acessibilidade, performance e verificação técnica."
     },
     {
-      "title": "Captação em Araçatuba",
-      "description": "Direção, até 4 horas de captação e 8 vídeos prontos.",
-      "price": "A partir de R$ 3.290"
+      "owner": "Opus 5",
+      "role": "Segunda leitura",
+      "text": "Crítica estratégica e editorial, revisão de narrativa e contraponto visual."
     },
     {
-      "title": "Filme de Marca",
-      "description": "Conceito, roteiro, direção, captação e finalização de uma peça autoral.",
-      "price": "A partir de R$ 5.490"
-    }
-  ],
-  "faq": [
-    {
-      "question": "Não sei qual serviço escolher. Como começo?",
-      "answer": "Comece pelo Diagnóstico com Direção. Eu leio o negócio e o material atual, organizo as prioridades e digo com honestidade se o próximo passo deve ser conteúdo, site ou automação. Se você fechar um projeto de R$ 2.990 ou mais, os R$ 890 são abatidos."
-    },
-    {
-      "question": "Tenho pouco material. Ainda dá para começar?",
-      "answer": "Sim. Em conteúdo, eu avalio o que você já tem antes de fechar. Em sites e diagnóstico, começo com entrevista, referências e materiais reais. Se a base não sustentar a entrega prometida, eu reduzo o escopo ou proponho o que falta antes do pagamento."
-    },
-    {
-      "question": "O trabalho não vai ficar com cara de IA?",
-      "answer": "Não é esse o objetivo. Claude, Codex e outras ferramentas aceleram pesquisa, transcrição, organização, variações e tarefas repetitivas. A decisão, a copy final, o design, o corte e a revisão passam por mim antes da entrega."
-    },
-    {
-      "question": "A automação vai tocar minha empresa sozinha?",
-      "answer": "Não. Eu automatizo uma tarefa repetitiva e bem definida, com teste, documentação e limite claro. Decisões sensíveis continuam com uma pessoa. Prefiro uma automação pequena que funciona a prometer um agente autônomo que ninguém consegue confiar."
-    },
-    {
-      "question": "Preciso contratar uma mensalidade?",
-      "answer": "Não. As seis ofertas principais são projetos fechados, com começo, fim, preço, prazo e entregáveis definidos. A operação mensal só faz sentido quando você já sabe que precisa de produção e acompanhamento recorrentes."
-    },
-    {
-      "question": "Como funcionam pagamento e alterações?",
-      "answer": "Cada card informa a condição exata. A maioria dos projetos começa com 50% e termina com 50% na entrega. As revisões são consolidadas para evitar retrabalho; qualquer mudança de escopo é explicada e orçada antes de ser feita."
-    },
-    {
-      "question": "Domínio, ferramentas e custos de IA estão incluídos?",
-      "answer": "Meu trabalho de estratégia, criação, implementação e publicação está no preço anunciado. Domínio, hospedagem paga, APIs e ferramentas de terceiros ficam na conta do cliente e só são usados com aprovação. Sempre mostro o custo recorrente antes de configurar."
-    },
-    {
-      "question": "Você atende de onde?",
-      "answer": "Conteúdo com material enviado, sites, diagnóstico e automações podem ser contratados de qualquer lugar do Brasil. Captação presencial é oferecida em Araçatuba/SP; deslocamentos para outras cidades são avaliados separadamente."
+      "owner": "Em comum",
+      "role": "Pesquisa e revisão",
+      "text": "Comparação de fontes, exploração de alternativas e revisão cruzada. Nenhum modelo publica ou decide pelo cliente."
     }
   ],
   "automation": {
@@ -318,8 +249,8 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DaBe_RIhl06/",
     "title": "Negócio Sem Filtro",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
-    "categoryLabel": "Sistema de conteúdo",
+    "category": "edicao",
+    "categoryLabel": "Edição e curadoria",
     "format": "Cortes + teasers",
     "role": "Cortes · teasers · curadoria",
     "problem": "Cada episódio precisava se transformar em uma sequência de cortes fortes, coerentes e prontos para publicação.",
@@ -538,7 +469,7 @@ window.CASES = [
     "id": "DaQEv0Blj2s",
     "title": "IA é meio, não estrategista",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",
@@ -558,7 +489,7 @@ window.CASES = [
     "id": "DYDiclAOSod",
     "title": "Bastidores com Clayton Khan",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",
@@ -578,7 +509,7 @@ window.CASES = [
     "id": "DX_2dJiO8WZ",
     "title": "Faculdade vale a pena?",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",
@@ -600,7 +531,7 @@ window.EXTRA_CLIPS = [
     "id": "DaNgCEIFkJB",
     "title": "Conteúdo que converte",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",
@@ -618,7 +549,7 @@ window.EXTRA_CLIPS = [
     "id": "DaFxmK1DjRc",
     "title": "Stories que vendem",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",
@@ -636,7 +567,7 @@ window.EXTRA_CLIPS = [
     "id": "DaDJWnjjn-X",
     "title": "IA não substitui vendedor",
     "client": "Negócio Sem Filtro",
-    "category": "automacao",
+    "category": "edicao",
     "categoryLabel": "Corte de podcast",
     "format": "Reel",
     "role": "Seleção · edição · legendas",

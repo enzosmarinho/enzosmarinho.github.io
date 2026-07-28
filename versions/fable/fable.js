@@ -114,21 +114,21 @@
       verb: "Publico",
       title: "Transformo pauta em presença constante",
       summary: "Roteirizo, edito e desdobro o material em peças coerentes, prontas para circular.",
-      services: ["Conteúdo que Já Sai Pronto", "Episódio em Campanha"],
+      services: ["Frente de Conteúdo Sob Medida"],
     },
     {
       id: "presenca",
       verb: "Explico",
       title: "Construo páginas que conduzem",
       summary: "Organizo a oferta, provo valor e desenho um caminho claro até o contato.",
-      services: ["Landing Page Estratégica", "Site Profissional Enxuto"],
+      services: ["Presença Digital Sob Medida"],
     },
     {
       id: "sistemas",
       verb: "Organizo",
       title: "Automatizo sem complicar",
       summary: "Localizo o gargalo e tiro a repetição do caminho com limite claro e documentação.",
-      services: ["Diagnóstico com Direção", "Automação Útil com IA"],
+      services: ["Sistema Útil Sob Medida"],
     },
   ];
 

@@ -8,19 +8,16 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (name) => fs.readFileSync(path.join(root, name), "utf8");
 const html = read("index.html");
-const notFoundHtml = read("404.html");
-const sharedCss = read("versions/shared.css");
-const fableCss = read("versions/fable/fable.css");
-const sharedJs = read("versions/shared.js");
-const fableJs = read("versions/fable/fable.js");
+const css = read("versions/kinetic/kinetic.css");
+const js = read("versions/kinetic/kinetic.js");
 const dataSource = read("cases.js");
+const notFoundHtml = read("404.html");
 const context = { window: {} };
 
 vm.runInNewContext(dataSource, context, { filename: "cases.js" });
 
-const projectLibrary = [...context.window.CASES, ...context.window.EXTRA_CLIPS];
-const projectIds = new Set(projectLibrary.map((item) => item.id));
-const serviceTitles = new Set(context.window.PROFILE.services.map((service) => service.title));
+const profile = context.window.PROFILE;
+const projects = [...context.window.CASES, ...context.window.EXTRA_CLIPS];
 
 function visibleWords(source) {
   return source
@@ -33,95 +30,110 @@ function visibleWords(source) {
     .filter(Boolean);
 }
 
-test("the public root is the selected Kinetic portfolio", () => {
+test("the public root is the selected, indexable portfolio", () => {
   assert.match(html, /<html lang="pt-BR">/);
   assert.match(html, /<body data-version="kinetic" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<meta name="robots" content="index,follow">/);
-  assert.doesNotMatch(html, /noindex|version-switch|Comparar versões/);
   assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
   assert.match(html, /versions\/kinetic\/kinetic\.css\?v=/);
   assert.match(html, /versions\/kinetic\/kinetic\.js\?v=/);
   assert.match(html, /class="skip-link"/);
+  assert.doesNotMatch(html, /noindex|version-switch|Comparar versões/);
 });
 
-test("the public narrative is concise, authored and commercially intentional", () => {
-  assert.ok(visibleWords(html).length < 500);
-  assert.doesNotMatch(
-    `${html}\n${fableJs}`,
-    /\b(?:o cliente|a cliente|você|vocês|seu|sua|seus|suas|o Enzo|Enzo fez|eu fiz)\b/i,
-  );
-  for (const verb of ["Transformo", "Organizo", "Construo", "Entrego", "Leio"]) {
-    assert.match(`${html}\n${fableJs}`, new RegExp(`\\b${verb}\\b`, "i"));
-  }
-  assert.doesNotMatch(html, /R\$\s*[\d.]+/);
-  assert.match(html, /Deixo os valores para depois/);
-  assert.match(html, /sem criar dependência/);
-  assert.match(html, /reduzo o escopo antes de começar/);
-});
-
-test("the public information architecture stays complete and ordered", () => {
-  for (const id of ["top", "objetivos", "trabalhos", "servicos", "processo", "contato"]) {
+test("the conversion path is a diagnostic, not a fixed package ladder", () => {
+  for (const id of ["provas", "analise", "arquivo", "capacidades", "metodo", "contato"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.ok(html.indexOf('id="objetivos"') < html.indexOf('id="trabalhos"'));
-  assert.ok(html.indexOf('id="trabalhos"') < html.indexOf('id="servicos"'));
-  assert.ok(html.indexOf('id="servicos"') < html.indexOf('id="processo"'));
-  assert.ok(html.indexOf('id="processo"') < html.indexOf('id="contato"'));
-  // Playback automatico por design: a pagina publica nao tem controle de play.
-  assert.doesNotMatch(html, /data-motion-toggle|<button/);
-  // Monitor de programa, legenda de categoria e timeline por cliente.
-  assert.match(html, /class="monitor" data-monitor/);
-  assert.match(html, /class="legend mono" data-legend/);
-  assert.match(html, /data-timeline/);
-  assert.match(html, /class="offers proposal-routes js-proposal-routes" data-offers/);
-  assert.match(html, /data-goals/);
-  assert.match(html, /data-method/);
+  assert.ok(html.indexOf('id="provas"') < html.indexOf('id="analise"'));
+  assert.ok(html.indexOf('id="analise"') < html.indexOf('id="arquivo"'));
+  assert.match(html, /data-diagnostic/);
+  assert.match(html, /name="need"/);
+  assert.match(html, /name="business"/);
+  assert.match(html, /name="timing"/);
+  assert.match(html, /name="material"/);
+  assert.match(html, /name="approval"/);
+  assert.match(html, /Nada é enviado automaticamente/);
+  assert.match(js, /Montar meu pedido|Pedido montado/);
+  assert.match(js, /encodeURIComponent/);
 });
 
-test("decorative numbering stays out of the selected Fable experience", () => {
-  assert.doesNotMatch(html, /fable-heading__count|goal-row__number/);
-  assert.doesNotMatch(fableJs, /work-index__number|route\.number|padStart/);
-  assert.doesNotMatch(fableCss, /\.fable-heading__count|\.goal-row__number|\.work-index__number/);
+test("public data contains no fixed commercial price", () => {
+  assert.doesNotMatch(`${html}\n${js}`, /R\$\s*[\d.]+/);
+  assert.doesNotMatch(dataSource, /"price"\s*:/);
+  assert.doesNotMatch(dataSource, /"payment"\s*:/);
+  assert.equal(profile.services.length, 3);
+  assert.ok(profile.services.every((service) => /Sob Medida$/.test(service.title)));
+  assert.equal(profile.diagnostic.factors.length, 5);
 });
 
-test("root-relative media resolution works without affecting prototypes", () => {
-  assert.match(sharedJs, /dataset\.assetPrefix \?\? "\.\.\/\.\.\/"/);
-  assert.match(fableJs, /dataset\.assetPrefix \?\? "\.\.\/\.\.\/"/);
-  assert.match(sharedJs, /\$\{assetPrefix\}\$\{escapeHtml\(image\)\}/);
-  assert.match(fableJs, /\$\{assetPrefix\}\$\{escapeHtml\(image\)\}/);
+test("work relationships and authorship boundaries stay explicit", () => {
+  assert.equal(projects.length, 31);
+  assert.equal(new Set(projects.map((project) => project.id)).size, projects.length);
+  assert.ok(!profile.clients.includes("VOTI Software"), "VOTI must not be represented as an independent client");
+  assert.equal(projects.filter((project) => project.client === "VOTI Software").length, 13);
+  assert.equal(projects.filter((project) => project.client === "Lumiar Parfum").length, 5);
+  assert.ok(
+    projects
+      .filter((project) => project.client === "Negócio Sem Filtro")
+      .every((project) => project.category === "edicao"),
+    "podcast cuts must be represented as editing and curation, not automation",
+  );
+  assert.match(js, /Experiência CLT/);
+  assert.match(js, /Projeto independente/);
+  assert.match(js, /Histórico encerrado/);
+});
 
-  const idLists = [...html.matchAll(/data-items="([^"]+)"/g)];
-  for (const [, list] of idLists) {
-    for (const id of list.split(",")) {
-      assert.ok(projectIds.has(id), `public root references missing project ${id}`);
+test("all public projects retain an original link and a real local image", () => {
+  for (const project of projects) {
+    assert.match(project.permalink, /^https:\/\//, `${project.id} needs an external proof link`);
+    const image = project.cardImage || project.thumb || project.poster;
+    assert.ok(image, `${project.id} needs an image`);
+    assert.ok(fs.existsSync(path.join(root, image)), `missing public image: ${image}`);
+    if (project.preview) {
+      assert.ok(fs.existsSync(path.join(root, project.preview)), `missing preview: ${project.preview}`);
     }
   }
-
-  for (const title of [...fableJs.matchAll(/services:\s*\[([^\]]+)\]/g)]
-    .flatMap((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]))) {
-    assert.ok(serviceTitles.has(title), `public root references missing service ${title}`);
-  }
 });
 
-test("typography and motion keep the approved safety contracts", () => {
-  const css = `${sharedCss}\n${fableCss}`;
-  assert.match(sharedCss, /--heading-track:\s*-.03em/);
-  assert.match(sharedCss, /--heading-leading:\s*1.04/);
-  assert.doesNotMatch(css, /letter-spacing:\s*-\.(?:04|045|05)em/);
-  assert.doesNotMatch(css, /transition[^;]*(?:font-size|line-height|letter-spacing)/);
-  assert.match(sharedJs, /prefers-reduced-motion: reduce/);
-  assert.match(sharedJs, /IntersectionObserver/);
-  assert.match(sharedCss, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(fableCss, /\.method-flow li\s*\{[\s\S]*justify-content:\s*center/);
+test("motion is purposeful, pausable and reduced-motion safe", () => {
+  assert.match(html, /<button class="motion-control"[^>]+data-motion-toggle/);
+  assert.match(js, /prefers-reduced-motion: reduce/);
+  assert.match(js, /IntersectionObserver/);
+  assert.match(js, /heroVideo\.pause\(\)/);
+  assert.match(js, /heroVideo\.play\(\)\.catch/);
+  assert.doesNotMatch(js, /addEventListener\(["']scroll/);
+  assert.match(js, /document\.startViewTransition/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /@supports \(animation-timeline: view\(\)\)/);
+  assert.doesNotMatch(css, /animation:[^;]*infinite/);
 });
 
-test("all public media and fonts exist within the static payload budget", () => {
+test("keyboard, focus and form semantics have an explicit safety contract", () => {
+  assert.match(css, /:focus-visible/);
+  assert.match(css, /min-height:\s*2\.75rem/);
+  assert.match(html, /aria-live="polite"/);
+  assert.match(html, /<fieldset>/);
+  assert.match(html, /<legend>/);
+  assert.match(html, /type="radio"/);
+  assert.match(html, /type="submit"/);
+  assert.match(html, /aria-pressed="false"/);
+});
+
+test("the page is authored, concise and avoids loose punctuation", () => {
+  assert.ok(visibleWords(html).length < 950);
+  assert.doesNotMatch(html, /[—–]/);
+  assert.doesNotMatch(html, /lorem ipsum|revolucionário|solução 360/i);
+  assert.match(html, /Sem pacote genérico/);
+  assert.match(html, /proposta proporcional|Investimento proporcional/i);
+});
+
+test("the static payload remains bounded and every declared root asset exists", () => {
   const references = new Set([
     ...[...html.matchAll(/(?:src|href)="(assets\/[^"?]+)(?:\?[^"]*)?"/g)].map((match) => match[1]),
-    ...projectLibrary.flatMap((item) => [item.cardImage, item.thumb, item.poster, item.preview]).filter(Boolean),
+    ...projects.flatMap((item) => [item.cardImage, item.thumb, item.poster, item.preview]).filter(Boolean),
   ]);
-
   for (const reference of references) {
     assert.ok(fs.existsSync(path.join(root, reference)), `missing public asset: ${reference}`);
   }
@@ -136,7 +148,7 @@ test("all public media and fonts exist within the static payload budget", () => 
       else totalBytes += fs.statSync(fullPath).size;
     }
   }
-  assert.ok(totalBytes < 12 * 1024 * 1024, `assets exceed 12 MB: ${totalBytes} bytes`);
+  assert.ok(totalBytes < 12 * 1024 * 1024, `assets exceed 12 MB: ${totalBytes}`);
 });
 
 test("the custom 404 remains connected to the public portfolio", () => {

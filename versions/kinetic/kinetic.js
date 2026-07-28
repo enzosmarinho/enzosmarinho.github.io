@@ -1,307 +1,349 @@
-/* ==========================================================================
-   SALA DE CORTE — comportamento
-   Nada aqui pede clique. O monitor troca de peça sozinho, o playhead segue a
-   leitura e os clipes reagem ao ponteiro. Sem botão de play em lugar nenhum.
-   ========================================================================== */
 (() => {
   "use strict";
 
   const profile = window.PROFILE || {};
-  const fonte = [...(window.CASES || []), ...(window.EXTRA_CLIPS || [])];
-  const pecas = [...new Map(fonte.map((p) => [p.id ?? p.permalink ?? p.title, p])).values()];
+  const source = [...(window.CASES || []), ...(window.EXTRA_CLIPS || [])];
+  const works = [...new Map(source.map((item) => [item.id || item.permalink, item])).values()];
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const assetPrefix = document.body.dataset.assetPrefix ?? "../../";
 
-  const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const prefixo = document.body.dataset.assetPrefix ?? "../../";
-
-  const esc = (v = "") => String(v)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-
-  const imagem = (p) => p?.cardImage || p?.thumb || p?.poster || "";
-  const destino = (p) => p?.permalink || "#contato";
-  const clipe = (p) => p?.preview || p?.video || "";
-
-  /* -------------------------------------------------- código de categoria
-     A cor não é enfeite: é a legenda que atravessa a página inteira.     */
-
-  const CATEGORIAS = {
-    conteudo:  { rotulo: "Conteúdo",  cor: "var(--c-conteudo)" },
-    anuncios:  { rotulo: "Anúncios",  cor: "var(--c-anuncios)" },
-    direcao:   { rotulo: "Direção",   cor: "var(--c-direcao)" },
-    "long-form": { rotulo: "Long-form", cor: "var(--c-longform)" },
-    automacao: { rotulo: "Automação", cor: "var(--c-automacao)" },
-  };
-  const cor = (cat) => CATEGORIAS[cat]?.cor || "var(--c-default)";
-
-  /* ------------------------------------------------------- timecode real
-     Deriva de posição e duração aparente. Não é decoração: dá ao visitante
-     a mesma leitura que Enzo tem na mesa dele.                            */
-  const tc = (i, total) => {
-    const seg = Math.round((i / Math.max(1, total)) * 90);
-    const mm = String(Math.floor(seg / 60)).padStart(2, "0");
-    const ss = String(seg % 60).padStart(2, "0");
-    const ff = String((i * 7) % 24).padStart(2, "0");
-    return `00:${mm}:${ss}:${ff}`;
+  const FEATURED_IDS = ["DaBe_RIhl06", "ADKpionmFiw", "DUf-ODMDWqA", "DQfTWkhiK4k"];
+  const CATEGORIES = {
+    conteudo: { label: "Conteúdo" },
+    anuncios: { label: "Campanha" },
+    direcao: { label: "Direção" },
+    "long-form": { label: "Long-form" },
+    edicao: { label: "Edição" },
+    automacao: { label: "Sistemas" },
   };
 
-  /* ---------------------------------------------- agrupamento por cliente */
+  const escapeHtml = (value = "") => String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
-  function porCliente() {
-    const mapa = new Map();
-    pecas.forEach((p) => {
-      const c = p.client || "Projetos próprios";
-      if (!mapa.has(c)) mapa.set(c, []);
-      mapa.get(c).push(p);
-    });
-    return [...mapa.entries()].sort((a, b) => b[1].length - a[1].length);
+  const cleanText = (value = "") => String(value)
+    .replace(/[—–]/g, ",")
+    .replace(/\s+,/g, ",")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  const safe = (value = "") => escapeHtml(cleanText(value));
+  const imageFor = (item) => item?.cardImage || item?.thumb || item?.poster || "";
+  const videoFor = (item) => item?.preview || item?.video || "";
+  const categoryLabel = (item) => CATEGORIES[item?.category]?.label || cleanText(item?.categoryLabel || "Projeto");
+
+  function relationshipFor(item) {
+    if (item.client === "VOTI Software") return { label: "Experiência CLT", type: "employment" };
+    if (item.client === "Lumiar Parfum") return { label: "Histórico encerrado", type: "historical" };
+    return { label: "Projeto independente", type: "independent" };
   }
 
-  /* ------------------------------------------------------------ monitor */
+  function setText(selector, value) {
+    const element = document.querySelector(selector);
+    if (element && value !== undefined && value !== null) element.textContent = String(value);
+  }
 
-  function montarMonitor() {
-    const alvo = document.querySelector("[data-monitor]");
-    if (!alvo) return;
-    const fila = pecas.filter((p) => imagem(p) && clipe(p)).slice(0, 10);
-    if (!fila.length) return;
+  function renderHero() {
+    const host = document.querySelector("[data-hero-media]");
+    if (!host) return;
+    const item = works.find((work) => work.id === FEATURED_IDS[0]) || works.find((work) => imageFor(work));
+    if (!item) return;
 
-    alvo.innerHTML = `
-      <div class="monitor__bar mono">
-        <span class="nav__rec"></span><b>PROGRAMA</b>
-        <span class="sep"></span>
-        <span data-mon-res>1080×1920 · 9:16</span>
+    const poster = `${assetPrefix}${imageFor(item)}`;
+    const video = videoFor(item);
+    host.innerHTML = `
+      <div class="proof-stage__media">
+        <img src="${escapeHtml(poster)}" alt="" width="720" height="1280" fetchpriority="high" decoding="async">
+        ${video ? `<video muted loop playsinline preload="metadata" poster="${escapeHtml(poster)}" aria-hidden="true">
+          <source src="${escapeHtml(`${assetPrefix}${video}`)}" type="video/mp4">
+        </video>` : ""}
       </div>
-      <div class="monitor__frame" data-mon-frame>
-        <img src="${prefixo}${esc(imagem(fila[0]))}" alt="" width="720" height="1280" fetchpriority="high" decoding="async">
+      <div class="proof-stage__chrome mono">
+        <span>PROVA / 01</span>
+        <span>${safe(item.year || "")}</span>
       </div>
-      <div class="monitor__tc mono tc">
-        <span class="now" data-mon-tc>00:00:00:00</span>
-        <span data-mon-title>${esc(fila[0].title)}</span>
-        <span class="cat" data-mon-cat>${esc(CATEGORIAS[fila[0].category]?.rotulo || "")}</span>
+      <div class="proof-stage__caption">
+        <div>
+          <p class="mono">${safe(relationshipFor(item).label)} / ${safe(categoryLabel(item))}</p>
+          <h2>${safe(item.title)}</h2>
+          <span>${safe(item.role || item.deliverable || "")}</span>
+        </div>
+        <a href="${escapeHtml(item.permalink || "#provas")}" target="_blank" rel="noopener">
+          Abrir publicação <span aria-hidden="true">↗</span>
+        </a>
       </div>`;
 
-    const frame = alvo.querySelector("[data-mon-frame]");
-    const img = frame.querySelector("img");
-    const elTc = alvo.querySelector("[data-mon-tc]");
-    const elTitulo = alvo.querySelector("[data-mon-title]");
-    const elCat = alvo.querySelector("[data-mon-cat]");
+    const motionButton = document.querySelector("[data-motion-toggle]");
+    const heroVideo = host.querySelector("video");
+    if (!motionButton || !heroVideo) {
+      if (motionButton) motionButton.hidden = true;
+      return;
+    }
 
-    let i = 0;
-    let video = null;
-
-    const trocar = (n) => {
-      i = n % fila.length;
-      const p = fila[i];
-      img.src = prefixo + imagem(p);
-      elTitulo.textContent = p.title;
-      elCat.textContent = CATEGORIAS[p.category]?.rotulo || "";
-      elTc.textContent = tc(i, fila.length);
-      alvo.style.setProperty("--cat", cor(p.category));
-
-      if (video) { video.pause(); video.remove(); video = null; }
-      frame.classList.remove("is-playing");
-      if (semMovimento.matches) return;
-
-      video = document.createElement("video");
-      video.muted = true; video.loop = true; video.playsInline = true;
-      video.preload = "auto"; video.setAttribute("aria-hidden", "true");
-      video.src = prefixo + clipe(p);
-      frame.appendChild(video);
-      video.play().then(() => frame.classList.add("is-playing")).catch(() => {});
+    let userPaused = false;
+    const syncMotion = () => {
+      const shouldPause = userPaused || reducedMotion.matches || document.hidden;
+      motionButton.hidden = reducedMotion.matches;
+      motionButton.setAttribute("aria-pressed", String(userPaused));
+      motionButton.textContent = userPaused ? "Retomar movimento" : "Pausar movimento";
+      document.documentElement.classList.toggle("motion-paused", shouldPause);
+      if (shouldPause) {
+        heroVideo.pause();
+      } else {
+        heroVideo.play().catch(() => {
+          userPaused = true;
+          motionButton.setAttribute("aria-pressed", "true");
+          motionButton.textContent = "Reproduzir vídeo";
+        });
+      }
     };
 
-    trocar(0);
-    if (semMovimento.matches) return;
+    motionButton.addEventListener("click", () => {
+      userPaused = !userPaused;
+      syncMotion();
+    });
+    reducedMotion.addEventListener?.("change", syncMotion);
+    document.addEventListener("visibilitychange", syncMotion);
 
-    let timer = setInterval(() => trocar(i + 1), 5200);
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        clearInterval(timer);
-        if (video) video.pause();
-      } else {
-        if (video) video.play().catch(() => {});
-        timer = setInterval(() => trocar(i + 1), 5200);
-      }
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries.some((entry) => entry.isIntersecting);
+        if (!visible) heroVideo.pause();
+        else syncMotion();
+      }, { threshold: 0.25 });
+      observer.observe(host);
+    } else {
+      syncMotion();
+    }
+  }
+
+  function renderStats() {
+    setText("[data-total]", String(works.length).padStart(2, "0"));
+    const independent = new Set(
+      works
+        .filter((work) => relationshipFor(work).type !== "employment")
+        .map((work) => work.client),
+    );
+    setText("[data-independent]", String(independent.size).padStart(2, "0"));
+  }
+
+  function renderCaseStories() {
+    const host = document.querySelector("[data-case-stories]");
+    if (!host) return;
+    const featured = FEATURED_IDS
+      .map((id) => works.find((work) => work.id === id))
+      .filter(Boolean);
+
+    host.innerHTML = featured.map((item, index) => {
+      const relationship = relationshipFor(item);
+      const result = item.result
+        ? `<p class="case-story__result"><span>Resultado público</span>${safe(item.result)}</p>`
+        : "";
+      return `
+        <article class="case-story reveal" data-category="${escapeHtml(item.category || "")}">
+          <a class="case-story__media" href="${escapeHtml(item.permalink || "#arquivo")}" target="_blank" rel="noopener">
+            <img src="${escapeHtml(`${assetPrefix}${imageFor(item)}`)}"
+                 alt="${safe(item.title)}, trabalho para ${safe(item.client)}"
+                 width="${escapeHtml(item.heroWidth || 720)}"
+                 height="${escapeHtml(item.heroHeight || 1280)}"
+                 ${index === 0 ? 'loading="eager"' : 'loading="lazy"'} decoding="async">
+            <span class="case-story__index mono">${String(index + 1).padStart(2, "0")}</span>
+            <span class="case-story__open mono">Ver original ↗</span>
+          </a>
+          <div class="case-story__body">
+            <div class="case-story__meta mono">
+              <span data-relation="${relationship.type}">${safe(relationship.label)}</span>
+              <span>${safe(categoryLabel(item))}</span>
+              <span>${safe(item.year || "")}</span>
+            </div>
+            <h3>${safe(item.title)}</h3>
+            <p class="case-story__role">${safe(item.role || item.deliverable || "")}</p>
+            ${item.problem ? `<div class="case-story__decision"><span>Problema</span><p>${safe(item.problem)}</p></div>` : ""}
+            ${item.direction ? `<div class="case-story__decision"><span>Decisão</span><p>${safe(item.direction)}</p></div>` : ""}
+            ${result}
+          </div>
+        </article>`;
+    }).join("");
+  }
+
+  function renderDiagnostic() {
+    const factorsHost = document.querySelector("[data-diagnostic-factors]");
+    if (factorsHost) {
+      factorsHost.innerHTML = (profile.diagnostic?.factors || []).map((factor, index) => `
+        <article class="factor reveal">
+          <span class="mono">${String(index + 1).padStart(2, "0")}</span>
+          <h3>${safe(factor.title)}</h3>
+          <p>${safe(factor.text)}</p>
+        </article>`).join("");
+    }
+    setText("[data-diagnostic-promise]", cleanText(profile.diagnostic?.promise || ""));
+
+    const form = document.querySelector("[data-diagnostic]");
+    const status = document.querySelector("[data-form-status]");
+    if (!form) return;
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const values = new FormData(form);
+      const lines = [
+        "Oi Enzo, vi seu portfólio e quero pedir uma análise.",
+        "",
+        `Necessidade: ${values.get("need")}`,
+        `Contexto: ${values.get("business")}`,
+        `Prazo: ${values.get("timing")}`,
+        `Material: ${values.get("material")}`,
+        `Aprovação: ${values.get("approval")}`,
+      ];
+      if (values.get("reference")) lines.push(`Site ou perfil: ${values.get("reference")}`);
+      if (values.get("outcome")) lines.push(`Resultado esperado: ${values.get("outcome")}`);
+
+      const url = `https://wa.me/5518981196746?text=${encodeURIComponent(lines.join("\n"))}`;
+      if (status) status.textContent = "Pedido montado. O WhatsApp será aberto para você revisar antes de enviar.";
+      const opened = window.open(url, "_blank", "noopener,noreferrer");
+      if (opened) opened.opener = null;
     });
   }
 
-  /* ------------------------------------------------------------ legenda */
-
-  function montarLegenda() {
-    const alvo = document.querySelector("[data-legend]");
-    if (!alvo) return;
-    const usadas = [...new Set(pecas.map((p) => p.category))].filter((c) => CATEGORIAS[c]);
-    alvo.innerHTML = usadas.map((c) => {
-      const n = pecas.filter((p) => p.category === c).length;
-      return `<span class="legend__item mono" style="--cat:${cor(c)}">
-        <i class="legend__swatch"></i>${esc(CATEGORIAS[c].rotulo)} <b class="tc">${String(n).padStart(2, "0")}</b>
-      </span>`;
-    }).join("");
-  }
-
-  /* ----------------------------------------------------------- timeline */
-
-  function montarTimeline() {
-    const alvo = document.querySelector("[data-timeline]");
-    if (!alvo) return;
-    const trilhas = porCliente();
-
-    const anos = [...new Set(pecas.map((p) => String(p.year)).filter(Boolean))].sort();
-    const regua = `
-      <div class="tl__ruler mono" style="--head: clamp(9rem, 15vw, 15rem)">
-        <span style="padding:.45rem .6rem">Trilhas</span>
-        <span class="tl__ruler-years">${anos.map((a) => `<b>${esc(a)}</b>`).join("")}</span>
-      </div>`;
-
-    const corpo = trilhas.map(([cliente, lista], t) => {
-      const ordenada = [...lista].sort((a, b) => String(a.year).localeCompare(String(b.year)));
-      const clipes = ordenada.map((p, i) => `
-        <a class="clip" style="--cat:${cor(p.category)}" href="${esc(destino(p))}"
-           target="_blank" rel="noopener"
-           aria-label="${esc(p.title)} — ${esc(cliente)}, ${esc(p.categoryLabel || p.category || "")}, ${esc(p.year || "")}">
-          <img src="${prefixo}${esc(imagem(p))}" alt="" width="720" height="1280" loading="lazy" decoding="async">
-          <span class="clip__tip">${esc(p.title)}</span>
-        </a>`).join("");
-      return `
-        <div class="track">
-          <div class="track__head">
-            <span class="track__id mono tc">V${t + 1}</span>
-            <h3 class="track__name">${esc(cliente)}</h3>
-            <span class="track__n mono tc">${String(lista.length).padStart(2, "0")} peças</span>
-          </div>
-          <div class="track__lane">${clipes}</div>
-        </div>`;
-    }).join("");
-
-    alvo.innerHTML = `${regua}<div class="tl" style="position:relative">${corpo}
-      <div class="tl__playhead" aria-hidden="true"></div></div>`;
-  }
-
-  /* ------------------------------------------------- seções comerciais */
-
-  function montarObjetivos() {
-    const alvo = document.querySelector("[data-goals]");
-    if (!alvo) return;
-    const trilhas = [
-      { cat: "conteudo", titulo: "Manter o conteúdo em movimento",
-        texto: "Transformo gravações, ideias e rotina em peças prontas para publicar com consistência." },
-      { cat: "anuncios", titulo: "Explicar melhor e vender com clareza",
-        texto: "Organizo oferta, mensagem e página para conduzir a conversa até o próximo passo." },
-      { cat: "automacao", titulo: "Tirar o operacional do caminho",
-        texto: "Construo uma automação a partir do gargalo real, com limite claro e sem promessa mágica." },
-    ];
-    alvo.innerHTML = trilhas.map((t, i) => `
-      <a class="goal reveal" style="--i:${i}; --cat:${cor(t.cat)}" href="#servicos">
-        <strong>${esc(t.titulo)}</strong>
-        <p>${esc(t.texto)}</p>
-        <i aria-hidden="true">↘</i>
-      </a>`).join("");
-  }
-
-  function montarPropostas() {
-    const alvo = document.querySelector("[data-offers]");
-    if (!alvo) return;
-    alvo.innerHTML = (profile.services || []).map((s, i) => `
-      <article class="offer reveal" style="--i:${i}; --cat:${cor(s.category)}">
-        <header class="offer__top mono">
-          <span class="offer__cat">${esc(s.categoryLabel || "")}</span>
-          <span class="tc">${esc(s.timeline || "")}</span>
-        </header>
-        <h3 class="offer__title">${esc(s.title)}</h3>
-        <p class="offer__desc">${esc(s.description)}</p>
-        <ul class="offer__list">${(s.includes || []).map((it) => `<li>${esc(it)}</li>`).join("")}</ul>
-        <footer class="offer__foot">
-          <strong class="offer__price">${esc(s.price)}</strong>
-          <span class="mono">${esc(s.revisions || "")}</span>
-        </footer>
+  function renderCapabilities() {
+    const host = document.querySelector("[data-capabilities]");
+    if (!host) return;
+    host.innerHTML = (profile.capabilities || []).map((capability, index) => `
+      <article class="capability reveal" data-capability="${escapeHtml(capability.id || "")}">
+        <div class="capability__top mono">
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <span>${safe(capability.label)}</span>
+        </div>
+        <h3>${safe(capability.title)}</h3>
+        <p>${safe(capability.text)}</p>
+        <a href="#analise">Analisar esta frente <span aria-hidden="true">↗</span></a>
       </article>`).join("");
   }
 
-  function montarContinuidade() {
-    const alvo = document.querySelector("[data-continuity]");
-    if (!alvo) return;
-    alvo.innerHTML = (profile.continuity || []).map((p, i) => `
-      <div class="plan reveal" style="--i:${i}">
-        <h4>${esc(p.title)}</h4>
-        <p>${esc(p.description)}</p>
-        <strong class="mono">${esc(p.price)}</strong>
-      </div>`).join("");
+  function renderAiRoles() {
+    const host = document.querySelector("[data-ai-roles]");
+    if (host) {
+      host.innerHTML = (profile.aiRoles || []).map((role) => `
+        <article class="ai-role reveal">
+          <p class="mono">${safe(role.role)}</p>
+          <h3>${safe(role.owner)}</h3>
+          <p>${safe(role.text)}</p>
+        </article>`).join("");
+    }
+
+    const method = document.querySelector("[data-method]");
+    if (method) {
+      method.innerHTML = (profile.methods || []).map((item, index) => `
+        <article class="method-item reveal">
+          <span class="mono">${String(index + 1).padStart(2, "0")}</span>
+          <div><h3>${safe(item.title)}</h3><p>${safe(item.text)}</p></div>
+        </article>`).join("");
+    }
   }
 
-  function montarMetodo() {
-    const alvo = document.querySelector("[data-method]");
-    if (!alvo) return;
-    alvo.innerHTML = (profile.methods || []).map((m, i) => `
-      <div class="step reveal" style="--i:${i}">
-        <span class="step__n mono tc">${String(i + 1).padStart(2, "0")} / 04</span>
-        <h4>${esc(m.title)}</h4>
-        <p>${esc(m.text)}</p>
-      </div>`).join("");
-  }
+  function renderArchive() {
+    const filtersHost = document.querySelector("[data-filters]");
+    const grid = document.querySelector("[data-work-grid]");
+    if (!filtersHost || !grid) return;
 
-  /* -------------------------------------------------------- playhead */
+    const categories = [...new Set(works.map((work) => work.category).filter((key) => CATEGORIES[key]))];
+    const filters = [
+      { key: "all", label: "Todos", count: works.length },
+      ...categories.map((key) => ({
+        key,
+        label: CATEGORIES[key].label,
+        count: works.filter((work) => work.category === key).length,
+      })),
+    ];
 
-  function playhead() {
-    const el = document.querySelector(".tl__playhead");
-    const tl = document.querySelector(".tl");
-    if (!el || !tl || semMovimento.matches) return;
-    let travado = false;
-    const atualizar = () => {
-      const r = tl.getBoundingClientRect();
-      const total = r.height + window.innerHeight;
-      const p = Math.min(1, Math.max(0, (window.innerHeight - r.top) / total));
-      el.style.setProperty("--play", p.toFixed(4));
-      travado = false;
+    filtersHost.innerHTML = filters.map((filter, index) => `
+      <button type="button" data-filter="${escapeHtml(filter.key)}"
+        aria-pressed="${index === 0 ? "true" : "false"}">
+        ${safe(filter.label)} <span>${String(filter.count).padStart(2, "0")}</span>
+      </button>`).join("");
+
+    grid.innerHTML = works.map((item) => {
+      const relationship = relationshipFor(item);
+      return `
+        <a class="work-card reveal" data-work-category="${escapeHtml(item.category || "")}"
+           href="${escapeHtml(item.permalink || "#contato")}" target="_blank" rel="noopener">
+          <div class="work-card__image">
+            <img src="${escapeHtml(`${assetPrefix}${imageFor(item)}`)}"
+                 alt="" width="${escapeHtml(item.heroWidth || 720)}" height="${escapeHtml(item.heroHeight || 1280)}"
+                 loading="lazy" decoding="async">
+            <span class="work-card__arrow" aria-hidden="true">↗</span>
+          </div>
+          <div class="work-card__body">
+            <div class="work-card__meta mono">
+              <span data-relation="${relationship.type}">${safe(relationship.label)}</span>
+              <span>${safe(item.year || "")}</span>
+            </div>
+            <h3>${safe(item.title)}</h3>
+            <p>${safe(item.client)} / ${safe(categoryLabel(item))}</p>
+          </div>
+        </a>`;
+    }).join("");
+
+    const buttons = [...filtersHost.querySelectorAll("[data-filter]")];
+    const cards = [...grid.querySelectorAll("[data-work-category]")];
+
+    const applyFilter = (key) => {
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.filter === key));
+      });
+      cards.forEach((card) => {
+        card.hidden = key !== "all" && card.dataset.workCategory !== key;
+      });
     };
-    addEventListener("scroll", () => {
-      if (travado) return;
-      travado = true;
-      requestAnimationFrame(atualizar);
-    }, { passive: true });
-    atualizar();
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const update = () => applyFilter(button.dataset.filter || "all");
+        if (!reducedMotion.matches && document.startViewTransition) {
+          document.startViewTransition(update);
+        } else {
+          update();
+        }
+      });
+    });
   }
 
-  function revelar() {
-    if (semMovimento.matches) {
-      document.querySelectorAll(".reveal").forEach((e) => e.classList.add("is-in"));
+  function setupReveal() {
+    const elements = [...document.querySelectorAll(".reveal")];
+    if (reducedMotion.matches || !("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
       return;
     }
-    const obs = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("is-in");
-        obs.unobserve(e.target);
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
       });
-    }, { threshold: .12, rootMargin: "0px 0px -6% 0px" });
-    document.querySelectorAll(".reveal").forEach((e) => obs.observe(e));
+    }, { threshold: 0.08, rootMargin: "0px 0px -5% 0px" });
+    elements.forEach((element) => observer.observe(element));
   }
 
-  function preencherPerfil() {
-    const set = (sel, v) => { const e = document.querySelector(sel); if (e && v) e.textContent = v; };
-    set("[data-role]", profile.role);
-    set("[data-location]", profile.location);
-    const total = document.querySelector("[data-total]");
-    if (total) total.textContent = String(pecas.length).padStart(2, "0");
-    const cl = document.querySelector("[data-clientes]");
-    if (cl) cl.textContent = String(porCliente().length).padStart(2, "0");
-  }
-
-  function iniciar() {
-    preencherPerfil();
-    montarMonitor();
-    montarLegenda();
-    montarObjetivos();
-    montarTimeline();
-    montarPropostas();
-    montarContinuidade();
-    montarMetodo();
-    revelar();
-    playhead();
-    document.documentElement.classList.add("pronto");
+  function init() {
+    renderStats();
+    renderHero();
+    renderCaseStories();
+    renderDiagnostic();
+    renderArchive();
+    renderCapabilities();
+    renderAiRoles();
+    setupReveal();
+    document.documentElement.classList.add("ready");
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", iniciar, { once: true });
+    document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
-    iniciar();
+    init();
   }
 })();
