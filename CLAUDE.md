@@ -21,6 +21,16 @@ de cliente. Antes de editar: `git fetch --prune`, `git status` e `npm run check`
 A home continua estática e sem framework. Não adicionar dependência de runtime
 quando HTML, CSS e JavaScript nativos resolverem o problema.
 
+## Processo de criação
+
+1. Auditar conteúdo, autoria, links, mídia, conversão e restrições antes do layout.
+2. Definir uma tese visual e uma hierarquia de provas, não uma coleção de componentes.
+3. Explicar a consequência esperada antes de trocar arquitetura, dependência ou mídia.
+4. Construir o caminho principal sem JavaScript; usar JavaScript para dados, movimento e melhoria progressiva.
+5. Orçar performance junto com a direção de arte: poster primeiro, vídeo adiado e mídia no tamanho em que aparece.
+6. Validar em navegador real, 390px e desktop, teclado, movimento reduzido, filtros e formulário.
+7. Medir com testes e Lighthouse, corrigir causas verificadas e só então preparar publicação.
+
 ## Tese comercial
 
 A conversão principal é `Pedir análise`, não comprar um pacote.
@@ -48,27 +58,29 @@ continuar genéricos, sem quantidade ou valor fechado.
 
 | Papel | Valor |
 |---|---|
-| Fundo | `#0b0c0e` |
-| Superfícies | `#141619`, `#1b1d21` |
-| Texto | `#f2efe7` |
-| Ação | `#d9ff55` |
-| Sinal | `#ff5d2d` |
+| Fundo | `#0b0b0a` |
+| Superfícies | `#11110f`, `#171714`, `#20201c` |
+| Texto | `#f3f0e8` |
+| Ação e sinal | `#ff5d3a` |
 | Display | Anton |
 | Corpo | Manrope |
 | Metadados | IBM Plex Mono |
 
-A direção é editorial e cinematográfica. A mídia real é a textura. Não usar
+A direção é de estúdio cinematográfico: tipografia monumental, geometria afiada
+e uma parede viva de trabalhos. A mídia real é a textura. Não usar
 gradiente decorativo, glassmorphism, mockup falso, brilho roxo ou card arredondado
 genérico.
 
 ## Movimento
 
-- Um único vídeo real pode tocar no hero, mudo e sem áudio.
-- O controle `data-motion-toggle` pausa e retoma o vídeo.
-- Aba oculta e hero fora do viewport pausam o vídeo.
-- `prefers-reduced-motion: reduce` remove movimento não essencial e esconde o controle.
+- O hero usa até oito proxies otimizados no desktop e cinco no mobile, mudos e sem áudio.
+- Posters aparecem primeiro; os vídeos só recebem `src` depois do carregamento inicial.
+- O controle `data-motion-toggle` pausa e retoma todos os vídeos ambientes.
+- Aba oculta e hero fora do viewport pausam todos os vídeos.
+- `prefers-reduced-motion: reduce` e economia de dados impedem o download dos vídeos e escondem o controle.
 - Revelações usam `IntersectionObserver`.
 - Filtro usa View Transition quando houver suporte e tem fallback imediato.
+- Movimento de scroll usa Scroll-driven Animations apenas como melhoria progressiva.
 - Não adicionar listener de `scroll`.
 - Não criar marquee, pulso infinito, parallax amplo ou scroll hijacking.
 

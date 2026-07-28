@@ -12,6 +12,7 @@ const css = read("versions/kinetic/kinetic.css");
 const js = read("versions/kinetic/kinetic.js");
 const dataSource = read("cases.js");
 const notFoundHtml = read("404.html");
+const kineticRouteHtml = read("versions/kinetic/index.html");
 const context = { window: {} };
 
 vm.runInNewContext(dataSource, context, { filename: "cases.js" });
@@ -30,10 +31,12 @@ function visibleWords(source) {
     .filter(Boolean);
 }
 
-test("the public root is the selected, indexable portfolio", () => {
+test("the public root is the selected, indexable ultimate portfolio", () => {
   assert.match(html, /<html lang="pt-BR">/);
-  assert.match(html, /<body data-version="kinetic" data-asset-prefix="">/);
+  assert.match(html, /<body data-version="ultimate" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
+  assert.match(html, /<span>ENZO<\/span>\s*<span>MARINHO<\/span>/);
+  assert.match(html, /data-hero-wall/);
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
   assert.match(html, /versions\/kinetic\/kinetic\.css\?v=/);
@@ -42,29 +45,33 @@ test("the public root is the selected, indexable portfolio", () => {
   assert.doesNotMatch(html, /noindex|version-switch|Comparar versões/);
 });
 
-test("the conversion path is a diagnostic, not a fixed package ladder", () => {
-  for (const id of ["provas", "analise", "arquivo", "capacidades", "metodo", "contato"]) {
+test("proof leads the narrative and the diagnostic closes it", () => {
+  for (const id of ["provas", "formatos", "capacidades", "arquivo", "metodo", "analise", "contato"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.ok(html.indexOf('id="provas"') < html.indexOf('id="analise"'));
-  assert.ok(html.indexOf('id="analise"') < html.indexOf('id="arquivo"'));
-  assert.match(html, /data-diagnostic/);
-  assert.match(html, /name="need"/);
-  assert.match(html, /name="business"/);
-  assert.match(html, /name="timing"/);
-  assert.match(html, /name="material"/);
-  assert.match(html, /name="approval"/);
-  assert.match(html, /Nada é enviado automaticamente/);
-  assert.match(js, /Montar meu pedido|Pedido montado/);
-  assert.match(js, /encodeURIComponent/);
+  assert.ok(html.indexOf('id="provas"') < html.indexOf('id="formatos"'));
+  assert.ok(html.indexOf('id="formatos"') < html.indexOf('id="arquivo"'));
+  assert.ok(html.indexOf('id="arquivo"') < html.indexOf('id="analise"'));
+  assert.match(html, /Marketing de dentro da operação/);
+  assert.match(html, /data-kayky-case/);
+  assert.match(html, /data-nsf-case/);
+  assert.match(js, /Prova: VOTI/);
+  assert.match(js, /Prova: Kayky Pitondo/);
+  assert.match(js, /Prova: Negócio Sem Filtro/);
 });
 
-test("public data contains no fixed commercial price", () => {
+test("the conversion path is proportional and never a fixed package ladder", () => {
+  assert.match(html, /data-diagnostic/);
+  for (const name of ["need", "business", "timing", "material", "approval", "reference", "outcome"]) {
+    assert.match(html, new RegExp(`name="${name}"`));
+  }
+  assert.match(html, /Nada é enviado automaticamente/);
+  assert.match(html, /Empresas diferentes não recebem a mesma proposta/);
+  assert.match(html, /Investimento proporcional/);
+  assert.match(js, /Pedido montado/);
+  assert.match(js, /encodeURIComponent/);
   assert.doesNotMatch(`${html}\n${js}`, /R\$\s*[\d.]+/);
-  assert.doesNotMatch(dataSource, /"price"\s*:/);
-  assert.doesNotMatch(dataSource, /"payment"\s*:/);
-  assert.equal(profile.services.length, 3);
-  assert.ok(profile.services.every((service) => /Sob Medida$/.test(service.title)));
+  assert.doesNotMatch(dataSource, /"(?:price|payment)"\s*:/);
   assert.equal(profile.diagnostic.factors.length, 5);
 });
 
@@ -80,9 +87,10 @@ test("work relationships and authorship boundaries stay explicit", () => {
       .every((project) => project.category === "edicao"),
     "podcast cuts must be represented as editing and curation, not automation",
   );
-  assert.match(js, /Experiência CLT/);
+  assert.match(js, /Trabalho atual/);
   assert.match(js, /Projeto independente/);
   assert.match(js, /Histórico encerrado/);
+  assert.doesNotMatch(`${html}\n${js}`, /data-ai-roles|renderAiRoles/);
 });
 
 test("all public projects retain an original link and a real local image", () => {
@@ -97,22 +105,55 @@ test("all public projects retain an original link and a real local image", () =>
   }
 });
 
-test("motion is purposeful, pausable and reduced-motion safe", () => {
+test("the hero video wall is optimized, pausable and progressively enhanced", () => {
+  const proxyNames = [
+    "negocio-sem-filtro.mp4",
+    "kayky-long-form.mp4",
+    "voti-visita.mp4",
+  ];
+  const totalProxyBytes = proxyNames.reduce((total, name) => {
+    const file = path.join(root, "assets", "hero-wall", name);
+    assert.ok(fs.existsSync(file), `missing hero proxy: ${name}`);
+    return total + fs.statSync(file).size;
+  }, 0);
+  const totalPosterBytes = [
+    "qBTk1irwDc4",
+    "DaBe_RIhl06",
+    "ADKpionmFiw",
+    "DQfTWkhiK4k",
+    "DYC7byPyEnW",
+    "DUf-ODMDWqA",
+    "DXiIx4_kQ-0",
+    "DTgXN2FiDV6",
+  ].reduce((total, id) => {
+    const file = path.join(root, "assets", "hero-wall", `${id}.webp`);
+    assert.ok(fs.existsSync(file), `missing hero poster: ${id}`);
+    return total + fs.statSync(file).size;
+  }, 0);
+
+  assert.ok(totalProxyBytes < 256 * 1024, `hero proxies exceed 256 KB: ${totalProxyBytes}`);
+  assert.ok(totalPosterBytes < 128 * 1024, `hero posters exceed 128 KB: ${totalPosterBytes}`);
+  assert.match(html, /preload" as="image" href="assets\/hero-wall\/qBTk1irwDc4\.webp"/);
+  assert.match(html, /<img src="assets\/hero-wall\/qBTk1irwDc4\.webp"[\s\S]*fetchpriority="high"/);
   assert.match(html, /<button class="motion-control"[^>]+data-motion-toggle/);
+  assert.doesNotMatch(html, /<video[^>]+autoplay/);
   assert.match(js, /prefers-reduced-motion: reduce/);
+  assert.match(js, /navigator\.connection\?\.saveData/);
+  assert.match(js, /requestIdleCallback/);
   assert.match(js, /IntersectionObserver/);
-  assert.match(js, /heroVideo\.pause\(\)/);
-  assert.match(js, /heroVideo\.play\(\)\.catch/);
+  assert.match(js, /video\.pause\(\)/);
+  assert.match(js, /video\.play\(\)/);
   assert.doesNotMatch(js, /addEventListener\(["']scroll/);
   assert.match(js, /document\.startViewTransition/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(css, /@supports \(animation-timeline: view\(\)\)/);
+  assert.match(css, /@supports \(animation-timeline: scroll\(\)\)/);
+  assert.match(css, /content-visibility:\s*auto/);
   assert.doesNotMatch(css, /animation:[^;]*infinite/);
 });
 
 test("keyboard, focus and form semantics have an explicit safety contract", () => {
   assert.match(css, /:focus-visible/);
-  assert.match(css, /min-height:\s*2\.75rem/);
+  assert.match(css, /min-height:\s*(?:2\.75rem|44px)/);
   assert.match(html, /aria-live="polite"/);
   assert.match(html, /<fieldset>/);
   assert.match(html, /<legend>/);
@@ -122,11 +163,12 @@ test("keyboard, focus and form semantics have an explicit safety contract", () =
 });
 
 test("the page is authored, concise and avoids loose punctuation", () => {
-  assert.ok(visibleWords(html).length < 950);
+  assert.ok(visibleWords(html).length < 850);
   assert.doesNotMatch(html, /[—–]/);
   assert.doesNotMatch(html, /lorem ipsum|revolucionário|solução 360/i);
-  assert.match(html, /Sem pacote genérico/);
-  assert.match(html, /proposta proporcional|Investimento proporcional/i);
+  assert.match(html, /Não é uma coleção de peças soltas/);
+  assert.match(html, /Serviços construídos a partir do trabalho real/);
+  assert.match(html, /Seu negócio merece uma leitura própria/);
 });
 
 test("the static payload remains bounded and every declared root asset exists", () => {
@@ -155,4 +197,10 @@ test("the custom 404 remains connected to the public portfolio", () => {
   assert.match(notFoundHtml, /<meta name="robots" content="noindex">/);
   assert.match(notFoundHtml, /assets\/fonts\/anton-latin\.woff2/);
   assert.match(notFoundHtml, /href="\/">Voltar ao portfólio/);
+});
+
+test("the retired kinetic route cannot expose a broken duplicate", () => {
+  assert.match(kineticRouteHtml, /<meta name="robots" content="noindex,nofollow">/);
+  assert.match(kineticRouteHtml, /content="0; url=\.\.\/\.\.\/"/);
+  assert.match(kineticRouteHtml, /href="\.\.\/\.\.\/">Abrir o portfólio atual/);
 });
