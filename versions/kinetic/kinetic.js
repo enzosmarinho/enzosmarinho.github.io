@@ -31,6 +31,12 @@
     "DUf-ODMDWqA",
     "DSldztZCA9P",
     "DWpa8TQCKvX",
+    "DUQ8YNYEc4z",
+    "DW4c4OjkdA5",
+    "DHtF3CvxAlF",
+    "DOzGHz2iLGz",
+    "DUJfuJsCPir",
+    "DYBL_r1jP3A",
   ];
 
   const HERO_PROXIES = {
@@ -65,18 +71,24 @@
   ].map((id) => [id, `assets/hero-wall/${id}.webp`]));
 
   const HERO_SLOTS = [
-    { x: -34, y: -25, z: -90, r: -6, scale: 0.88 },
-    { x: -16, y: -29, z: 92, r: 4, scale: 0.97 },
-    { x: 5, y: -30, z: 150, r: -3, scale: 1.03 },
-    { x: 27, y: -24, z: -46, r: 6, scale: 0.9 },
-    { x: 38, y: -7, z: 68, r: -4, scale: 0.95 },
-    { x: 31, y: 14, z: 136, r: 5, scale: 1 },
-    { x: 18, y: 29, z: -56, r: -6, scale: 0.88 },
-    { x: -3, y: 31, z: 104, r: 4, scale: 0.97 },
-    { x: -24, y: 27, z: -82, r: 6, scale: 0.87 },
-    { x: -38, y: 10, z: 84, r: -4, scale: 0.96 },
-    { x: -40, y: -8, z: -118, r: 5, scale: 0.84 },
-    { x: -24, y: -5, z: 164, r: -3, scale: 1.04 },
+    { x: -36, y: -28, z: -90, r: -6, scale: 0.86 },
+    { x: -21, y: -31, z: 92, r: 4, scale: 0.94 },
+    { x: -4, y: -32, z: 150, r: -3, scale: 1 },
+    { x: 14, y: -30, z: -46, r: 6, scale: 0.88 },
+    { x: 31, y: -24, z: 68, r: -4, scale: 0.92 },
+    { x: 40, y: -8, z: 136, r: 5, scale: 0.98 },
+    { x: 37, y: 10, z: -56, r: -6, scale: 0.86 },
+    { x: 28, y: 25, z: 104, r: 4, scale: 0.95 },
+    { x: 11, y: 31, z: -82, r: 6, scale: 0.84 },
+    { x: -7, y: 31, z: 84, r: -4, scale: 0.94 },
+    { x: -25, y: 27, z: -118, r: 5, scale: 0.82 },
+    { x: -39, y: 14, z: 164, r: -3, scale: 1.01 },
+    { x: -41, y: -5, z: -70, r: 5, scale: 0.85 },
+    { x: -32, y: -18, z: 118, r: -4, scale: 0.96 },
+    { x: -15, y: -9, z: -130, r: 6, scale: 0.8 },
+    { x: 4, y: -11, z: 90, r: -5, scale: 0.9 },
+    { x: 20, y: 2, z: -100, r: 4, scale: 0.82 },
+    { x: -9, y: 11, z: 130, r: -3, scale: 0.95 },
   ];
 
   const SERVICES = [
@@ -128,13 +140,8 @@
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
-  const handoffFor = (item) => {
-    const match = Object.entries(SECTION_WORK_IDS)
-      .find(([, ids]) => ids.includes(item?.id));
-    return match?.[0] || "fade";
-  };
   const featuredHeroItems = () => {
-    const limit = compactViewport.matches ? 9 : 12;
+    const limit = compactViewport.matches ? 12 : 18;
     return HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
   };
 
@@ -184,12 +191,12 @@
       const poster = asset(HERO_POSTERS[item.id] || imageFor(item));
       const preview = asset(previewFor(item));
       const landscape = item.orientation === "landscape";
-      const handoff = handoffFor(item);
       const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
       const depth = Math.max(0.48, Math.min(1, (slot.z + 180) / 350));
-      const orbitX = slot.x * 1.06;
-      const orbitY = slot.y * 0.92;
-      const orbitZ = slot.z * 0.7;
+      const gravityX = ((((index * 37) % 9) - 4) * 0.34).toFixed(2);
+      const gravityY = ((((index * 29) % 11) - 5) * 0.27).toFixed(2);
+      const gravityTilt = ((((index * 17) % 9) - 4) * 0.62).toFixed(2);
+      const gravityDuration = (8.6 + (index % 7) * 0.82).toFixed(2);
       return `
         <figure class="hero-tile"
                 style="
@@ -197,101 +204,60 @@
                   --layer:${Math.round(slot.z + 180)};
                   --depth:${depth.toFixed(3)};
                   --sphere-transform:translate3d(calc(-50% + ${slot.x}vw),calc(-50% + ${slot.y}vh),${slot.z}px) rotateZ(${slot.r}deg) scale(${slot.scale});
-                  --orbit-transform:translate3d(calc(-50% + ${orbitX.toFixed(2)}vw),calc(-50% + ${orbitY.toFixed(2)}vh),${orbitZ.toFixed(1)}px) rotateZ(${(-slot.r * 0.55).toFixed(2)}deg) scale(${(slot.scale * 0.96).toFixed(3)});
+                  --gravity-a:translate3d(${(-gravityX * 0.55).toFixed(2)}vw,${(gravityY * 0.25).toFixed(2)}vh,0) rotateZ(${(-gravityTilt * 0.55).toFixed(2)}deg);
+                  --gravity-b:translate3d(${gravityX}vw,${(-gravityY).toFixed(2)}vh,18px) rotateZ(${gravityTilt}deg);
+                  --gravity-c:translate3d(${(-gravityX * 0.25).toFixed(2)}vw,${gravityY}vh,-10px) rotateZ(${(-gravityTilt * 0.2).toFixed(2)}deg);
+                  --gravity-duration:${gravityDuration}s;
+                  --gravity-delay:${(-index * 0.47).toFixed(2)}s;
                 "
                 data-hero-id="${escapeHtml(item.id)}"
-                data-handoff="${handoff}"
                 data-orientation="${landscape ? "landscape" : "portrait"}"
                 data-depth="${depth.toFixed(2)}">
-          <div class="hero-tile__surface">
-            <img src="${escapeHtml(poster)}"
-                 alt=""
-                 width="${landscape ? 1280 : 720}"
-                 height="${landscape ? 720 : 1280}"
-                 ${index === 0 ? 'fetchpriority="high"' : ""}
-                 loading="${index < 8 ? "eager" : "lazy"}"
-                 decoding="async">
-            ${preview ? `
-              <video data-ambient-video
-                     data-hero-video
-                     data-work-id="${escapeHtml(item.id)}"
-                     data-src="${escapeHtml(preview)}"
-                     muted
-                     loop
-                     playsinline
-                     preload="none"
-                     poster="${escapeHtml(poster)}"
-                     aria-hidden="true"></video>` : ""}
+          <div class="hero-tile__body">
+            <div class="hero-tile__surface">
+              <img src="${escapeHtml(poster)}"
+                   alt=""
+                   width="${landscape ? 1280 : 720}"
+                   height="${landscape ? 720 : 1280}"
+                   ${index === 0 ? 'fetchpriority="high"' : ""}
+                   loading="${index < 8 ? "eager" : "lazy"}"
+                   decoding="async">
+              ${preview ? `
+                <video data-ambient-video
+                       data-hero-video
+                       data-work-id="${escapeHtml(item.id)}"
+                       data-src="${escapeHtml(preview)}"
+                       muted
+                       loop
+                       playsinline
+                       preload="none"
+                       poster="${escapeHtml(poster)}"
+                       aria-hidden="true"></video>` : ""}
+            </div>
           </div>
         </figure>`;
     }).join("");
   }
 
-  function syncHeroExitGeometry() {
-    const tiles = [...document.querySelectorAll("[data-hero-id]")];
-    if (!tiles.length) return;
-
-    tiles.forEach((tile, index) => {
-      const handoff = tile.dataset.handoff || "fade";
-      const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
-      const drift = Math.sin((index + 1) * 1.7) * 8;
-      const handoffBias = handoff === "voti"
-        ? -8
-        : handoff === "kayky"
-          ? 7
-          : handoff === "nsf"
-            ? 18
-            : (index % 2 ? 34 : -34);
-      const arcX = slot.x * 0.72 + drift;
-      const arcY = slot.y * 0.42 + 24 + (index % 3) * 5;
-      const exitX = slot.x * 0.38 + handoffBias;
-      const exitY = (compactViewport.matches ? 82 : 88) + (index % 4) * 9;
-      const exitRotation = slot.r * -0.7 + (index % 2 ? 4 : -4);
-      const scale = tile.dataset.orientation === "landscape" ? 0.9 : 0.94;
-
-      tile.style.setProperty(
-        "--handoff-transform",
-        `translate3d(calc(-50% + ${arcX.toFixed(2)}vw),calc(-50% + ${arcY.toFixed(2)}vh),${Math.round(slot.z * 0.32)}px) rotateZ(${(-slot.r * 0.35).toFixed(2)}deg) scale(${scale})`,
-      );
-      tile.style.setProperty(
-        "--exit-transform",
-        `translate3d(calc(-50% + ${exitX.toFixed(2)}vw),calc(-50% + ${exitY}vh),-140px) rotateZ(${exitRotation.toFixed(2)}deg) scale(${compactViewport.matches ? 0.78 : 0.84})`,
-      );
-    });
-  }
-
-  function setupHeroChoreography(forceMotion = false) {
+  function setupHeroLifecycle() {
     const hero = document.querySelector(".hero");
-    const sentinel = document.querySelector(".hero__handoff-sentinel");
-    const supportsScrollTimeline = Boolean(
-      CSS.supports?.("animation-timeline", "scroll()")
-      || CSS.supports?.("animation-timeline", "scroll(root)"),
-    );
-    const nativeTimeline = supportsScrollTimeline && (
-      !reducedMotion.matches
-      || forceMotion
-      || document.documentElement.classList.contains("motion-opt-in")
-    );
-
-    document.documentElement.classList.toggle("has-scroll-timeline", nativeTimeline);
-    document.documentElement.classList.toggle("no-scroll-timeline", !nativeTimeline);
-    if ((!forceMotion && reducedMotion.matches) || !hero || !sentinel) return;
-    if (hero.dataset.choreographyReady === "true") return;
-    hero.dataset.choreographyReady = "true";
-
-    const setExited = (exited) => hero.classList.toggle("is-exited", exited);
+    if (!hero) return;
+    const setActive = (active) => {
+      hero.classList.toggle("is-inactive", !active);
+      document.dispatchEvent(new Event("heroactivitychange"));
+    };
 
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        setExited(entries.some((entry) => entry.isIntersecting));
-      }, { rootMargin: "0px 0px 18% 0px" });
-      observer.observe(sentinel);
+      const observer = new IntersectionObserver(([entry]) => {
+        setActive(entry.isIntersecting && entry.intersectionRatio > 0);
+      }, { threshold: [0, 0.001], rootMargin: "-1px 0px 0px 0px" });
+      observer.observe(hero);
     } else {
-      setExited(true);
+      setActive(true);
     }
   }
 
-  function setupPointerField(forceMotion = false) {
+  function setupPointerField() {
     const sticky = document.querySelector(".hero__sticky");
     const orbit = document.querySelector("[data-hero-orbit]");
     const tiles = [...document.querySelectorAll(".hero-tile")];
@@ -300,7 +266,7 @@
       !sticky
       || !orbit
       || !tiles.length
-      || (!forceMotion && reducedMotion.matches)
+      || reducedMotion.matches
       || !finePointer.matches
       || sticky.dataset.pointerReady === "true"
     ) return;
@@ -353,40 +319,15 @@
   }
 
   function setupAmbientMotion() {
-    const button = document.querySelector("[data-motion-toggle]");
-    const status = document.querySelector("[data-motion-status]");
     const videos = [...document.querySelectorAll("[data-ambient-video]")];
     const visibilityRatios = new Map();
     let activeVideos = new Set();
     const playheads = new Map();
-    let userPaused = reducedMotion.matches || saveData;
-    let userOptIn = false;
 
-    if (!button || !videos.length) {
-      if (button) button.hidden = true;
-      return;
-    }
+    if (!videos.length) return;
 
     const systemBlocksMotion = () => reducedMotion.matches || saveData;
-    const motionAllowed = () => userOptIn || !systemBlocksMotion();
-
-    const setControl = () => {
-      const needsOptIn = systemBlocksMotion() && !userOptIn;
-      button.hidden = false;
-      button.setAttribute("aria-pressed", String(!needsOptIn && userPaused));
-      button.textContent = needsOptIn
-        ? "Ativar movimento"
-        : userPaused
-          ? "Retomar vídeos"
-          : "Pausar vídeos";
-      if (status) {
-        status.textContent = needsOptIn
-          ? "Movimento desligado por preferência do sistema ou economia de dados. Você pode ativá-lo manualmente."
-          : userPaused
-            ? "Vídeos pausados."
-            : "Vídeos em movimento.";
-      }
-    };
+    const motionAllowed = () => !systemBlocksMotion();
 
     const rememberPlayhead = (video) => {
       const id = video.dataset.workId;
@@ -438,9 +379,11 @@
     };
 
     const syncVideo = (video) => {
+      const heroIsActive = !video.hasAttribute("data-hero-video")
+        || !video.closest(".hero")?.classList.contains("is-inactive");
       const shouldPlay = motionAllowed()
-        && !userPaused
         && !document.hidden
+        && heroIsActive
         && activeVideos.has(video);
 
       if (!shouldPlay) {
@@ -456,35 +399,17 @@
     };
 
     const sync = () => {
-      const globallyPaused = !motionAllowed() || userPaused || document.hidden;
+      const globallyPaused = !motionAllowed() || document.hidden;
       document.documentElement.classList.toggle("motion-paused", globallyPaused);
       videos.forEach(syncVideo);
-      setControl();
     };
 
-    button.addEventListener("click", () => {
-      if (systemBlocksMotion() && !userOptIn) {
-        userOptIn = true;
-        userPaused = false;
-        document.documentElement.classList.add("motion-opt-in");
-        setupHeroChoreography(true);
-        setupPointerField(true);
-        setupPreviewPlayback(true);
-        syncHeroExitGeometry();
-        sync();
-        return;
-      }
-      userPaused = !userPaused;
-      sync();
-    });
     document.addEventListener("visibilitychange", sync);
+    document.addEventListener("heroactivitychange", sync);
     reducedMotion.addEventListener?.("change", () => {
-      if (!systemBlocksMotion() && !userOptIn) {
-        userPaused = false;
-        setupHeroChoreography();
+      if (!systemBlocksMotion()) {
         setupPointerField();
         setupPreviewPlayback();
-        syncHeroExitGeometry();
       }
       sync();
     });
@@ -504,7 +429,6 @@
       refreshActiveVideos();
     }
 
-    setControl();
     if (!motionAllowed()) return;
     const scheduleSync = () => {
       if ("requestIdleCallback" in window) {
@@ -827,9 +751,10 @@
     });
   }
 
-  function setupPreviewPlayback(forceMotion = false) {
+  function setupPreviewPlayback() {
     if (
-      (!forceMotion && (reducedMotion.matches || saveData))
+      reducedMotion.matches
+      || saveData
       || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
     ) return;
 
@@ -893,7 +818,10 @@
     const elements = [...document.querySelectorAll(selector)];
     if (reducedMotion.matches || !("IntersectionObserver" in window)) return;
 
-    elements.forEach((element) => element.classList.add("reveal-pending"));
+    elements.forEach((element, index) => {
+      element.classList.add("reveal-pending");
+      element.style.setProperty("--reveal-order", String(index % 6));
+    });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -913,12 +841,7 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
-    requestAnimationFrame(() => {
-      syncHeroExitGeometry();
-      requestAnimationFrame(syncHeroExitGeometry);
-    });
-    window.addEventListener("resize", () => requestAnimationFrame(syncHeroExitGeometry), { passive: true });
-    setupHeroChoreography();
+    setupHeroLifecycle();
     setupPointerField();
     setupAmbientMotion();
     setupPreviewPlayback();
