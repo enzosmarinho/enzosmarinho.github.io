@@ -14,12 +14,12 @@ de cliente. Antes de editar: `git fetch --prune`, `git status` e `npm run check`
 | `index.html` | página pública, indexável e selecionada |
 | `versions/kinetic/` | CSS e JS exclusivos da página pública |
 | `cases.js` | fonte única de perfil, papéis e trabalhos verificáveis |
-| `versions/fable/`, `showreel/`, `direcao/`, `editorial/` | laboratório `noindex` |
-| `versions/shared.css`, `shared.js` | base do laboratório, sem dependência da home |
 | `404.html` | página de erro autocontida |
 
 A home continua estática e sem framework. Não adicionar dependência de runtime
 quando HTML, CSS e JavaScript nativos resolverem o problema.
+Experimentos visuais aposentados permanecem recuperáveis no histórico do Git,
+mas não fazem parte da árvore publicada.
 
 ## Processo de criação
 

@@ -214,3 +214,24 @@ test("the retired kinetic route cannot expose a broken duplicate", () => {
   assert.match(kineticRouteHtml, /content="0; url=\.\.\/\.\.\/"/);
   assert.match(kineticRouteHtml, /href="\.\.\/\.\.\/">Abrir o portfólio atual/);
 });
+
+test("obsolete portfolio laboratories stay out of the published tree", () => {
+  const retired = [
+    "versions/index.html",
+    "versions/chooser.css",
+    "versions/shared.css",
+    "versions/shared.js",
+    "versions/direcao/index.html",
+    "versions/editorial/index.html",
+    "versions/fable/index.html",
+    "versions/showreel/index.html",
+    "render.js",
+    "assets/icons.svg",
+    "assets/portfolio-share.jpg",
+    "design-qa.md",
+  ];
+
+  for (const file of retired) {
+    assert.equal(fs.existsSync(path.join(root, file)), false, `obsolete file returned: ${file}`);
+  }
+});

@@ -3,6 +3,6 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check cases.js && node --check render.js && npm test"
+    "check": "node --check cases.js && node --check versions/kinetic/kinetic.js && npm test"
   }
 }
