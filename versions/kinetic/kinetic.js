@@ -31,6 +31,12 @@
     "DUf-ODMDWqA",
     "DSldztZCA9P",
     "DWpa8TQCKvX",
+    "DUQ8YNYEc4z",
+    "DW4c4OjkdA5",
+    "DHtF3CvxAlF",
+    "DOzGHz2iLGz",
+    "DUJfuJsCPir",
+    "DYBL_r1jP3A",
   ];
 
   const HERO_PROXIES = {
@@ -38,6 +44,21 @@
     DaBe_RIhl06: "assets/hero-wall/negocio-sem-filtro.mp4",
     ADKpionmFiw: "assets/hero-wall/kayky-long-form.mp4",
   };
+
+  const SECTION_WORK_IDS = Object.freeze({
+    voti: [
+      "qBTk1irwDc4",
+      "DQfTWkhiK4k",
+      "DXiIx4_kQ-0",
+      "DSldztZCA9P",
+      "DWpa8TQCKvX",
+      "DKkdTYyItAy",
+      "DGLMxcXRRJ4",
+      "DUJfuJsCPir",
+    ],
+    kayky: ["ADKpionmFiw", "DZUo3jokhkP", "DZGeYPdBiet"],
+    nsf: ["DaBe_RIhl06", "DaNgCEIFkJB", "DaFxmK1DjRc"],
+  });
 
   const HERO_POSTERS = Object.fromEntries([
     "qBTk1irwDc4",
@@ -50,18 +71,24 @@
   ].map((id) => [id, `assets/hero-wall/${id}.webp`]));
 
   const HERO_SLOTS = [
-    { x: -34, y: -25, z: -90, r: -6, scale: 0.88 },
-    { x: -16, y: -29, z: 92, r: 4, scale: 0.97 },
-    { x: 5, y: -30, z: 150, r: -3, scale: 1.03 },
-    { x: 27, y: -24, z: -46, r: 6, scale: 0.9 },
-    { x: 38, y: -7, z: 68, r: -4, scale: 0.95 },
-    { x: 31, y: 14, z: 136, r: 5, scale: 1 },
-    { x: 18, y: 29, z: -56, r: -6, scale: 0.88 },
-    { x: -3, y: 31, z: 104, r: 4, scale: 0.97 },
-    { x: -24, y: 27, z: -82, r: 6, scale: 0.87 },
-    { x: -38, y: 10, z: 84, r: -4, scale: 0.96 },
-    { x: -40, y: -8, z: -118, r: 5, scale: 0.84 },
-    { x: -24, y: -5, z: 164, r: -3, scale: 1.04 },
+    { x: -36, y: -28, z: -90, r: -6, scale: 0.86 },
+    { x: -21, y: -31, z: 92, r: 4, scale: 0.94 },
+    { x: -4, y: -32, z: 150, r: -3, scale: 1 },
+    { x: 14, y: -30, z: -46, r: 6, scale: 0.88 },
+    { x: 31, y: -24, z: 68, r: -4, scale: 0.92 },
+    { x: 40, y: -8, z: 136, r: 5, scale: 0.98 },
+    { x: 37, y: 10, z: -56, r: -6, scale: 0.86 },
+    { x: 28, y: 25, z: 104, r: 4, scale: 0.95 },
+    { x: 11, y: 31, z: -82, r: 6, scale: 0.84 },
+    { x: -7, y: 31, z: 84, r: -4, scale: 0.94 },
+    { x: -25, y: 27, z: -118, r: 5, scale: 0.82 },
+    { x: -39, y: 14, z: 164, r: -3, scale: 1.01 },
+    { x: -41, y: -5, z: -70, r: 5, scale: 0.85 },
+    { x: -32, y: -18, z: 118, r: -4, scale: 0.96 },
+    { x: -15, y: -9, z: -130, r: 6, scale: 0.8 },
+    { x: 4, y: -11, z: 90, r: -5, scale: 0.9 },
+    { x: 20, y: 2, z: -100, r: 4, scale: 0.82 },
+    { x: -9, y: 11, z: 130, r: -3, scale: 0.95 },
   ];
 
   const SERVICES = [
@@ -113,14 +140,8 @@
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
-  const destinationFor = (item) => {
-    if (item?.client === "VOTI Software") return { key: "voti", label: "VOTI", href: "#provas" };
-    if (item?.client === "Kayky Pitondo") return { key: "kayky", label: "Kayky", href: "#formatos" };
-    if (item?.client === "Negócio Sem Filtro") return { key: "nsf", label: "Negócio Sem Filtro", href: "#formatos" };
-    return { key: "fade", label: "Arquivo", href: "#arquivo" };
-  };
   const featuredHeroItems = () => {
-    const limit = compactViewport.matches ? 9 : 12;
+    const limit = compactViewport.matches ? 12 : 18;
     return HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
   };
 
@@ -170,12 +191,12 @@
       const poster = asset(HERO_POSTERS[item.id] || imageFor(item));
       const preview = asset(previewFor(item));
       const landscape = item.orientation === "landscape";
-      const destination = destinationFor(item);
       const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
       const depth = Math.max(0.48, Math.min(1, (slot.z + 180) / 350));
-      const orbitX = slot.x * 1.06;
-      const orbitY = slot.y * 0.92;
-      const orbitZ = slot.z * 0.7;
+      const gravityX = ((((index * 37) % 9) - 4) * 0.34).toFixed(2);
+      const gravityY = ((((index * 29) % 11) - 5) * 0.27).toFixed(2);
+      const gravityTilt = ((((index * 17) % 9) - 4) * 0.62).toFixed(2);
+      const gravityDuration = (8.6 + (index % 7) * 0.82).toFixed(2);
       return `
         <figure class="hero-tile"
                 style="
@@ -183,164 +204,60 @@
                   --layer:${Math.round(slot.z + 180)};
                   --depth:${depth.toFixed(3)};
                   --sphere-transform:translate3d(calc(-50% + ${slot.x}vw),calc(-50% + ${slot.y}vh),${slot.z}px) rotateZ(${slot.r}deg) scale(${slot.scale});
-                  --orbit-transform:translate3d(calc(-50% + ${orbitX.toFixed(2)}vw),calc(-50% + ${orbitY.toFixed(2)}vh),${orbitZ.toFixed(1)}px) rotateZ(${(-slot.r * 0.55).toFixed(2)}deg) scale(${(slot.scale * 0.96).toFixed(3)});
+                  --gravity-a:translate3d(${(-gravityX * 0.55).toFixed(2)}vw,${(gravityY * 0.25).toFixed(2)}vh,0) rotateZ(${(-gravityTilt * 0.55).toFixed(2)}deg);
+                  --gravity-b:translate3d(${gravityX}vw,${(-gravityY).toFixed(2)}vh,18px) rotateZ(${gravityTilt}deg);
+                  --gravity-c:translate3d(${(-gravityX * 0.25).toFixed(2)}vw,${gravityY}vh,-10px) rotateZ(${(-gravityTilt * 0.2).toFixed(2)}deg);
+                  --gravity-duration:${gravityDuration}s;
+                  --gravity-delay:${(-index * 0.47).toFixed(2)}s;
                 "
                 data-hero-id="${escapeHtml(item.id)}"
-                data-destination="${destination.key}"
                 data-orientation="${landscape ? "landscape" : "portrait"}"
                 data-depth="${depth.toFixed(2)}">
-          <div class="hero-tile__surface">
-            <img src="${escapeHtml(poster)}"
-                 alt=""
-                 width="${landscape ? 1280 : 720}"
-                 height="${landscape ? 720 : 1280}"
-                 ${index === 0 ? 'fetchpriority="high"' : ""}
-                 loading="${index < 8 ? "eager" : "lazy"}"
-                 decoding="async">
-            ${preview ? `
-              <video data-ambient-video
-                     data-hero-video
-                     data-work-id="${escapeHtml(item.id)}"
-                     data-src="${escapeHtml(preview)}"
-                     muted
-                     loop
-                     playsinline
-                     preload="none"
-                     poster="${escapeHtml(poster)}"
-                     aria-hidden="true"></video>` : ""}
-            <figcaption>
-              <span>${safe(item.client)}</span>
-              <b>${safe(item.title)}</b>
-            </figcaption>
+          <div class="hero-tile__body">
+            <div class="hero-tile__surface">
+              <img src="${escapeHtml(poster)}"
+                   alt=""
+                   width="${landscape ? 1280 : 720}"
+                   height="${landscape ? 720 : 1280}"
+                   ${index === 0 ? 'fetchpriority="high"' : ""}
+                   loading="${index < 8 ? "eager" : "lazy"}"
+                   decoding="async">
+              ${preview ? `
+                <video data-ambient-video
+                       data-hero-video
+                       data-work-id="${escapeHtml(item.id)}"
+                       data-src="${escapeHtml(preview)}"
+                       muted
+                       loop
+                       playsinline
+                       preload="none"
+                       poster="${escapeHtml(poster)}"
+                       aria-hidden="true"></video>` : ""}
+            </div>
           </div>
         </figure>`;
     }).join("");
   }
 
-  function renderHeroDestinations() {
-    const host = document.querySelector("[data-hero-destinations]");
-    if (!host) return;
-
-    const featured = featuredHeroItems();
-    const groups = [
-      { key: "voti", label: "VOTI", eyebrow: "Trabalho atual", href: "#provas" },
-      { key: "kayky", label: "Kayky", eyebrow: "Long-form + cortes", href: "#formatos" },
-      { key: "nsf", label: "Negócio Sem Filtro", eyebrow: "Curadoria + cortes", href: "#formatos" },
-    ];
-
-    host.innerHTML = groups.map((group) => {
-      const count = featured.filter((item) => destinationFor(item).key === group.key).length;
-      if (!count) return "";
-      return `
-      <a class="hero-destination"
-         data-hero-destination="${group.key}"
-         href="${group.href}"
-         tabindex="-1"
-         aria-label="Ir para ${escapeHtml(group.label)}, ${count} ${count === 1 ? "vídeo" : "vídeos"}">
-        <span>${safe(group.eyebrow)}</span>
-        <b>${safe(group.label)}</b>
-        <small>${count} ${count === 1 ? "vídeo" : "vídeos"}</small>
-      </a>`;
-    }).join("");
-  }
-
-  function syncHeroDestinationGeometry() {
-    const tiles = [...document.querySelectorAll("[data-hero-id]")];
-    if (!tiles.length) return;
-
-    const votiTargets = compactViewport.matches
-      ? [[-23, 17], [3, 17], [-11, 38], [17, 38]]
-      : [
-        [-35, 18], [-22, 18], [-9, 18],
-        [-35, 38], [-22, 38], [-9, 38],
-      ];
-    const destinationIndexes = new Map();
-
-    tiles.forEach((tile, index) => {
-      const destination = tile.dataset.destination || "fade";
-      const localIndex = destinationIndexes.get(destination) || 0;
-      destinationIndexes.set(destination, localIndex + 1);
-
-      if (destination === "voti") {
-        const [x, y] = votiTargets[localIndex] || votiTargets[votiTargets.length - 1];
-        const landscape = tile.dataset.orientation === "landscape";
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),0) rotateZ(0deg) scale(${compactViewport.matches ? (landscape ? 0.58 : 0.62) : (landscape ? 0.72 : 0.68)})`,
-        );
-        tile.style.setProperty("--destination-opacity", "1");
-        tile.style.setProperty("--destination-filter", "brightness(0.9) saturate(0.95)");
-        return;
-      }
-
-      if (destination === "kayky") {
-        const x = compactViewport.matches ? -10 + localIndex * 16 : 3 + localIndex * 11;
-        const y = compactViewport.matches ? 59 + localIndex * 5 : 62 + localIndex * 5;
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-90px) rotateZ(${localIndex % 2 ? -2 : 2}deg) scale(${compactViewport.matches ? 0.56 : 0.62})`,
-        );
-        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.62" : "0.72");
-        tile.style.setProperty("--destination-filter", "brightness(0.52) saturate(0.74)");
-        return;
-      }
-
-      if (destination === "nsf") {
-        const x = compactViewport.matches ? 19 : 32;
-        const y = compactViewport.matches ? 62 + localIndex * 5 : 61 + localIndex * 5;
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-110px) rotateZ(-2deg) scale(${compactViewport.matches ? 0.54 : 0.6})`,
-        );
-        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.5" : "0.64");
-        tile.style.setProperty("--destination-filter", "brightness(0.5) saturate(0.72)");
-        return;
-      }
-
-      const side = index % 2 ? 1 : -1;
-      tile.style.setProperty(
-        "--settle-transform",
-        `translate3d(calc(-50% + ${side * (43 + localIndex * 3)}vw),calc(-50% + ${46 + localIndex * 5}vh),-180px) rotateZ(${side * 8}deg) scale(0.64)`,
-      );
-      tile.style.setProperty("--destination-opacity", "0");
-      tile.style.setProperty("--destination-filter", "brightness(0.28) blur(3px)");
-    });
-  }
-
-  function setupHeroChoreography(forceMotion = false) {
+  function setupHeroLifecycle() {
     const hero = document.querySelector(".hero");
-    const sentinel = document.querySelector(".hero__settle-sentinel");
-    const supportsScrollTimeline = Boolean(
-      CSS.supports?.("animation-timeline", "scroll()")
-      || CSS.supports?.("animation-timeline", "scroll(root)"),
-    );
-    const nativeTimeline = supportsScrollTimeline && !reducedMotion.matches;
-
-    document.documentElement.classList.toggle("has-scroll-timeline", nativeTimeline);
-    document.documentElement.classList.toggle("no-scroll-timeline", !nativeTimeline);
-    if ((!forceMotion && reducedMotion.matches) || !hero || !sentinel) return;
-    if (hero.dataset.choreographyReady === "true") return;
-    hero.dataset.choreographyReady = "true";
-
-    const setSettled = (settled) => {
-      hero.classList.toggle("is-settled", settled);
-      hero.querySelector("[data-hero-destinations]")?.setAttribute("aria-hidden", String(!settled));
-      hero.querySelectorAll("[data-hero-destination]").forEach((destination) => {
-        destination.tabIndex = settled ? 0 : -1;
-      });
+    if (!hero) return;
+    const setActive = (active) => {
+      hero.classList.toggle("is-inactive", !active);
+      document.dispatchEvent(new Event("heroactivitychange"));
     };
 
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        setSettled(entries.some((entry) => entry.isIntersecting));
-      }, { rootMargin: "0px 0px 18% 0px" });
-      observer.observe(sentinel);
+      const observer = new IntersectionObserver(([entry]) => {
+        setActive(entry.isIntersecting && entry.intersectionRatio > 0);
+      }, { threshold: [0, 0.001], rootMargin: "-1px 0px 0px 0px" });
+      observer.observe(hero);
     } else {
-      setSettled(true);
+      setActive(true);
     }
   }
 
-  function setupPointerField(forceMotion = false) {
+  function setupPointerField() {
     const sticky = document.querySelector(".hero__sticky");
     const orbit = document.querySelector("[data-hero-orbit]");
     const tiles = [...document.querySelectorAll(".hero-tile")];
@@ -349,7 +266,7 @@
       !sticky
       || !orbit
       || !tiles.length
-      || (!forceMotion && reducedMotion.matches)
+      || reducedMotion.matches
       || !finePointer.matches
       || sticky.dataset.pointerReady === "true"
     ) return;
@@ -402,40 +319,15 @@
   }
 
   function setupAmbientMotion() {
-    const button = document.querySelector("[data-motion-toggle]");
-    const status = document.querySelector("[data-motion-status]");
     const videos = [...document.querySelectorAll("[data-ambient-video]")];
     const visibilityRatios = new Map();
     let activeVideos = new Set();
     const playheads = new Map();
-    let userPaused = reducedMotion.matches || saveData;
-    let userOptIn = false;
 
-    if (!button || !videos.length) {
-      if (button) button.hidden = true;
-      return;
-    }
+    if (!videos.length) return;
 
     const systemBlocksMotion = () => reducedMotion.matches || saveData;
-    const motionAllowed = () => userOptIn || !systemBlocksMotion();
-
-    const setControl = () => {
-      const needsOptIn = systemBlocksMotion() && !userOptIn;
-      button.hidden = false;
-      button.setAttribute("aria-pressed", String(needsOptIn || userPaused));
-      button.textContent = needsOptIn
-        ? "Ativar movimento"
-        : userPaused
-          ? "Retomar vídeos"
-          : "Pausar vídeos";
-      if (status) {
-        status.textContent = needsOptIn
-          ? "Movimento desligado por preferência do sistema ou economia de dados. Você pode ativá-lo manualmente."
-          : userPaused
-            ? "Vídeos pausados."
-            : "Vídeos em movimento.";
-      }
-    };
+    const motionAllowed = () => !systemBlocksMotion();
 
     const rememberPlayhead = (video) => {
       const id = video.dataset.workId;
@@ -450,7 +342,8 @@
         if (ratio <= 0) return;
         const id = video.dataset.workId || `anonymous-${videos.indexOf(video)}`;
         const current = byWork.get(id);
-        if (!current || ratio > current.ratio) byWork.set(id, { video, ratio });
+        const score = ratio + (video.hasAttribute("data-section-video") ? 2 : 0);
+        if (!current || score > current.score) byWork.set(id, { video, score });
       });
       return new Set([...byWork.values()].map((entry) => entry.video));
     };
@@ -486,9 +379,11 @@
     };
 
     const syncVideo = (video) => {
+      const heroIsActive = !video.hasAttribute("data-hero-video")
+        || !video.closest(".hero")?.classList.contains("is-inactive");
       const shouldPlay = motionAllowed()
-        && !userPaused
         && !document.hidden
+        && heroIsActive
         && activeVideos.has(video);
 
       if (!shouldPlay) {
@@ -504,35 +399,17 @@
     };
 
     const sync = () => {
-      const globallyPaused = !motionAllowed() || userPaused || document.hidden;
+      const globallyPaused = !motionAllowed() || document.hidden;
       document.documentElement.classList.toggle("motion-paused", globallyPaused);
       videos.forEach(syncVideo);
-      setControl();
     };
 
-    button.addEventListener("click", () => {
-      if (systemBlocksMotion() && !userOptIn) {
-        userOptIn = true;
-        userPaused = false;
-        document.documentElement.classList.add("motion-opt-in");
-        setupHeroChoreography(true);
-        setupPointerField(true);
-        setupPreviewPlayback(true);
-        syncHeroDestinationGeometry();
-        sync();
-        return;
-      }
-      userPaused = !userPaused;
-      sync();
-    });
     document.addEventListener("visibilitychange", sync);
+    document.addEventListener("heroactivitychange", sync);
     reducedMotion.addEventListener?.("change", () => {
-      if (!systemBlocksMotion() && !userOptIn) {
-        userPaused = false;
-        setupHeroChoreography();
+      if (!systemBlocksMotion()) {
         setupPointerField();
         setupPreviewPlayback();
-        syncHeroDestinationGeometry();
       }
       sync();
     });
@@ -552,7 +429,6 @@
       refreshActiveVideos();
     }
 
-    setControl();
     if (!motionAllowed()) return;
     const scheduleSync = () => {
       if ("requestIdleCallback" in window) {
@@ -568,24 +444,15 @@
   function renderVoti() {
     const host = document.querySelector("[data-voti-wall]");
     if (!host) return;
-    const priority = [
-      "qBTk1irwDc4",
-      "DQfTWkhiK4k",
-      "DXiIx4_kQ-0",
-      "DSldztZCA9P",
-      "DWpa8TQCKvX",
-      "DKkdTYyItAy",
-      "DGLMxcXRRJ4",
-      "DUJfuJsCPir",
-    ];
-    const items = priority.map(itemById).filter(Boolean);
+    const items = SECTION_WORK_IDS.voti.map(itemById).filter(Boolean);
     host.innerHTML = items.map((item) => mediaLink(item, "voti-card", true)).join("");
   }
 
   function renderKayky() {
     const host = document.querySelector("[data-kayky-case]");
-    const longForm = itemById("ADKpionmFiw");
-    const cuts = ["DZUo3jokhkP", "DZGeYPdBiet"].map(itemById).filter(Boolean);
+    const [longFormId, ...cutIds] = SECTION_WORK_IDS.kayky;
+    const longForm = itemById(longFormId);
+    const cuts = cutIds.map(itemById).filter(Boolean);
     if (!host || !longForm) return;
 
     host.innerHTML = `
@@ -597,16 +464,19 @@
           Ver vídeo longo
         </a>
       </div>
-      ${mediaLink(longForm, "kayky__long", true)}
-      <div class="kayky__cuts" aria-label="Cortes derivados do vídeo longo">
-        ${cuts.map((item) => mediaLink(item, "", true)).join("")}
+      <div class="kayky__media">
+        ${mediaLink(longForm, "kayky__long", true)}
+        <div class="kayky__cuts" aria-label="Cortes derivados do vídeo longo">
+          ${cuts.map((item) => mediaLink(item, "", true)).join("")}
+        </div>
       </div>`;
   }
 
   function renderNsf() {
     const host = document.querySelector("[data-nsf-case]");
-    const main = itemById("DaBe_RIhl06");
-    const supporting = ["DaNgCEIFkJB", "DaFxmK1DjRc"].map(itemById).filter(Boolean);
+    const [mainId, ...supportingIds] = SECTION_WORK_IDS.nsf;
+    const main = itemById(mainId);
+    const supporting = supportingIds.map(itemById).filter(Boolean);
     if (!host || !main) return;
 
     host.innerHTML = `
@@ -881,9 +751,10 @@
     });
   }
 
-  function setupPreviewPlayback(forceMotion = false) {
+  function setupPreviewPlayback() {
     if (
-      (!forceMotion && (reducedMotion.matches || saveData))
+      reducedMotion.matches
+      || saveData
       || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
     ) return;
 
@@ -947,7 +818,10 @@
     const elements = [...document.querySelectorAll(selector)];
     if (reducedMotion.matches || !("IntersectionObserver" in window)) return;
 
-    elements.forEach((element) => element.classList.add("reveal-pending"));
+    elements.forEach((element, index) => {
+      element.classList.add("reveal-pending");
+      element.style.setProperty("--reveal-order", String(index % 6));
+    });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -960,7 +834,6 @@
 
   function init() {
     renderHeroWall();
-    renderHeroDestinations();
     renderVoti();
     renderKayky();
     renderNsf();
@@ -968,12 +841,7 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
-    requestAnimationFrame(() => {
-      syncHeroDestinationGeometry();
-      requestAnimationFrame(syncHeroDestinationGeometry);
-    });
-    window.addEventListener("resize", () => requestAnimationFrame(syncHeroDestinationGeometry), { passive: true });
-    setupHeroChoreography();
+    setupHeroLifecycle();
     setupPointerField();
     setupAmbientMotion();
     setupPreviewPlayback();
