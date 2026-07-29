@@ -39,6 +39,21 @@
     ADKpionmFiw: "assets/hero-wall/kayky-long-form.mp4",
   };
 
+  const SECTION_WORK_IDS = Object.freeze({
+    voti: [
+      "qBTk1irwDc4",
+      "DQfTWkhiK4k",
+      "DXiIx4_kQ-0",
+      "DSldztZCA9P",
+      "DWpa8TQCKvX",
+      "DKkdTYyItAy",
+      "DGLMxcXRRJ4",
+      "DUJfuJsCPir",
+    ],
+    kayky: ["ADKpionmFiw", "DZUo3jokhkP", "DZGeYPdBiet"],
+    nsf: ["DaBe_RIhl06", "DaNgCEIFkJB", "DaFxmK1DjRc"],
+  });
+
   const HERO_POSTERS = Object.fromEntries([
     "qBTk1irwDc4",
     "DaBe_RIhl06",
@@ -113,11 +128,10 @@
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
-  const destinationFor = (item) => {
-    if (item?.client === "VOTI Software") return { key: "voti", label: "VOTI", href: "#provas" };
-    if (item?.client === "Kayky Pitondo") return { key: "kayky", label: "Kayky", href: "#formatos" };
-    if (item?.client === "Negócio Sem Filtro") return { key: "nsf", label: "Negócio Sem Filtro", href: "#formatos" };
-    return { key: "fade", label: "Arquivo", href: "#arquivo" };
+  const handoffFor = (item) => {
+    const match = Object.entries(SECTION_WORK_IDS)
+      .find(([, ids]) => ids.includes(item?.id));
+    return match?.[0] || "fade";
   };
   const featuredHeroItems = () => {
     const limit = compactViewport.matches ? 9 : 12;
@@ -170,7 +184,7 @@
       const poster = asset(HERO_POSTERS[item.id] || imageFor(item));
       const preview = asset(previewFor(item));
       const landscape = item.orientation === "landscape";
-      const destination = destinationFor(item);
+      const handoff = handoffFor(item);
       const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
       const depth = Math.max(0.48, Math.min(1, (slot.z + 180) / 350));
       const orbitX = slot.x * 1.06;
@@ -186,7 +200,7 @@
                   --orbit-transform:translate3d(calc(-50% + ${orbitX.toFixed(2)}vw),calc(-50% + ${orbitY.toFixed(2)}vh),${orbitZ.toFixed(1)}px) rotateZ(${(-slot.r * 0.55).toFixed(2)}deg) scale(${(slot.scale * 0.96).toFixed(3)});
                 "
                 data-hero-id="${escapeHtml(item.id)}"
-                data-destination="${destination.key}"
+                data-handoff="${handoff}"
                 data-orientation="${landscape ? "landscape" : "portrait"}"
                 data-depth="${depth.toFixed(2)}">
           <div class="hero-tile__surface">
@@ -208,113 +222,56 @@
                      preload="none"
                      poster="${escapeHtml(poster)}"
                      aria-hidden="true"></video>` : ""}
-            <figcaption>
-              <span>${safe(item.client)}</span>
-              <b>${safe(item.title)}</b>
-            </figcaption>
           </div>
         </figure>`;
     }).join("");
   }
 
-  function renderHeroDestinations() {
-    const host = document.querySelector("[data-hero-destinations]");
-    if (!host) return;
-
-    const featured = featuredHeroItems();
-    const groups = [
-      { key: "voti", label: "VOTI", eyebrow: "Trabalho atual", href: "#provas" },
-      { key: "kayky", label: "Kayky", eyebrow: "Long-form + cortes", href: "#formatos" },
-      { key: "nsf", label: "Negócio Sem Filtro", eyebrow: "Curadoria + cortes", href: "#formatos" },
-    ];
-
-    host.innerHTML = groups.map((group) => {
-      const count = featured.filter((item) => destinationFor(item).key === group.key).length;
-      if (!count) return "";
-      return `
-      <a class="hero-destination"
-         data-hero-destination="${group.key}"
-         href="${group.href}"
-         tabindex="-1"
-         aria-label="Ir para ${escapeHtml(group.label)}, ${count} ${count === 1 ? "vídeo" : "vídeos"}">
-        <span>${safe(group.eyebrow)}</span>
-        <b>${safe(group.label)}</b>
-        <small>${count} ${count === 1 ? "vídeo" : "vídeos"}</small>
-      </a>`;
-    }).join("");
-  }
-
-  function syncHeroDestinationGeometry() {
+  function syncHeroExitGeometry() {
     const tiles = [...document.querySelectorAll("[data-hero-id]")];
     if (!tiles.length) return;
 
-    const votiTargets = compactViewport.matches
-      ? [[-23, 17], [3, 17], [-11, 38], [17, 38]]
-      : [
-        [-35, 18], [-22, 18], [-9, 18],
-        [-35, 38], [-22, 38], [-9, 38],
-      ];
-    const destinationIndexes = new Map();
-
     tiles.forEach((tile, index) => {
-      const destination = tile.dataset.destination || "fade";
-      const localIndex = destinationIndexes.get(destination) || 0;
-      destinationIndexes.set(destination, localIndex + 1);
+      const handoff = tile.dataset.handoff || "fade";
+      const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
+      const drift = Math.sin((index + 1) * 1.7) * 8;
+      const handoffBias = handoff === "voti"
+        ? -8
+        : handoff === "kayky"
+          ? 7
+          : handoff === "nsf"
+            ? 18
+            : (index % 2 ? 34 : -34);
+      const arcX = slot.x * 0.72 + drift;
+      const arcY = slot.y * 0.42 + 24 + (index % 3) * 5;
+      const exitX = slot.x * 0.38 + handoffBias;
+      const exitY = (compactViewport.matches ? 82 : 88) + (index % 4) * 9;
+      const exitRotation = slot.r * -0.7 + (index % 2 ? 4 : -4);
+      const scale = tile.dataset.orientation === "landscape" ? 0.9 : 0.94;
 
-      if (destination === "voti") {
-        const [x, y] = votiTargets[localIndex] || votiTargets[votiTargets.length - 1];
-        const landscape = tile.dataset.orientation === "landscape";
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),0) rotateZ(0deg) scale(${compactViewport.matches ? (landscape ? 0.58 : 0.62) : (landscape ? 0.72 : 0.68)})`,
-        );
-        tile.style.setProperty("--destination-opacity", "1");
-        tile.style.setProperty("--destination-filter", "brightness(0.9) saturate(0.95)");
-        return;
-      }
-
-      if (destination === "kayky") {
-        const x = compactViewport.matches ? -10 + localIndex * 16 : 3 + localIndex * 11;
-        const y = compactViewport.matches ? 59 + localIndex * 5 : 62 + localIndex * 5;
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-90px) rotateZ(${localIndex % 2 ? -2 : 2}deg) scale(${compactViewport.matches ? 0.56 : 0.62})`,
-        );
-        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.62" : "0.72");
-        tile.style.setProperty("--destination-filter", "brightness(0.52) saturate(0.74)");
-        return;
-      }
-
-      if (destination === "nsf") {
-        const x = compactViewport.matches ? 19 : 32;
-        const y = compactViewport.matches ? 62 + localIndex * 5 : 61 + localIndex * 5;
-        tile.style.setProperty(
-          "--settle-transform",
-          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-110px) rotateZ(-2deg) scale(${compactViewport.matches ? 0.54 : 0.6})`,
-        );
-        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.5" : "0.64");
-        tile.style.setProperty("--destination-filter", "brightness(0.5) saturate(0.72)");
-        return;
-      }
-
-      const side = index % 2 ? 1 : -1;
       tile.style.setProperty(
-        "--settle-transform",
-        `translate3d(calc(-50% + ${side * (43 + localIndex * 3)}vw),calc(-50% + ${46 + localIndex * 5}vh),-180px) rotateZ(${side * 8}deg) scale(0.64)`,
+        "--handoff-transform",
+        `translate3d(calc(-50% + ${arcX.toFixed(2)}vw),calc(-50% + ${arcY.toFixed(2)}vh),${Math.round(slot.z * 0.32)}px) rotateZ(${(-slot.r * 0.35).toFixed(2)}deg) scale(${scale})`,
       );
-      tile.style.setProperty("--destination-opacity", "0");
-      tile.style.setProperty("--destination-filter", "brightness(0.28) blur(3px)");
+      tile.style.setProperty(
+        "--exit-transform",
+        `translate3d(calc(-50% + ${exitX.toFixed(2)}vw),calc(-50% + ${exitY}vh),-140px) rotateZ(${exitRotation.toFixed(2)}deg) scale(${compactViewport.matches ? 0.78 : 0.84})`,
+      );
     });
   }
 
   function setupHeroChoreography(forceMotion = false) {
     const hero = document.querySelector(".hero");
-    const sentinel = document.querySelector(".hero__settle-sentinel");
+    const sentinel = document.querySelector(".hero__handoff-sentinel");
     const supportsScrollTimeline = Boolean(
       CSS.supports?.("animation-timeline", "scroll()")
       || CSS.supports?.("animation-timeline", "scroll(root)"),
     );
-    const nativeTimeline = supportsScrollTimeline && !reducedMotion.matches;
+    const nativeTimeline = supportsScrollTimeline && (
+      !reducedMotion.matches
+      || forceMotion
+      || document.documentElement.classList.contains("motion-opt-in")
+    );
 
     document.documentElement.classList.toggle("has-scroll-timeline", nativeTimeline);
     document.documentElement.classList.toggle("no-scroll-timeline", !nativeTimeline);
@@ -322,21 +279,15 @@
     if (hero.dataset.choreographyReady === "true") return;
     hero.dataset.choreographyReady = "true";
 
-    const setSettled = (settled) => {
-      hero.classList.toggle("is-settled", settled);
-      hero.querySelector("[data-hero-destinations]")?.setAttribute("aria-hidden", String(!settled));
-      hero.querySelectorAll("[data-hero-destination]").forEach((destination) => {
-        destination.tabIndex = settled ? 0 : -1;
-      });
-    };
+    const setExited = (exited) => hero.classList.toggle("is-exited", exited);
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
-        setSettled(entries.some((entry) => entry.isIntersecting));
+        setExited(entries.some((entry) => entry.isIntersecting));
       }, { rootMargin: "0px 0px 18% 0px" });
       observer.observe(sentinel);
     } else {
-      setSettled(true);
+      setExited(true);
     }
   }
 
@@ -422,7 +373,7 @@
     const setControl = () => {
       const needsOptIn = systemBlocksMotion() && !userOptIn;
       button.hidden = false;
-      button.setAttribute("aria-pressed", String(needsOptIn || userPaused));
+      button.setAttribute("aria-pressed", String(!needsOptIn && userPaused));
       button.textContent = needsOptIn
         ? "Ativar movimento"
         : userPaused
@@ -450,7 +401,8 @@
         if (ratio <= 0) return;
         const id = video.dataset.workId || `anonymous-${videos.indexOf(video)}`;
         const current = byWork.get(id);
-        if (!current || ratio > current.ratio) byWork.set(id, { video, ratio });
+        const score = ratio + (video.hasAttribute("data-section-video") ? 2 : 0);
+        if (!current || score > current.score) byWork.set(id, { video, score });
       });
       return new Set([...byWork.values()].map((entry) => entry.video));
     };
@@ -518,7 +470,7 @@
         setupHeroChoreography(true);
         setupPointerField(true);
         setupPreviewPlayback(true);
-        syncHeroDestinationGeometry();
+        syncHeroExitGeometry();
         sync();
         return;
       }
@@ -532,7 +484,7 @@
         setupHeroChoreography();
         setupPointerField();
         setupPreviewPlayback();
-        syncHeroDestinationGeometry();
+        syncHeroExitGeometry();
       }
       sync();
     });
@@ -568,24 +520,15 @@
   function renderVoti() {
     const host = document.querySelector("[data-voti-wall]");
     if (!host) return;
-    const priority = [
-      "qBTk1irwDc4",
-      "DQfTWkhiK4k",
-      "DXiIx4_kQ-0",
-      "DSldztZCA9P",
-      "DWpa8TQCKvX",
-      "DKkdTYyItAy",
-      "DGLMxcXRRJ4",
-      "DUJfuJsCPir",
-    ];
-    const items = priority.map(itemById).filter(Boolean);
+    const items = SECTION_WORK_IDS.voti.map(itemById).filter(Boolean);
     host.innerHTML = items.map((item) => mediaLink(item, "voti-card", true)).join("");
   }
 
   function renderKayky() {
     const host = document.querySelector("[data-kayky-case]");
-    const longForm = itemById("ADKpionmFiw");
-    const cuts = ["DZUo3jokhkP", "DZGeYPdBiet"].map(itemById).filter(Boolean);
+    const [longFormId, ...cutIds] = SECTION_WORK_IDS.kayky;
+    const longForm = itemById(longFormId);
+    const cuts = cutIds.map(itemById).filter(Boolean);
     if (!host || !longForm) return;
 
     host.innerHTML = `
@@ -597,16 +540,19 @@
           Ver vídeo longo
         </a>
       </div>
-      ${mediaLink(longForm, "kayky__long", true)}
-      <div class="kayky__cuts" aria-label="Cortes derivados do vídeo longo">
-        ${cuts.map((item) => mediaLink(item, "", true)).join("")}
+      <div class="kayky__media">
+        ${mediaLink(longForm, "kayky__long", true)}
+        <div class="kayky__cuts" aria-label="Cortes derivados do vídeo longo">
+          ${cuts.map((item) => mediaLink(item, "", true)).join("")}
+        </div>
       </div>`;
   }
 
   function renderNsf() {
     const host = document.querySelector("[data-nsf-case]");
-    const main = itemById("DaBe_RIhl06");
-    const supporting = ["DaNgCEIFkJB", "DaFxmK1DjRc"].map(itemById).filter(Boolean);
+    const [mainId, ...supportingIds] = SECTION_WORK_IDS.nsf;
+    const main = itemById(mainId);
+    const supporting = supportingIds.map(itemById).filter(Boolean);
     if (!host || !main) return;
 
     host.innerHTML = `
@@ -960,7 +906,6 @@
 
   function init() {
     renderHeroWall();
-    renderHeroDestinations();
     renderVoti();
     renderKayky();
     renderNsf();
@@ -969,10 +914,10 @@
     renderMethod();
     renderDiagnostic();
     requestAnimationFrame(() => {
-      syncHeroDestinationGeometry();
-      requestAnimationFrame(syncHeroDestinationGeometry);
+      syncHeroExitGeometry();
+      requestAnimationFrame(syncHeroExitGeometry);
     });
-    window.addEventListener("resize", () => requestAnimationFrame(syncHeroDestinationGeometry), { passive: true });
+    window.addEventListener("resize", () => requestAnimationFrame(syncHeroExitGeometry), { passive: true });
     setupHeroChoreography();
     setupPointerField();
     setupAmbientMotion();

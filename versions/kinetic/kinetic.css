@@ -281,7 +281,7 @@ p {
 
 .hero {
   position: relative;
-  height: 165svh;
+  height: 142svh;
   min-height: 54rem;
   background: var(--ink);
 }
@@ -348,7 +348,6 @@ p {
 }
 
 .hero__spin,
-.hero__destinations,
 .hero__wall {
   position: absolute;
   inset: 0;
@@ -363,97 +362,12 @@ p {
   z-index: 1;
 }
 
-.hero__destinations {
-  z-index: 5;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.hero-destination {
-  position: absolute;
-  display: flex;
-  min-width: 0;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgb(243 240 232 / 0.28);
-  flex-direction: column;
-  color: var(--paper);
-  font-family: var(--mono);
-  line-height: 1.3;
-  text-decoration: none;
-}
-
-.hero-destination[data-hero-destination="voti"] {
-  right: clamp(1rem, 5vw, 5.5rem);
-  bottom: clamp(7rem, 17vh, 11rem);
-  width: clamp(15rem, 23vw, 23rem);
-}
-
-.hero-destination[data-hero-destination="kayky"] {
-  bottom: 1.2rem;
-  left: 52%;
-  width: clamp(9rem, 14vw, 13rem);
-  opacity: 0.6;
-}
-
-.hero-destination[data-hero-destination="nsf"] {
-  right: clamp(1rem, 4vw, 4rem);
-  bottom: 1.2rem;
-  width: clamp(11rem, 17vw, 16rem);
-  opacity: 0.6;
-}
-
-.hero.is-settled .hero__destinations {
-  pointer-events: auto;
-}
-
-.hero.is-settled .hero-destination {
-  pointer-events: auto;
-}
-
-.hero.is-settled .hero__spin {
+.hero.is-exited .hero__spin {
   animation-play-state: paused;
 }
 
-.hero.is-settled .hero__orbit {
-  pointer-events: auto;
-}
-
-.hero.is-settled .hero__wall {
+.hero.is-exited .hero__wall {
   pointer-events: none;
-}
-
-.hero.is-settled .hero__footer {
-  pointer-events: none;
-}
-
-.hero-destination span,
-.hero-destination b,
-.hero-destination small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.hero-destination span {
-  color: var(--signal);
-  font-size: clamp(0.66rem, 0.61rem + 0.1vw, 0.74rem);
-  white-space: nowrap;
-}
-
-.hero-destination b {
-  font-family: var(--display);
-  font-size: clamp(2.25rem, 4vw, 4.8rem);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-.hero-destination small {
-  margin-top: 0.35rem;
-  color: var(--paper-dim);
-  font-size: 0.62rem;
-  text-transform: uppercase;
 }
 
 .motion-paused .hero__spin {
@@ -536,30 +450,9 @@ p {
   animation: name-enter 900ms var(--ease-move) both;
 }
 
-.hero__footer {
-  position: absolute;
-  z-index: 6;
-  right: 0;
-  bottom: clamp(1.4rem, 3vh, 2.6rem);
-  left: 0;
-  display: grid;
-  grid-template-columns: minmax(15rem, 1fr) auto;
-  align-items: end;
-  gap: var(--space-2);
-}
-
-.hero__footer p {
-  margin: 0;
-  max-width: 27rem;
-  font-size: var(--step-1);
-  line-height: 1.25;
-  letter-spacing: -0.035em;
-  text-shadow: 0 1px 1.5rem rgb(0 0 0 / 0.95);
-}
-
 .hero-tile {
-  --destination-opacity: 1;
-  --destination-filter: brightness(0.9) saturate(0.96);
+  --handoff-transform: var(--orbit-transform);
+  --exit-transform: translate3d(-50%, 92vh, -140px) rotateZ(4deg) scale(0.84);
   position: absolute;
   z-index: calc(10 + var(--layer));
   top: 50%;
@@ -621,41 +514,8 @@ p {
   opacity: 1;
 }
 
-.hero-tile figcaption {
-  position: absolute;
-  z-index: 2;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 0.5rem 0.58rem;
-  background: rgb(11 11 10 / 0.88);
-  color: var(--paper);
-  font-family: var(--mono);
-  font-size: clamp(0.5rem, 0.48rem + 0.08vw, 0.6rem);
-  line-height: 1.3;
-  opacity: 0;
-  transform: translate3d(0, 100%, 0);
-}
-
-.hero-tile figcaption span,
-.hero-tile figcaption b {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hero-tile figcaption span {
-  color: var(--signal);
-}
-
-.hero-tile figcaption b {
-  font-weight: 500;
-}
-
 .hero-tile--a {
   --orbit-transform: translate3d(24vw, 8vh, 150px) rotateZ(7deg) rotateY(16deg) scale(0.86);
-  --settle-transform: translate3d(0, 8vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 12%;
   left: 3%;
   width: min(18vw, 17rem);
@@ -665,7 +525,6 @@ p {
 
 .hero-tile--b {
   --orbit-transform: translate3d(18vw, -18vh, -80px) rotateZ(-5deg) rotateY(-16deg) scale(0.82);
-  --settle-transform: translate3d(0, -10vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 34%;
   left: 17%;
   width: min(25vw, 25rem);
@@ -674,7 +533,6 @@ p {
 
 .hero-tile--c {
   --orbit-transform: translate3d(-13vw, 29vh, 110px) rotateZ(6deg) rotateY(18deg) scale(0.85);
-  --settle-transform: translate3d(-1vw, 3vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 15%;
   left: 40%;
   width: min(15vw, 14rem);
@@ -683,7 +541,6 @@ p {
 
 .hero-tile--d {
   --orbit-transform: translate3d(-30vw, -20vh, 130px) rotateZ(-7deg) rotateY(-19deg) scale(0.84);
-  --settle-transform: translate3d(-39vw, 10vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 41%;
   left: 52%;
   width: min(18vw, 17rem);
@@ -692,7 +549,6 @@ p {
 
 .hero-tile--e {
   --orbit-transform: translate3d(-18vw, 30vh, -90px) rotateZ(5deg) rotateY(14deg) scale(0.8);
-  --settle-transform: translate3d(-7vw, 14vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 10%;
   right: 17%;
   width: min(23vw, 22rem);
@@ -701,7 +557,6 @@ p {
 
 .hero-tile--f {
   --orbit-transform: translate3d(-25vw, 8vh, 120px) rotateZ(-6deg) rotateY(-17deg) scale(0.86);
-  --settle-transform: translate3d(-7vw, -11vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 29%;
   right: 3%;
   width: min(15vw, 14rem);
@@ -710,7 +565,6 @@ p {
 
 .hero-tile--g {
   --orbit-transform: translate3d(18vw, -33vh, -70px) rotateZ(7deg) rotateY(16deg) scale(0.82);
-  --settle-transform: translate3d(4vw, -5vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.78);
   top: 56%;
   left: 31%;
   width: min(14vw, 13rem);
@@ -719,7 +573,6 @@ p {
 
 .hero-tile--h {
   --orbit-transform: translate3d(-4vw, -38vh, 100px) rotateZ(-5deg) rotateY(-15deg) scale(0.84);
-  --settle-transform: translate3d(-7vw, -6vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.72);
   top: 60%;
   right: 20%;
   width: min(21vw, 20rem);
@@ -781,89 +634,33 @@ p {
     .hero__name {
       animation: hero-name-scroll linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 58svh;
-    }
-
-    .hero__wall {
-      animation: hero-wall-scroll linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 58svh;
-    }
-
-    .hero__destinations {
-      animation: hero-destinations-scroll linear both;
-      animation-timeline: scroll(root);
-      animation-range: 24svh 58svh;
-    }
-
-    .hero__footer {
-      animation: hero-footer-scroll linear both;
-      animation-timeline: scroll(root);
-      animation-range: 22svh 58svh;
+      animation-range: 0 38svh;
     }
 
     .hero__axis {
       animation: hero-axis-scroll linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 58svh;
+      animation-range: 0 40svh;
     }
 
     .hero-tile,
     .hero-tile:first-child {
       opacity: 1;
-      animation: tile-orbit-settle linear both;
+      animation: tile-orbit-exit linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 58svh;
-    }
-
-    .hero-tile figcaption {
-      animation: tile-caption-settle linear both;
-      animation-timeline: scroll(root);
-      animation-range: 34svh 56svh;
+      animation-range: 0 40svh;
     }
   }
 
   @keyframes hero-name-scroll {
     0%,
-    68% {
+    52% {
       opacity: 1;
       transform: translate3d(0, -50%, 0);
     }
     100% {
-      opacity: 0.94;
-      transform: translate3d(0, calc(-50% - 7vh), 0);
-    }
-  }
-
-  @keyframes hero-wall-scroll {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
-  @keyframes hero-footer-scroll {
-    0%,
-    54% {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
       opacity: 0;
-      transform: translate3d(0, 2vh, 0);
-    }
-  }
-
-  @keyframes hero-destinations-scroll {
-    0% {
-      opacity: 0;
-      transform: translate3d(0, 1.5rem, 0);
-    }
-    100% {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
+      transform: translate3d(0, calc(-50% - 12vh), 0);
     }
   }
 
@@ -877,39 +674,31 @@ p {
       transform: translate(-50%, -50%) rotate(8deg) scale(1.06);
     }
     100% {
-      opacity: 0.1;
+      opacity: 0;
       transform: translate(-50%, -50%) rotate(18deg) scale(1.16);
     }
   }
 
-  @keyframes tile-orbit-settle {
+  @keyframes tile-orbit-exit {
     0% {
       opacity: 1;
       transform: var(--sphere-transform);
       filter: brightness(1);
     }
-    34% {
+    32% {
       opacity: 1;
       transform: var(--orbit-transform);
       filter: brightness(0.96);
     }
-    78%,
-    100% {
-      opacity: var(--destination-opacity);
-      transform: var(--settle-transform);
-      filter: var(--destination-filter);
-    }
-  }
-
-  @keyframes tile-caption-settle {
-    0%,
-    55% {
-      opacity: 0;
-      transform: translate3d(0, 100%, 0);
-    }
-    100% {
+    68% {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
+      transform: var(--handoff-transform);
+      filter: brightness(0.9) saturate(0.96);
+    }
+    100% {
+      opacity: 0;
+      transform: var(--exit-transform);
+      filter: brightness(0.55) saturate(0.8) blur(2px);
     }
   }
 }
@@ -924,28 +713,21 @@ p {
     filter 620ms var(--ease-out);
 }
 
-.no-scroll-timeline .hero__name,
-.no-scroll-timeline .hero__footer {
+.no-scroll-timeline .hero__name {
   transition:
     opacity 700ms var(--ease-out),
     transform 900ms var(--ease-move);
 }
 
-.no-scroll-timeline .hero.is-settled .hero__name {
-  opacity: 0.94;
-  transform: translate3d(0, calc(-50% - 7vh), 0);
-}
-
-.no-scroll-timeline .hero.is-settled .hero__footer {
+.no-scroll-timeline .hero.is-exited .hero__name {
   opacity: 0;
-  pointer-events: none;
-  transform: translate3d(0, 2vh, 0);
+  transform: translate3d(0, calc(-50% - 12vh), 0);
 }
 
-.no-scroll-timeline .hero.is-settled .hero-tile {
-  opacity: var(--destination-opacity);
-  transform: var(--settle-transform);
-  filter: var(--destination-filter);
+.no-scroll-timeline .hero.is-exited .hero-tile {
+  opacity: 0;
+  transform: var(--exit-transform);
+  filter: brightness(0.55) saturate(0.8) blur(2px);
 }
 
 .no-scroll-timeline .hero__axis {
@@ -954,31 +736,12 @@ p {
     transform 900ms var(--ease-move);
 }
 
-.no-scroll-timeline .hero.is-settled .hero__axis {
-  opacity: 0.1;
+.no-scroll-timeline .hero.is-exited .hero__axis {
+  opacity: 0;
   transform: translate(-50%, -50%) rotate(18deg) scale(1.16);
 }
 
-.no-scroll-timeline .hero__destinations {
-  transition: opacity 500ms var(--ease-out);
-}
-
-.no-scroll-timeline .hero.is-settled .hero__destinations {
-  opacity: 1;
-}
-
-.no-scroll-timeline .hero-tile figcaption {
-  transition:
-    opacity 280ms var(--ease-out) 560ms,
-    transform 420ms var(--ease-out) 500ms;
-}
-
-.no-scroll-timeline .hero.is-settled .hero-tile figcaption {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-.hero__settle-sentinel {
+.hero__handoff-sentinel {
   position: absolute;
   right: 0;
   bottom: 12svh;
@@ -1082,7 +845,7 @@ p {
 
 .voti__wall {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-flow: dense;
   gap: clamp(0.5rem, 1vw, 0.9rem);
   align-items: start;
@@ -1147,13 +910,13 @@ p {
 }
 
 .voti-card {
-  grid-column: span 2;
+  grid-column: span 1;
   min-height: 0;
   aspect-ratio: 9 / 16;
 }
 
 .voti-card[data-orientation="landscape"] {
-  grid-column: span 6;
+  grid-column: span 2;
   aspect-ratio: 16 / 9;
 }
 
@@ -1183,16 +946,23 @@ p {
   margin-bottom: var(--space-5);
 }
 
+.formats {
+  padding-top: clamp(4rem, 7vw, 7rem);
+}
+
+.formats__head {
+  margin-bottom: clamp(3rem, 4vw, 4rem);
+}
+
 .kayky {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--space-2);
+  grid-template-columns: minmax(15rem, 0.55fr) minmax(0, 1.45fr);
+  gap: var(--space-5);
   align-items: start;
   padding-bottom: var(--space-6);
 }
 
 .kayky__copy {
-  grid-column: 1 / 5;
   padding-top: var(--space-3);
 }
 
@@ -1219,14 +989,21 @@ p {
   text-transform: uppercase;
 }
 
+.kayky__media {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
 .kayky__long {
-  grid-column: 5 / 11;
+  grid-column: 1 / -1;
   aspect-ratio: 16 / 9;
 }
 
 .kayky__cuts {
-  grid-column: 11 / 13;
+  grid-column: 1 / -1;
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
 }
 
@@ -1247,8 +1024,8 @@ p {
 
 .nsf {
   display: grid;
-  grid-template-columns: 0.7fr 1.3fr;
-  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.55fr);
+  gap: clamp(2rem, 3vw, 3.5rem);
   align-items: center;
   padding-block: var(--space-5);
   border-top: 1px solid var(--line);
@@ -1923,7 +1700,7 @@ textarea {
   }
 
   .hero {
-    height: 158svh;
+    height: 136svh;
     min-height: 44rem;
   }
 
@@ -1950,76 +1727,15 @@ textarea {
     top: 44%;
   }
 
-  .hero__destinations {
-    display: block;
-    padding: 0;
-  }
-
-  .hero-destination {
-    padding: 0.42rem 0.48rem;
-  }
-
-  .hero-destination[data-hero-destination="voti"] {
-    top: calc(var(--nav-h) + 1rem);
-    right: 1rem;
-    bottom: auto;
-    width: 10rem;
-  }
-
-  .hero-destination[data-hero-destination="voti"] b {
-    font-size: 2.6rem;
-  }
-
-  .hero-destination[data-hero-destination="kayky"],
-  .hero-destination[data-hero-destination="nsf"] {
-    top: calc(var(--nav-h) + 1rem);
-    right: auto;
-    bottom: auto;
-    left: 1rem;
-    width: 7.8rem;
-    opacity: 0.64;
-  }
-
-  .hero-destination[data-hero-destination="nsf"] {
-    top: calc(var(--nav-h) + 5.5rem);
-    width: 9.5rem;
-  }
-
-  .hero-destination[data-hero-destination="kayky"] b,
-  .hero-destination[data-hero-destination="nsf"] b {
-    font-size: 1.5rem;
-  }
-
-  .hero-destination[data-hero-destination="kayky"] span,
-  .hero-destination[data-hero-destination="nsf"] span {
-    font-size: 0.55rem;
-  }
-
-  .hero__footer {
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 0.9rem;
-    padding: 2.8rem 0 max(0.35rem, env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, rgb(11 11 10 / 0) 0%, rgb(11 11 10 / 0.72) 20%, rgb(11 11 10 / 0.94) 58%, var(--ink) 100%);
-  }
-
-  .hero__footer p {
-    grid-column: 1 / -1;
-    max-width: 18rem;
-  }
-
-  .hero__footer .button {
-    margin-right: 7.5rem;
-  }
-
   .motion-control {
     right: max(0.65rem, env(safe-area-inset-right));
     bottom: max(0.65rem, env(safe-area-inset-bottom));
+    padding-inline: 0.65rem;
+    font-size: 0.6rem;
   }
 
   .hero-tile--a {
     --orbit-transform: translate3d(42vw, 10vh, 90px) rotateZ(7deg) rotateY(14deg) scale(0.76);
-    --settle-transform: translate3d(6vw, 10vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.55);
     top: 27%;
     left: -4%;
     width: 39vw;
@@ -2027,7 +1743,6 @@ textarea {
 
   .hero-tile--b {
     --orbit-transform: translate3d(-15vw, -25vh, -60px) rotateZ(-6deg) rotateY(-15deg) scale(0.72);
-    --settle-transform: translate3d(3vw, -11vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.68);
     top: 49%;
     left: 22%;
     width: 61vw;
@@ -2035,7 +1750,6 @@ textarea {
 
   .hero-tile--c {
     --orbit-transform: translate3d(-35vw, 20vh, 80px) rotateZ(6deg) rotateY(16deg) scale(0.78);
-    --settle-transform: translate3d(20vw, 19vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.56);
     top: 19%;
     left: 54%;
     width: 34vw;
@@ -2043,7 +1757,6 @@ textarea {
 
   .hero-tile--d {
     --orbit-transform: translate3d(-50vw, -10vh, 70px) rotateZ(-7deg) rotateY(-14deg) scale(0.76);
-    --settle-transform: translate3d(-61vw, 20vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.56);
     top: 43%;
     right: -6%;
     left: auto;
@@ -2052,7 +1765,6 @@ textarea {
 
   .hero-tile--e {
     --orbit-transform: translate3d(30vw, -28vh, -50px) rotateZ(5deg) rotateY(13deg) scale(0.74);
-    --settle-transform: translate3d(44vw, 2vh, 0) rotateZ(0deg) rotateY(0deg) scale(0.82);
     top: 63%;
     right: auto;
     left: -8%;
@@ -2065,30 +1777,16 @@ textarea {
     display: none;
   }
 
-  .hero-tile figcaption {
-    padding: 0.42rem 0.46rem;
-    font-size: 0.48rem;
-  }
-
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
       .hero__name {
-        animation-range: 0 52svh;
+        animation-range: 0 32svh;
       }
 
-      .hero__wall,
       .hero__axis,
       .hero-tile,
       .hero-tile:first-child {
-        animation-range: 0 52svh;
-      }
-
-      .hero__footer {
-        animation-range: 16svh 50svh;
-      }
-
-      .hero-tile figcaption {
-        animation-range: 24svh 50svh;
+        animation-range: 0 34svh;
       }
     }
   }
@@ -2112,7 +1810,7 @@ textarea {
   }
 
   .voti__wall {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .voti-card,
@@ -2123,7 +1821,7 @@ textarea {
   }
 
   .voti-card[data-orientation="landscape"] {
-    grid-column: span 2;
+    grid-column: span 1;
     aspect-ratio: 16 / 9;
   }
 
@@ -2138,8 +1836,7 @@ textarea {
   }
 
   .kayky__copy,
-  .kayky__long,
-  .kayky__cuts {
+  .kayky__media {
     width: 100%;
   }
 
@@ -2153,6 +1850,18 @@ textarea {
 
   .nsf__media {
     width: 100%;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(9.5rem, 42vw);
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: thin;
+  }
+
+  .nsf__media .media-link {
+    scroll-snap-align: start;
   }
 
   .service {
@@ -2208,10 +1917,6 @@ textarea {
 }
 
 @media (max-width: 30rem) {
-  .hero__footer {
-    grid-template-columns: 1fr;
-  }
-
   .motion-control {
     justify-self: start;
   }
@@ -2260,13 +1965,10 @@ textarea {
   .hero-tile__surface,
   .hero__orbit,
   .hero__spin,
-  .hero__destinations,
   .hero__wall,
   .hero__axis,
-  .hero__footer,
   .hero__name,
   .hero__name span,
-  .hero-tile figcaption,
   .reveal-pending {
     animation: none !important;
     opacity: 1;
@@ -2284,11 +1986,8 @@ textarea {
   .hero-tile__surface,
   .hero__orbit,
   .hero__spin,
-  .hero__destinations,
   .hero__wall,
   .hero__axis,
-  .hero__footer,
-  .hero-tile figcaption,
   .reveal-pending {
     transform: none;
   }
@@ -2299,29 +1998,19 @@ textarea {
   }
 
   .hero__axis,
-  .hero__destinations,
-  .hero-tile figcaption,
-  .hero__settle-sentinel {
+  .hero__handoff-sentinel {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html.motion-opt-in .hero {
-    height: 165svh;
+    height: 142svh;
     min-height: 54rem;
   }
 
   html.motion-opt-in .hero__axis,
-  html.motion-opt-in .hero__destinations,
-  html.motion-opt-in .hero-tile figcaption,
-  html.motion-opt-in .hero__settle-sentinel {
-    display: grid;
-  }
-
-  html.motion-opt-in .hero__axis,
-  html.motion-opt-in .hero-tile figcaption,
-  html.motion-opt-in .hero__settle-sentinel {
+  html.motion-opt-in .hero__handoff-sentinel {
     display: block;
   }
 
@@ -2338,7 +2027,7 @@ textarea {
     animation-play-state: paused !important;
   }
 
-  html.motion-opt-in .hero.is-settled .hero__spin {
+  html.motion-opt-in .hero.is-exited .hero__spin {
     animation-play-state: paused !important;
   }
 
@@ -2346,8 +2035,7 @@ textarea {
     transition-duration: 900ms !important;
   }
 
-  html.motion-opt-in.no-scroll-timeline .hero__name,
-  html.motion-opt-in.no-scroll-timeline .hero__footer {
+  html.motion-opt-in.no-scroll-timeline .hero__name {
     transition-duration: 900ms !important;
   }
 
@@ -2355,30 +2043,35 @@ textarea {
     transition-duration: 900ms !important;
   }
 
-  html.motion-opt-in.no-scroll-timeline .hero__destinations {
-    opacity: 0;
-    transition-duration: 500ms !important;
-  }
+}
 
-  html.motion-opt-in.no-scroll-timeline .hero.is-settled .hero__destinations {
-    opacity: 1;
-  }
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: reduce) {
+    html.motion-opt-in.has-scroll-timeline .hero__name {
+      animation: hero-name-scroll 1s linear both !important;
+      animation-timeline: scroll(root) !important;
+      animation-range: 0 38svh !important;
+    }
 
-  html.motion-opt-in.no-scroll-timeline .hero-tile figcaption {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-    transition-duration: 420ms !important;
-  }
+    html.motion-opt-in.has-scroll-timeline .hero__axis {
+      animation: hero-axis-scroll 1s linear both !important;
+      animation-timeline: scroll(root) !important;
+      animation-range: 0 40svh !important;
+    }
 
-  html.motion-opt-in.no-scroll-timeline .hero.is-settled .hero-tile figcaption {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+    html.motion-opt-in.has-scroll-timeline .hero-tile,
+    html.motion-opt-in.has-scroll-timeline .hero-tile:first-child {
+      opacity: 1;
+      animation: tile-orbit-exit 1s linear both !important;
+      animation-timeline: scroll(root) !important;
+      animation-range: 0 40svh !important;
+    }
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 48rem) {
   html.motion-opt-in .hero {
-    height: 158svh;
+    height: 136svh;
     min-height: 44rem;
   }
 }
