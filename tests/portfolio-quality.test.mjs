@@ -32,7 +32,7 @@ function visibleWords(source) {
 }
 
 test("the public root is the selected, indexable ultimate portfolio", () => {
-  assert.match(html, /<html lang="pt-BR">/);
+  assert.match(html, /<html lang="pt-BR" class="motion-paused">/);
   assert.match(html, /<body data-version="ultimate" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /<span>ENZO<\/span>\s*<span>MARINHO<\/span>/);
@@ -62,14 +62,29 @@ test("proof leads the narrative and the diagnostic closes it", () => {
 
 test("the conversion path is proportional and never a fixed package ladder", () => {
   assert.match(html, /data-diagnostic/);
+  assert.match(html, /data-diagnostic-draft-wrap/);
+  assert.match(html, /data-diagnostic-link/);
+  assert.match(html, /data-diagnostic-level/);
+  assert.match(html, /data-diagnostic-priorities/);
+  assert.match(html, /Abrir no WhatsApp/);
   for (const name of ["need", "business", "timing", "material", "approval", "reference", "outcome"]) {
     assert.match(html, new RegExp(`name="${name}"`));
   }
   assert.match(html, /Nada é enviado automaticamente/);
   assert.match(html, /Empresas diferentes não recebem a mesma proposta/);
   assert.match(html, /Investimento proporcional/);
-  assert.match(js, /Pedido montado/);
+  assert.match(js, /Pedido preparado/);
+  assert.match(js, /Rascunho atualizado/);
+  assert.match(js, /data-diagnostic-link/);
+  assert.match(js, /analyzeRequest/);
+  assert.match(js, /Projeto enxuto, com decisão direta/);
+  assert.match(js, /Operação em crescimento, com escopo coordenado/);
+  assert.match(js, /Operação estruturada, com mais dependências/);
+  assert.match(css, /@supports selector\(\.diagnostic:has\(\*\)\)/);
+  assert.match(css, /grid-template-areas:\s*"assessment label"/);
   assert.match(js, /encodeURIComponent/);
+  assert.doesNotMatch(js, /window\.open/);
+  assert.doesNotMatch(js, /bloqueou a nova aba/);
   assert.doesNotMatch(`${html}\n${js}`, /R\$\s*[\d.]+/);
   assert.doesNotMatch(dataSource, /"(?:price|payment)"\s*:/);
   assert.equal(profile.diagnostic.factors.length, 5);
@@ -130,21 +145,51 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
     assert.ok(fs.existsSync(file), `missing hero poster: ${id}`);
     return total + fs.statSync(file).size;
   }, 0);
+  const allHeroVideoBytes = [
+    "assets/hero-wall/voti-visita.mp4",
+    "assets/hero-wall/negocio-sem-filtro.mp4",
+    "assets/hero-wall/kayky-long-form.mp4",
+    "assets/previews/DQfTWkhiK4k.mp4",
+    "assets/previews/DYC7byPyEnW.mp4",
+    "assets/previews/DUf-ODMDWqA.mp4",
+    "assets/previews/DXiIx4_kQ-0.mp4",
+    "assets/previews/DTgXN2FiDV6.mp4",
+  ].reduce((total, file) => {
+    const fullPath = path.join(root, file);
+    assert.ok(fs.existsSync(fullPath), `missing hero video: ${file}`);
+    return total + fs.statSync(fullPath).size;
+  }, 0);
 
   assert.ok(totalProxyBytes < 256 * 1024, `hero proxies exceed 256 KB: ${totalProxyBytes}`);
   assert.ok(totalPosterBytes < 128 * 1024, `hero posters exceed 128 KB: ${totalPosterBytes}`);
+  assert.ok(allHeroVideoBytes < 1024 * 1024, `hero videos exceed 1 MB: ${allHeroVideoBytes}`);
   assert.match(html, /preload" as="image" href="assets\/hero-wall\/qBTk1irwDc4\.webp"/);
   assert.match(html, /<img src="assets\/hero-wall\/qBTk1irwDc4\.webp"[\s\S]*fetchpriority="high"/);
   assert.match(html, /<button class="motion-control"[^>]+data-motion-toggle/);
   assert.match(html, /class="hero__orbit" data-hero-orbit/);
+  assert.doesNotMatch(html, /data-hero-orbit aria-hidden="true"/);
+  assert.match(html, /class="hero__spin" data-hero-spin/);
+  assert.match(html, /data-hero-destinations aria-hidden="true"/);
+  assert.match(html, /data-hero-wall aria-hidden="true"/);
   assert.match(html, /class="hero__axis"/);
   assert.match(html, /class="hero__settle-sentinel"/);
   assert.match(js, /setupPointerField/);
+  assert.match(js, /renderHeroDestinations/);
+  assert.match(js, /syncHeroDestinationGeometry/);
+  assert.match(js, /data-hero-id/);
+  assert.match(js, /data-hero-destination/);
+  assert.match(js, /item\.client === "VOTI Software"[\s\S]*"#provas"/);
+  assert.match(js, /"Kayky Pitondo"[\s\S]*"Negócio Sem Filtro"[\s\S]*"#formatos"/);
+  assert.match(js, /tabindex="-1"/);
+  assert.match(js, /destination\.tabIndex = settled \? 0 : -1/);
+  assert.match(js, /setAttribute\("aria-hidden", String\(!settled\)\)/);
   assert.match(js, /pointermove/);
   assert.match(js, /requestAnimationFrame/);
   assert.doesNotMatch(html, /<video[^>]+autoplay/);
   assert.match(js, /prefers-reduced-motion: reduce/);
   assert.match(js, /navigator\.connection\?\.saveData/);
+  assert.match(js, /Ativar movimento/);
+  assert.match(js, /motion-opt-in/);
   assert.match(js, /requestIdleCallback/);
   assert.match(js, /IntersectionObserver/);
   assert.match(js, /video\.pause\(\)/);
@@ -154,11 +199,23 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@supports \(animation-timeline: scroll\(\)\)/);
   assert.match(css, /@keyframes tile-orbit-settle/);
+  assert.match(css, /@keyframes hero-idle-orbit/);
+  assert.match(css, /\.motion-paused \.hero__spin/);
+  assert.match(css, /\.hero\.is-settled \.hero__orbit\s*\{[^}]*pointer-events:\s*auto/);
+  assert.match(css, /hero-destinations-scroll/);
   assert.match(css, /transform:\s*var\(--orbit-transform\)/);
   assert.match(css, /transform:\s*var\(--settle-transform\)/);
   assert.match(css, /\.hero-tile figcaption/);
   assert.match(css, /content-visibility:\s*auto/);
-  assert.doesNotMatch(css, /animation:[^;]*infinite/);
+  const infiniteAnimations = [...css.matchAll(/animation:[^;]*infinite[^;]*/g)]
+    .map((match) => match[0]);
+  assert.ok(infiniteAnimations.length >= 1, "the controlled ambient orbit must exist");
+  assert.ok(
+    infiniteAnimations.every((animation) => animation.includes("hero-idle-orbit")),
+    `unexpected infinite animation: ${infiniteAnimations.join(" | ")}`,
+  );
+  assert.match(css, /100%\s*\{\s*opacity:\s*0\.72/);
+  assert.match(css, /100%\s*\{\s*opacity:\s*0\.88/);
 });
 
 test("keyboard, focus and form semantics have an explicit safety contract", () => {
@@ -169,7 +226,9 @@ test("keyboard, focus and form semantics have an explicit safety contract", () =
   assert.match(html, /<legend>/);
   assert.match(html, /type="radio"/);
   assert.match(html, /type="submit"/);
-  assert.match(html, /aria-pressed="false"/);
+  assert.match(html, /aria-pressed="true"/);
+  assert.match(html, /aria-describedby="motion-status"/);
+  assert.match(css, /@media \(max-width: 30rem\)[\s\S]*\.filters\s*\{[\s\S]*grid-template-columns:\s*repeat\(2/);
 });
 
 test("the page is authored, concise and avoids loose punctuation", () => {

@@ -88,6 +88,10 @@
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
+  const featuredHeroItems = () => {
+    const limit = compactViewport.matches ? 5 : 8;
+    return HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
+  };
 
   function relationshipFor(item) {
     if (item?.client === "VOTI Software") return { label: "Trabalho atual", type: "employment" };
@@ -118,8 +122,7 @@
     const host = document.querySelector("[data-hero-wall]");
     if (!host) return;
 
-    const limit = compactViewport.matches ? 5 : 8;
-    const featured = HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
+    const featured = featuredHeroItems();
     const slots = "abcdefgh";
 
     host.innerHTML = featured.map((item, index) => {
@@ -129,6 +132,7 @@
       return `
         <figure class="hero-tile hero-tile--${slots[index]}"
                 style="--index:${index}"
+                data-hero-id="${escapeHtml(item.id)}"
                 data-depth="${(0.58 + (index % 4) * 0.12).toFixed(2)}"
                 ${index === 2 || index === 5 ? 'data-plane="front"' : ""}>
           <div class="hero-tile__surface">
@@ -156,32 +160,111 @@
     }).join("");
   }
 
-  function setupHeroChoreography() {
+  function renderHeroDestinations() {
+    const host = document.querySelector("[data-hero-destinations]");
+    if (!host) return;
+
+    host.innerHTML = featuredHeroItems().map((item, index) => {
+      const destination = item.client === "VOTI Software"
+        ? "#provas"
+        : item.client === "Kayky Pitondo" || item.client === "Negócio Sem Filtro"
+          ? "#formatos"
+          : "#arquivo";
+      return `
+      <a class="hero-destination"
+         style="--index:${index}"
+         data-hero-destination="${escapeHtml(item.id)}"
+         href="${destination}"
+         tabindex="-1"
+         aria-label="Ir para ${escapeHtml(item.title)} em ${escapeHtml(item.client)}">
+        <span>${safe(item.client)}</span>
+        <b>${safe(item.title)}</b>
+      </a>`;
+    }).join("");
+  }
+
+  function syncHeroDestinationGeometry() {
+    const tiles = [...document.querySelectorAll("[data-hero-id]")];
+    const destinations = [...document.querySelectorAll("[data-hero-destination]")];
+    if (!tiles.length) return;
+
+    tiles.forEach((tile) => {
+      const destination = destinations.find(
+        (candidate) => candidate.dataset.heroDestination === tile.dataset.heroId,
+      );
+      if (!destination) return;
+
+      const tileWidth = tile.offsetWidth;
+      const tileHeight = tile.offsetHeight;
+      const destinationWidth = destination.offsetWidth;
+      const destinationHeight = destination.offsetHeight;
+      if (!tileWidth || !tileHeight || !destinationWidth || !destinationHeight) return;
+
+      const scale = Math.min(
+        destinationWidth / tileWidth,
+        destinationHeight / tileHeight,
+      );
+      const tileCenterX = tile.offsetLeft + tileWidth / 2;
+      const tileCenterY = tile.offsetTop + tileHeight / 2;
+      const destinationCenterX = destination.offsetLeft + destinationWidth / 2;
+      const destinationCenterY = destination.offsetTop + destinationHeight / 2;
+      const x = destinationCenterX - tileCenterX;
+      const y = destinationCenterY - tileCenterY;
+
+      tile.style.setProperty(
+        "--settle-transform",
+        `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotateZ(0deg) rotateY(0deg) scale(${scale.toFixed(4)})`,
+      );
+    });
+  }
+
+  function setupHeroChoreography(forceMotion = false) {
     const hero = document.querySelector(".hero");
     const sentinel = document.querySelector(".hero__settle-sentinel");
     const supportsScrollTimeline = Boolean(
       CSS.supports?.("animation-timeline", "scroll()")
       || CSS.supports?.("animation-timeline", "scroll(root)"),
     );
+    const nativeTimeline = supportsScrollTimeline && !reducedMotion.matches;
 
-    document.documentElement.classList.toggle("has-scroll-timeline", supportsScrollTimeline);
-    document.documentElement.classList.toggle("no-scroll-timeline", !supportsScrollTimeline);
-    if (supportsScrollTimeline || reducedMotion.matches || !hero || !sentinel) return;
+    document.documentElement.classList.toggle("has-scroll-timeline", nativeTimeline);
+    document.documentElement.classList.toggle("no-scroll-timeline", !nativeTimeline);
+    if ((!forceMotion && reducedMotion.matches) || !hero || !sentinel) return;
+    if (hero.dataset.choreographyReady === "true") return;
+    hero.dataset.choreographyReady = "true";
+
+    const setSettled = (settled) => {
+      hero.classList.toggle("is-settled", settled);
+      hero.querySelector("[data-hero-destinations]")?.setAttribute("aria-hidden", String(!settled));
+      hero.querySelectorAll("[data-hero-destination]").forEach((destination) => {
+        destination.tabIndex = settled ? 0 : -1;
+      });
+    };
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
-        hero.classList.toggle("is-settled", entries.some((entry) => entry.isIntersecting));
+        setSettled(entries.some((entry) => entry.isIntersecting));
       }, { rootMargin: "0px 0px 18% 0px" });
       observer.observe(sentinel);
+    } else {
+      setSettled(true);
     }
   }
 
-  function setupPointerField() {
+  function setupPointerField(forceMotion = false) {
     const sticky = document.querySelector(".hero__sticky");
     const orbit = document.querySelector("[data-hero-orbit]");
     const surfaces = [...document.querySelectorAll(".hero-tile__surface")];
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    if (!sticky || !orbit || !surfaces.length || reducedMotion.matches || !finePointer.matches) return;
+    if (
+      !sticky
+      || !orbit
+      || !surfaces.length
+      || (!forceMotion && reducedMotion.matches)
+      || !finePointer.matches
+      || sticky.dataset.pointerReady === "true"
+    ) return;
+    sticky.dataset.pointerReady = "true";
 
     let currentX = 0;
     let currentY = 0;
@@ -242,7 +325,8 @@
     const status = document.querySelector("[data-motion-status]");
     const hero = document.querySelector(".hero");
     const videos = [...document.querySelectorAll("[data-ambient-video]")];
-    let userPaused = false;
+    let userPaused = reducedMotion.matches || saveData;
+    let userOptIn = false;
     let heroVisible = true;
     let hydrated = false;
 
@@ -251,16 +335,21 @@
       return;
     }
 
-    const motionAllowed = () => !reducedMotion.matches && !saveData;
+    const systemBlocksMotion = () => reducedMotion.matches || saveData;
+    const motionAllowed = () => userOptIn || !systemBlocksMotion();
 
     const setControl = () => {
-      const unavailable = !motionAllowed();
-      button.hidden = unavailable;
-      button.setAttribute("aria-pressed", String(userPaused));
-      button.textContent = userPaused ? "Retomar vídeos" : "Pausar vídeos";
+      const needsOptIn = systemBlocksMotion() && !userOptIn;
+      button.hidden = false;
+      button.setAttribute("aria-pressed", String(needsOptIn || userPaused));
+      button.textContent = needsOptIn
+        ? "Ativar movimento"
+        : userPaused
+          ? "Retomar vídeos"
+          : "Pausar vídeos";
       if (status) {
-        status.textContent = unavailable
-          ? "Os vídeos permanecem estáticos conforme sua preferência de movimento ou economia de dados."
+        status.textContent = needsOptIn
+          ? "Movimento desligado por preferência do sistema ou economia de dados. Você pode ativá-lo manualmente."
           : userPaused
             ? "Vídeos pausados."
             : "Vídeos em movimento.";
@@ -301,11 +390,32 @@
     };
 
     button.addEventListener("click", () => {
+      if (systemBlocksMotion() && !userOptIn) {
+        userOptIn = true;
+        userPaused = false;
+        document.documentElement.classList.add("motion-opt-in");
+        setupHeroChoreography(true);
+        setupPointerField(true);
+        setupPreviewPlayback(true);
+        syncHeroDestinationGeometry();
+        hydrate();
+        return;
+      }
       userPaused = !userPaused;
       sync();
     });
     document.addEventListener("visibilitychange", sync);
-    reducedMotion.addEventListener?.("change", sync);
+    reducedMotion.addEventListener?.("change", () => {
+      if (!systemBlocksMotion() && !userOptIn) {
+        userPaused = false;
+        setupHeroChoreography();
+        setupPointerField();
+        setupPreviewPlayback();
+        syncHeroDestinationGeometry();
+      }
+      if (motionAllowed()) hydrate();
+      else sync();
+    });
 
     if ("IntersectionObserver" in window && hero) {
       const observer = new IntersectionObserver((entries) => {
@@ -506,15 +616,85 @@
 
     const form = document.querySelector("[data-diagnostic]");
     const status = document.querySelector("[data-form-status]");
+    const draftWrap = document.querySelector("[data-diagnostic-draft-wrap]");
+    const draft = document.querySelector("[data-diagnostic-draft]");
+    const draftLink = document.querySelector("[data-diagnostic-link]");
+    const levelHost = document.querySelector("[data-diagnostic-level]");
+    const prioritiesHost = document.querySelector("[data-diagnostic-priorities]");
     if (!form) return;
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
+    const analyzeRequest = (values) => {
+      const businessScores = {
+        "Profissional solo": 0,
+        "Pequena operação": 1,
+        "Equipe em crescimento": 2,
+        "Empresa estruturada": 3,
+      };
+      const timingScores = {
+        "Sem data rígida": 0,
+        "Quero avançar neste mês": 1,
+        "Preciso em até duas semanas": 2,
+        "Existe uma data fixa": 2,
+      };
+      const materialScores = {
+        "Já existe e está organizado": 0,
+        "Existe, mas precisa de curadoria": 1,
+        "Ainda precisa ser produzido": 2,
+        "Não sei avaliar": 1,
+      };
+      const approvalScores = {
+        "Uma pessoa decide": 0,
+        "Uma equipe pequena": 1,
+        "Múltiplas áreas ou gestores": 2,
+        "Ainda não está definido": 1,
+      };
+      const needPriorities = {
+        "Conteúdo e presença": "Definir mensagem, formatos e cadência de publicação",
+        "Oferta e site": "Clarificar oferta, provas e jornada da página",
+        "Operação e automação": "Mapear o gargalo antes de escolher a ferramenta",
+        "Ainda preciso descobrir": "Começar pelo diagnóstico e pela prioridade do negócio",
+      };
 
-      const values = new FormData(form);
+      const business = String(values.get("business") || "");
+      const timing = String(values.get("timing") || "");
+      const material = String(values.get("material") || "");
+      const approval = String(values.get("approval") || "");
+      const score = (businessScores[business] || 0)
+        + (timingScores[timing] || 0)
+        + (materialScores[material] || 0)
+        + (approvalScores[approval] || 0);
+      const level = score <= 2
+        ? "Projeto enxuto, com decisão direta"
+        : score <= 5
+          ? "Operação em crescimento, com escopo coordenado"
+          : "Operação estruturada, com mais dependências";
+      const priorities = [needPriorities[String(values.get("need") || "")]].filter(Boolean);
+
+      if (material === "Ainda precisa ser produzido") {
+        priorities.push("Planejar a produção do material de origem");
+      } else if (material === "Existe, mas precisa de curadoria") {
+        priorities.push("Organizar e selecionar o material já disponível");
+      }
+      if (approval === "Múltiplas áreas ou gestores") {
+        priorities.push("Definir responsáveis e etapas de aprovação");
+      }
+      if (timing === "Preciso em até duas semanas" || timing === "Existe uma data fixa") {
+        priorities.push("Travar marcos e riscos antes de assumir o prazo");
+      }
+      if (priorities.length === 1) {
+        priorities.push("Confirmar objetivo, entregáveis e critério de sucesso");
+      }
+
+      return { level, priorities };
+    };
+
+    const buildDraft = (values) => {
+      const analysis = analyzeRequest(values);
       const lines = [
         "Oi Enzo, vi seu portfólio e quero pedir uma análise.",
+        "",
+        `Leitura inicial: ${analysis.level}`,
+        `Prioridades prováveis: ${analysis.priorities.join("; ")}`,
         "",
         `Necessidade: ${values.get("need")}`,
         `Contexto: ${values.get("business")}`,
@@ -525,22 +705,63 @@
       if (values.get("reference")) lines.push(`Site ou perfil: ${values.get("reference")}`);
       if (values.get("outcome")) lines.push(`Resultado esperado: ${values.get("outcome")}`);
 
-      const url = `https://wa.me/5518981196746?text=${encodeURIComponent(lines.join("\n"))}`;
-      const opened = window.open(url, "_blank", "noopener,noreferrer");
-      if (opened) opened.opener = null;
-      if (status) {
-        status.textContent = opened
-          ? "Pedido montado. Revise a mensagem no WhatsApp antes de enviar."
-          : "Seu navegador bloqueou a nova aba. Permita pop-ups e tente novamente.";
+      return {
+        analysis,
+        lines,
+        text: lines.join("\n"),
+        url: `https://wa.me/5518981196746?text=${encodeURIComponent(lines.join("\n"))}`,
+      };
+    };
+
+    const syncDraft = () => {
+      if (!draftWrap || !draft || !draftLink) return null;
+      const payload = buildDraft(new FormData(form));
+      draft.textContent = payload.text;
+      draftLink.href = payload.url;
+      if (levelHost) levelHost.textContent = payload.analysis.level;
+      if (prioritiesHost) {
+        prioritiesHost.innerHTML = payload.analysis.priorities
+          .map((priority) => `<li>${safe(priority)}</li>`)
+          .join("");
       }
+      draftWrap.hidden = false;
+      return payload;
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      syncDraft();
+      if (status) {
+        status.textContent = "Pedido preparado. Revise a mensagem e abra no WhatsApp quando quiser.";
+      }
+      levelHost?.focus();
+    });
+
+    form.addEventListener("input", () => {
+      if (draftWrap?.hidden) return;
+      syncDraft();
+      if (status) status.textContent = "Rascunho atualizado.";
+    });
+
+    form.addEventListener("change", () => {
+      if (draftWrap?.hidden) return;
+      syncDraft();
+      if (status) status.textContent = "Rascunho atualizado.";
     });
   }
 
-  function setupPreviewPlayback() {
-    if (reducedMotion.matches || saveData || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  function setupPreviewPlayback(forceMotion = false) {
+    if (
+      (!forceMotion && (reducedMotion.matches || saveData))
+      || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) return;
 
     const targets = [...document.querySelectorAll("[data-preview-src]")];
     targets.forEach((target) => {
+      if (target.dataset.previewReady === "true") return;
+      target.dataset.previewReady = "true";
       let video;
       const media = target.matches(".media-link")
         ? target
@@ -607,6 +828,7 @@
 
   function init() {
     renderHeroWall();
+    renderHeroDestinations();
     renderVoti();
     renderKayky();
     renderNsf();
@@ -614,6 +836,11 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
+    requestAnimationFrame(() => {
+      syncHeroDestinationGeometry();
+      requestAnimationFrame(syncHeroDestinationGeometry);
+    });
+    window.addEventListener("resize", () => requestAnimationFrame(syncHeroDestinationGeometry), { passive: true });
     setupHeroChoreography();
     setupPointerField();
     setupAmbientMotion();
