@@ -77,7 +77,7 @@ genérico.
 - Posters aparecem primeiro; os vídeos só recebem `src` depois do carregamento inicial.
 - O controle `data-motion-toggle` pausa e retoma todos os vídeos ambientes.
 - Aba oculta e hero fora do viewport pausam todos os vídeos.
-- `prefers-reduced-motion: reduce` e economia de dados impedem o download dos vídeos e escondem o controle.
+- `prefers-reduced-motion: reduce` e economia de dados impedem o download por padrão; o controle permanece visível para um opt-in manual e explícito.
 - Ponteiro fino pode inclinar o conjunto em até poucos graus; usar `requestAnimationFrame`, amortecimento e transformação direta.
 - Durante a primeira descida, as peças atravessam um arco em torno do eixo central e terminam organizadas com identificação.
 - A coreografia de scroll anima somente `transform` e `opacity`; nunca propriedades de layout.

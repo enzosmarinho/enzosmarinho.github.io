@@ -20,13 +20,17 @@
 
   const HERO_IDS = [
     "qBTk1irwDc4",
-    "DaBe_RIhl06",
     "ADKpionmFiw",
+    "DaBe_RIhl06",
     "DQfTWkhiK4k",
-    "DYC7byPyEnW",
-    "DUf-ODMDWqA",
     "DXiIx4_kQ-0",
-    "DTgXN2FiDV6",
+    "DZUo3jokhkP",
+    "DYC7byPyEnW",
+    "DGLMxcXRRJ4",
+    "DZGeYPdBiet",
+    "DUf-ODMDWqA",
+    "DSldztZCA9P",
+    "DWpa8TQCKvX",
   ];
 
   const HERO_PROXIES = {
@@ -35,9 +39,30 @@
     ADKpionmFiw: "assets/hero-wall/kayky-long-form.mp4",
   };
 
-  const HERO_POSTERS = Object.fromEntries(
-    HERO_IDS.map((id) => [id, `assets/hero-wall/${id}.webp`]),
-  );
+  const HERO_POSTERS = Object.fromEntries([
+    "qBTk1irwDc4",
+    "DaBe_RIhl06",
+    "ADKpionmFiw",
+    "DQfTWkhiK4k",
+    "DYC7byPyEnW",
+    "DUf-ODMDWqA",
+    "DXiIx4_kQ-0",
+  ].map((id) => [id, `assets/hero-wall/${id}.webp`]));
+
+  const HERO_SLOTS = [
+    { x: -34, y: -25, z: -90, r: -6, scale: 0.88 },
+    { x: -16, y: -29, z: 92, r: 4, scale: 0.97 },
+    { x: 5, y: -30, z: 150, r: -3, scale: 1.03 },
+    { x: 27, y: -24, z: -46, r: 6, scale: 0.9 },
+    { x: 38, y: -7, z: 68, r: -4, scale: 0.95 },
+    { x: 31, y: 14, z: 136, r: 5, scale: 1 },
+    { x: 18, y: 29, z: -56, r: -6, scale: 0.88 },
+    { x: -3, y: 31, z: 104, r: 4, scale: 0.97 },
+    { x: -24, y: 27, z: -82, r: 6, scale: 0.87 },
+    { x: -38, y: 10, z: 84, r: -4, scale: 0.96 },
+    { x: -40, y: -8, z: -118, r: 5, scale: 0.84 },
+    { x: -24, y: -5, z: 164, r: -3, scale: 1.04 },
+  ];
 
   const SERVICES = [
     {
@@ -88,6 +113,16 @@
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
+  const destinationFor = (item) => {
+    if (item?.client === "VOTI Software") return { key: "voti", label: "VOTI", href: "#provas" };
+    if (item?.client === "Kayky Pitondo") return { key: "kayky", label: "Kayky", href: "#formatos" };
+    if (item?.client === "Negócio Sem Filtro") return { key: "nsf", label: "Negócio Sem Filtro", href: "#formatos" };
+    return { key: "fade", label: "Arquivo", href: "#arquivo" };
+  };
+  const featuredHeroItems = () => {
+    const limit = compactViewport.matches ? 9 : 12;
+    return HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
+  };
 
   function relationshipFor(item) {
     if (item?.client === "VOTI Software") return { label: "Trabalho atual", type: "employment" };
@@ -95,22 +130,34 @@
     return { label: "Projeto independente", type: "independent" };
   }
 
-  function mediaLink(item, className = "") {
+  function mediaLink(item, className = "", ambient = false) {
     const image = imageFor(item);
     const preview = previewFor(item);
     return `
       <a class="media-link ${escapeHtml(className)}"
+         data-orientation="${escapeHtml(item?.orientation || "portrait")}"
          href="${escapeHtml(item?.permalink || "#arquivo")}"
          target="_blank"
          rel="noopener"
          aria-label="Abrir ${safe(item?.title || "trabalho")} na publicação original"
-         ${preview ? `data-preview-src="${escapeHtml(asset(preview))}"` : ""}>
+         ${preview && !ambient ? `data-preview-src="${escapeHtml(asset(preview))}"` : ""}>
         <img src="${escapeHtml(asset(image))}"
              alt=""
              width="${escapeHtml(item?.heroWidth || (item?.orientation === "landscape" ? 1280 : 720))}"
              height="${escapeHtml(item?.heroHeight || (item?.orientation === "landscape" ? 720 : 1280))}"
              loading="lazy"
              decoding="async">
+        ${ambient && preview ? `
+          <video data-ambient-video
+                 data-section-video
+                 data-work-id="${escapeHtml(item?.id || "")}"
+                 data-src="${escapeHtml(asset(preview))}"
+                 muted
+                 loop
+                 playsinline
+                 preload="none"
+                 poster="${escapeHtml(asset(image))}"
+                 aria-hidden="true"></video>` : ""}
       </a>`;
   }
 
@@ -118,28 +165,42 @@
     const host = document.querySelector("[data-hero-wall]");
     if (!host) return;
 
-    const limit = compactViewport.matches ? 5 : 8;
-    const featured = HERO_IDS.map(itemById).filter(Boolean).slice(0, limit);
-    const slots = "abcdefgh";
-
+    const featured = featuredHeroItems();
     host.innerHTML = featured.map((item, index) => {
       const poster = asset(HERO_POSTERS[item.id] || imageFor(item));
       const preview = asset(previewFor(item));
       const landscape = item.orientation === "landscape";
+      const destination = destinationFor(item);
+      const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
+      const depth = Math.max(0.48, Math.min(1, (slot.z + 180) / 350));
+      const orbitX = slot.x * 1.06;
+      const orbitY = slot.y * 0.92;
+      const orbitZ = slot.z * 0.7;
       return `
-        <figure class="hero-tile hero-tile--${slots[index]}"
-                style="--index:${index}"
-                data-depth="${(0.58 + (index % 4) * 0.12).toFixed(2)}"
-                ${index === 2 || index === 5 ? 'data-plane="front"' : ""}>
+        <figure class="hero-tile"
+                style="
+                  --index:${index};
+                  --layer:${Math.round(slot.z + 180)};
+                  --depth:${depth.toFixed(3)};
+                  --sphere-transform:translate3d(calc(-50% + ${slot.x}vw),calc(-50% + ${slot.y}vh),${slot.z}px) rotateZ(${slot.r}deg) scale(${slot.scale});
+                  --orbit-transform:translate3d(calc(-50% + ${orbitX.toFixed(2)}vw),calc(-50% + ${orbitY.toFixed(2)}vh),${orbitZ.toFixed(1)}px) rotateZ(${(-slot.r * 0.55).toFixed(2)}deg) scale(${(slot.scale * 0.96).toFixed(3)});
+                "
+                data-hero-id="${escapeHtml(item.id)}"
+                data-destination="${destination.key}"
+                data-orientation="${landscape ? "landscape" : "portrait"}"
+                data-depth="${depth.toFixed(2)}">
           <div class="hero-tile__surface">
             <img src="${escapeHtml(poster)}"
                  alt=""
                  width="${landscape ? 1280 : 720}"
                  height="${landscape ? 720 : 1280}"
                  ${index === 0 ? 'fetchpriority="high"' : ""}
+                 loading="${index < 8 ? "eager" : "lazy"}"
                  decoding="async">
             ${preview ? `
               <video data-ambient-video
+                     data-hero-video
+                     data-work-id="${escapeHtml(item.id)}"
                      data-src="${escapeHtml(preview)}"
                      muted
                      loop
@@ -156,32 +217,143 @@
     }).join("");
   }
 
-  function setupHeroChoreography() {
+  function renderHeroDestinations() {
+    const host = document.querySelector("[data-hero-destinations]");
+    if (!host) return;
+
+    const featured = featuredHeroItems();
+    const groups = [
+      { key: "voti", label: "VOTI", eyebrow: "Trabalho atual", href: "#provas" },
+      { key: "kayky", label: "Kayky", eyebrow: "Long-form + cortes", href: "#formatos" },
+      { key: "nsf", label: "Negócio Sem Filtro", eyebrow: "Curadoria + cortes", href: "#formatos" },
+    ];
+
+    host.innerHTML = groups.map((group) => {
+      const count = featured.filter((item) => destinationFor(item).key === group.key).length;
+      if (!count) return "";
+      return `
+      <a class="hero-destination"
+         data-hero-destination="${group.key}"
+         href="${group.href}"
+         tabindex="-1"
+         aria-label="Ir para ${escapeHtml(group.label)}, ${count} ${count === 1 ? "vídeo" : "vídeos"}">
+        <span>${safe(group.eyebrow)}</span>
+        <b>${safe(group.label)}</b>
+        <small>${count} ${count === 1 ? "vídeo" : "vídeos"}</small>
+      </a>`;
+    }).join("");
+  }
+
+  function syncHeroDestinationGeometry() {
+    const tiles = [...document.querySelectorAll("[data-hero-id]")];
+    if (!tiles.length) return;
+
+    const votiTargets = compactViewport.matches
+      ? [[-23, 17], [3, 17], [-11, 38], [17, 38]]
+      : [
+        [-35, 18], [-22, 18], [-9, 18],
+        [-35, 38], [-22, 38], [-9, 38],
+      ];
+    const destinationIndexes = new Map();
+
+    tiles.forEach((tile, index) => {
+      const destination = tile.dataset.destination || "fade";
+      const localIndex = destinationIndexes.get(destination) || 0;
+      destinationIndexes.set(destination, localIndex + 1);
+
+      if (destination === "voti") {
+        const [x, y] = votiTargets[localIndex] || votiTargets[votiTargets.length - 1];
+        const landscape = tile.dataset.orientation === "landscape";
+        tile.style.setProperty(
+          "--settle-transform",
+          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),0) rotateZ(0deg) scale(${compactViewport.matches ? (landscape ? 0.58 : 0.62) : (landscape ? 0.72 : 0.68)})`,
+        );
+        tile.style.setProperty("--destination-opacity", "1");
+        tile.style.setProperty("--destination-filter", "brightness(0.9) saturate(0.95)");
+        return;
+      }
+
+      if (destination === "kayky") {
+        const x = compactViewport.matches ? -10 + localIndex * 16 : 3 + localIndex * 11;
+        const y = compactViewport.matches ? 59 + localIndex * 5 : 62 + localIndex * 5;
+        tile.style.setProperty(
+          "--settle-transform",
+          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-90px) rotateZ(${localIndex % 2 ? -2 : 2}deg) scale(${compactViewport.matches ? 0.56 : 0.62})`,
+        );
+        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.62" : "0.72");
+        tile.style.setProperty("--destination-filter", "brightness(0.52) saturate(0.74)");
+        return;
+      }
+
+      if (destination === "nsf") {
+        const x = compactViewport.matches ? 19 : 32;
+        const y = compactViewport.matches ? 62 + localIndex * 5 : 61 + localIndex * 5;
+        tile.style.setProperty(
+          "--settle-transform",
+          `translate3d(calc(-50% + ${x}vw),calc(-50% + ${y}vh),-110px) rotateZ(-2deg) scale(${compactViewport.matches ? 0.54 : 0.6})`,
+        );
+        tile.style.setProperty("--destination-opacity", compactViewport.matches ? "0.5" : "0.64");
+        tile.style.setProperty("--destination-filter", "brightness(0.5) saturate(0.72)");
+        return;
+      }
+
+      const side = index % 2 ? 1 : -1;
+      tile.style.setProperty(
+        "--settle-transform",
+        `translate3d(calc(-50% + ${side * (43 + localIndex * 3)}vw),calc(-50% + ${46 + localIndex * 5}vh),-180px) rotateZ(${side * 8}deg) scale(0.64)`,
+      );
+      tile.style.setProperty("--destination-opacity", "0");
+      tile.style.setProperty("--destination-filter", "brightness(0.28) blur(3px)");
+    });
+  }
+
+  function setupHeroChoreography(forceMotion = false) {
     const hero = document.querySelector(".hero");
     const sentinel = document.querySelector(".hero__settle-sentinel");
     const supportsScrollTimeline = Boolean(
       CSS.supports?.("animation-timeline", "scroll()")
       || CSS.supports?.("animation-timeline", "scroll(root)"),
     );
+    const nativeTimeline = supportsScrollTimeline && !reducedMotion.matches;
 
-    document.documentElement.classList.toggle("has-scroll-timeline", supportsScrollTimeline);
-    document.documentElement.classList.toggle("no-scroll-timeline", !supportsScrollTimeline);
-    if (supportsScrollTimeline || reducedMotion.matches || !hero || !sentinel) return;
+    document.documentElement.classList.toggle("has-scroll-timeline", nativeTimeline);
+    document.documentElement.classList.toggle("no-scroll-timeline", !nativeTimeline);
+    if ((!forceMotion && reducedMotion.matches) || !hero || !sentinel) return;
+    if (hero.dataset.choreographyReady === "true") return;
+    hero.dataset.choreographyReady = "true";
+
+    const setSettled = (settled) => {
+      hero.classList.toggle("is-settled", settled);
+      hero.querySelector("[data-hero-destinations]")?.setAttribute("aria-hidden", String(!settled));
+      hero.querySelectorAll("[data-hero-destination]").forEach((destination) => {
+        destination.tabIndex = settled ? 0 : -1;
+      });
+    };
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
-        hero.classList.toggle("is-settled", entries.some((entry) => entry.isIntersecting));
+        setSettled(entries.some((entry) => entry.isIntersecting));
       }, { rootMargin: "0px 0px 18% 0px" });
       observer.observe(sentinel);
+    } else {
+      setSettled(true);
     }
   }
 
-  function setupPointerField() {
+  function setupPointerField(forceMotion = false) {
     const sticky = document.querySelector(".hero__sticky");
     const orbit = document.querySelector("[data-hero-orbit]");
-    const surfaces = [...document.querySelectorAll(".hero-tile__surface")];
+    const tiles = [...document.querySelectorAll(".hero-tile")];
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    if (!sticky || !orbit || !surfaces.length || reducedMotion.matches || !finePointer.matches) return;
+    if (
+      !sticky
+      || !orbit
+      || !tiles.length
+      || (!forceMotion && reducedMotion.matches)
+      || !finePointer.matches
+      || sticky.dataset.pointerReady === "true"
+    ) return;
+    sticky.dataset.pointerReady = "true";
 
     let currentX = 0;
     let currentY = 0;
@@ -192,16 +364,9 @@
     const render = () => {
       currentX += (targetX - currentX) * 0.11;
       currentY += (targetY - currentY) * 0.11;
-      orbit.style.transform = `perspective(1400px) rotateX(${(-currentY * 1.4).toFixed(3)}deg) rotateY(${(currentX * 2.4).toFixed(3)}deg)`;
-
-      surfaces.forEach((surface) => {
-        const depth = Number(surface.closest(".hero-tile")?.dataset.depth || 0.7);
-        const x = currentX * depth * 8;
-        const y = currentY * depth * 6;
-        const rotateX = -currentY * depth * 1.2;
-        const rotateY = currentX * depth * 1.7;
-        surface.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotateX(${rotateX.toFixed(3)}deg) rotateY(${rotateY.toFixed(3)}deg)`;
-      });
+      orbit.style.transform = `perspective(1500px) rotateX(${(-currentY * 2.2).toFixed(3)}deg) rotateY(${(currentX * 3.8).toFixed(3)}deg)`;
+      sticky.style.setProperty("--pointer-x", `${((currentX + 1) * 50).toFixed(2)}%`);
+      sticky.style.setProperty("--pointer-y", `${((currentY + 1) * 50).toFixed(2)}%`);
 
       const moving = Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002;
       if (moving) {
@@ -212,9 +377,8 @@
       frame = 0;
       if (targetX === 0 && targetY === 0) {
         orbit.style.transform = "";
-        surfaces.forEach((surface) => {
-          surface.style.transform = "";
-        });
+        sticky.style.removeProperty("--pointer-x");
+        sticky.style.removeProperty("--pointer-y");
         sticky.classList.remove("is-pointer-active");
       }
     };
@@ -240,92 +404,165 @@
   function setupAmbientMotion() {
     const button = document.querySelector("[data-motion-toggle]");
     const status = document.querySelector("[data-motion-status]");
-    const hero = document.querySelector(".hero");
     const videos = [...document.querySelectorAll("[data-ambient-video]")];
-    let userPaused = false;
-    let heroVisible = true;
-    let hydrated = false;
+    const visibilityRatios = new Map();
+    let activeVideos = new Set();
+    const playheads = new Map();
+    let userPaused = reducedMotion.matches || saveData;
+    let userOptIn = false;
 
     if (!button || !videos.length) {
       if (button) button.hidden = true;
       return;
     }
 
-    const motionAllowed = () => !reducedMotion.matches && !saveData;
+    const systemBlocksMotion = () => reducedMotion.matches || saveData;
+    const motionAllowed = () => userOptIn || !systemBlocksMotion();
 
     const setControl = () => {
-      const unavailable = !motionAllowed();
-      button.hidden = unavailable;
-      button.setAttribute("aria-pressed", String(userPaused));
-      button.textContent = userPaused ? "Retomar vídeos" : "Pausar vídeos";
+      const needsOptIn = systemBlocksMotion() && !userOptIn;
+      button.hidden = false;
+      button.setAttribute("aria-pressed", String(needsOptIn || userPaused));
+      button.textContent = needsOptIn
+        ? "Ativar movimento"
+        : userPaused
+          ? "Retomar vídeos"
+          : "Pausar vídeos";
       if (status) {
-        status.textContent = unavailable
-          ? "Os vídeos permanecem estáticos conforme sua preferência de movimento ou economia de dados."
+        status.textContent = needsOptIn
+          ? "Movimento desligado por preferência do sistema ou economia de dados. Você pode ativá-lo manualmente."
           : userPaused
             ? "Vídeos pausados."
             : "Vídeos em movimento.";
       }
     };
 
-    const sync = () => {
-      const shouldPlay = hydrated
-        && motionAllowed()
-        && !userPaused
-        && heroVisible
-        && !document.hidden;
-      document.documentElement.classList.toggle("motion-paused", !shouldPlay);
+    const rememberPlayhead = (video) => {
+      const id = video.dataset.workId;
+      if (!id || !Number.isFinite(video.currentTime)) return;
+      playheads.set(id, video.currentTime);
+    };
+
+    const chooseActiveVideos = () => {
+      const byWork = new Map();
       videos.forEach((video) => {
-        if (!shouldPlay) {
-          video.pause();
-          return;
-        }
-        video.play().catch(() => {});
+        const ratio = visibilityRatios.get(video) || 0;
+        if (ratio <= 0) return;
+        const id = video.dataset.workId || `anonymous-${videos.indexOf(video)}`;
+        const current = byWork.get(id);
+        if (!current || ratio > current.ratio) byWork.set(id, { video, ratio });
       });
+      return new Set([...byWork.values()].map((entry) => entry.video));
+    };
+
+    const refreshActiveVideos = () => {
+      const previousActive = activeVideos;
+      activeVideos.forEach((video) => rememberPlayhead(video));
+      activeVideos = chooseActiveVideos();
+      activeVideos.forEach((video) => {
+        if (!previousActive.has(video)) video.dataset.needsPlayheadSync = "true";
+      });
+    };
+
+    const restorePlayhead = (video) => {
+      const saved = playheads.get(video.dataset.workId);
+      if (!Number.isFinite(saved) || !video.duration || video.readyState < 1) return false;
+      video.currentTime = Math.min(saved % video.duration, Math.max(0, video.duration - 0.05));
+      return true;
+    };
+
+    const hydrateVideo = (video) => {
+      if (video.dataset.hydrated === "true" || !motionAllowed()) return;
+      video.dataset.hydrated = "true";
+      video.src = video.dataset.src || "";
+      video.addEventListener("loadedmetadata", () => {
+        restorePlayhead(video);
+        delete video.dataset.needsPlayheadSync;
+      }, { once: true });
+      video.addEventListener("playing", () => {
+        video.closest(".hero-tile, .media-link")?.classList.add("is-playing");
+      });
+      video.load();
+    };
+
+    const syncVideo = (video) => {
+      const shouldPlay = motionAllowed()
+        && !userPaused
+        && !document.hidden
+        && activeVideos.has(video);
+
+      if (!shouldPlay) {
+        rememberPlayhead(video);
+        video.pause();
+        return;
+      }
+      hydrateVideo(video);
+      if (video.dataset.needsPlayheadSync === "true" && restorePlayhead(video)) {
+        delete video.dataset.needsPlayheadSync;
+      }
+      video.play().catch(() => {});
+    };
+
+    const sync = () => {
+      const globallyPaused = !motionAllowed() || userPaused || document.hidden;
+      document.documentElement.classList.toggle("motion-paused", globallyPaused);
+      videos.forEach(syncVideo);
       setControl();
     };
 
-    const hydrate = () => {
-      if (hydrated || !motionAllowed()) {
+    button.addEventListener("click", () => {
+      if (systemBlocksMotion() && !userOptIn) {
+        userOptIn = true;
+        userPaused = false;
+        document.documentElement.classList.add("motion-opt-in");
+        setupHeroChoreography(true);
+        setupPointerField(true);
+        setupPreviewPlayback(true);
+        syncHeroDestinationGeometry();
         sync();
         return;
       }
-      hydrated = true;
-      videos.forEach((video) => {
-        video.src = video.dataset.src || "";
-        video.addEventListener("playing", () => {
-          video.closest(".hero-tile")?.classList.add("is-playing");
-        });
-        video.load();
-      });
-      sync();
-    };
-
-    button.addEventListener("click", () => {
       userPaused = !userPaused;
       sync();
     });
     document.addEventListener("visibilitychange", sync);
-    reducedMotion.addEventListener?.("change", sync);
+    reducedMotion.addEventListener?.("change", () => {
+      if (!systemBlocksMotion() && !userOptIn) {
+        userPaused = false;
+        setupHeroChoreography();
+        setupPointerField();
+        setupPreviewPlayback();
+        syncHeroDestinationGeometry();
+      }
+      sync();
+    });
 
-    if ("IntersectionObserver" in window && hero) {
+    if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
-        heroVisible = entries.some((entry) => entry.isIntersecting);
+        entries.forEach((entry) => {
+          const video = entry.target;
+          visibilityRatios.set(video, entry.isIntersecting ? entry.intersectionRatio : 0);
+        });
+        refreshActiveVideos();
         sync();
-      }, { threshold: 0.08 });
-      observer.observe(hero);
+      }, { threshold: [0, 0.03, 0.25, 0.5, 0.75, 1], rootMargin: "18% 0px 18%" });
+      videos.forEach((video) => observer.observe(video));
+    } else {
+      videos.forEach((video) => visibilityRatios.set(video, 1));
+      refreshActiveVideos();
     }
 
     setControl();
     if (!motionAllowed()) return;
-    const schedule = () => {
+    const scheduleSync = () => {
       if ("requestIdleCallback" in window) {
-        window.requestIdleCallback(hydrate, { timeout: 900 });
+        window.requestIdleCallback(sync, { timeout: 900 });
       } else {
-        window.setTimeout(hydrate, 250);
+        window.setTimeout(sync, 250);
       }
     };
-    if (document.readyState === "complete") schedule();
-    else window.addEventListener("load", schedule, { once: true });
+    if (document.readyState === "complete") scheduleSync();
+    else window.addEventListener("load", scheduleSync, { once: true });
   }
 
   function renderVoti() {
@@ -337,10 +574,12 @@
       "DXiIx4_kQ-0",
       "DSldztZCA9P",
       "DWpa8TQCKvX",
+      "DKkdTYyItAy",
       "DGLMxcXRRJ4",
+      "DUJfuJsCPir",
     ];
     const items = priority.map(itemById).filter(Boolean);
-    host.innerHTML = items.map((item) => mediaLink(item, "voti-card")).join("");
+    host.innerHTML = items.map((item) => mediaLink(item, "voti-card", true)).join("");
   }
 
   function renderKayky() {
@@ -358,9 +597,9 @@
           Ver vídeo longo
         </a>
       </div>
-      ${mediaLink(longForm, "kayky__long")}
+      ${mediaLink(longForm, "kayky__long", true)}
       <div class="kayky__cuts" aria-label="Cortes derivados do vídeo longo">
-        ${cuts.map((item) => mediaLink(item)).join("")}
+        ${cuts.map((item) => mediaLink(item, "", true)).join("")}
       </div>`;
   }
 
@@ -380,7 +619,7 @@
         </a>
       </div>
       <div class="nsf__media">
-        ${[main, ...supporting].map((item) => mediaLink(item)).join("")}
+        ${[main, ...supporting].map((item) => mediaLink(item, "", Boolean(previewFor(item)))).join("")}
       </div>`;
   }
 
@@ -506,15 +745,85 @@
 
     const form = document.querySelector("[data-diagnostic]");
     const status = document.querySelector("[data-form-status]");
+    const draftWrap = document.querySelector("[data-diagnostic-draft-wrap]");
+    const draft = document.querySelector("[data-diagnostic-draft]");
+    const draftLink = document.querySelector("[data-diagnostic-link]");
+    const levelHost = document.querySelector("[data-diagnostic-level]");
+    const prioritiesHost = document.querySelector("[data-diagnostic-priorities]");
     if (!form) return;
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
+    const analyzeRequest = (values) => {
+      const businessScores = {
+        "Profissional solo": 0,
+        "Pequena operação": 1,
+        "Equipe em crescimento": 2,
+        "Empresa estruturada": 3,
+      };
+      const timingScores = {
+        "Sem data rígida": 0,
+        "Quero avançar neste mês": 1,
+        "Preciso em até duas semanas": 2,
+        "Existe uma data fixa": 2,
+      };
+      const materialScores = {
+        "Já existe e está organizado": 0,
+        "Existe, mas precisa de curadoria": 1,
+        "Ainda precisa ser produzido": 2,
+        "Não sei avaliar": 1,
+      };
+      const approvalScores = {
+        "Uma pessoa decide": 0,
+        "Uma equipe pequena": 1,
+        "Múltiplas áreas ou gestores": 2,
+        "Ainda não está definido": 1,
+      };
+      const needPriorities = {
+        "Conteúdo e presença": "Definir mensagem, formatos e cadência de publicação",
+        "Oferta e site": "Clarificar oferta, provas e jornada da página",
+        "Operação e automação": "Mapear o gargalo antes de escolher a ferramenta",
+        "Ainda preciso descobrir": "Começar pelo diagnóstico e pela prioridade do negócio",
+      };
 
-      const values = new FormData(form);
+      const business = String(values.get("business") || "");
+      const timing = String(values.get("timing") || "");
+      const material = String(values.get("material") || "");
+      const approval = String(values.get("approval") || "");
+      const score = (businessScores[business] || 0)
+        + (timingScores[timing] || 0)
+        + (materialScores[material] || 0)
+        + (approvalScores[approval] || 0);
+      const level = score <= 2
+        ? "Projeto enxuto, com decisão direta"
+        : score <= 5
+          ? "Operação em crescimento, com escopo coordenado"
+          : "Operação estruturada, com mais dependências";
+      const priorities = [needPriorities[String(values.get("need") || "")]].filter(Boolean);
+
+      if (material === "Ainda precisa ser produzido") {
+        priorities.push("Planejar a produção do material de origem");
+      } else if (material === "Existe, mas precisa de curadoria") {
+        priorities.push("Organizar e selecionar o material já disponível");
+      }
+      if (approval === "Múltiplas áreas ou gestores") {
+        priorities.push("Definir responsáveis e etapas de aprovação");
+      }
+      if (timing === "Preciso em até duas semanas" || timing === "Existe uma data fixa") {
+        priorities.push("Travar marcos e riscos antes de assumir o prazo");
+      }
+      if (priorities.length === 1) {
+        priorities.push("Confirmar objetivo, entregáveis e critério de sucesso");
+      }
+
+      return { level, priorities };
+    };
+
+    const buildDraft = (values) => {
+      const analysis = analyzeRequest(values);
       const lines = [
         "Oi Enzo, vi seu portfólio e quero pedir uma análise.",
+        "",
+        `Leitura inicial: ${analysis.level}`,
+        `Prioridades prováveis: ${analysis.priorities.join("; ")}`,
         "",
         `Necessidade: ${values.get("need")}`,
         `Contexto: ${values.get("business")}`,
@@ -525,22 +834,63 @@
       if (values.get("reference")) lines.push(`Site ou perfil: ${values.get("reference")}`);
       if (values.get("outcome")) lines.push(`Resultado esperado: ${values.get("outcome")}`);
 
-      const url = `https://wa.me/5518981196746?text=${encodeURIComponent(lines.join("\n"))}`;
-      const opened = window.open(url, "_blank", "noopener,noreferrer");
-      if (opened) opened.opener = null;
-      if (status) {
-        status.textContent = opened
-          ? "Pedido montado. Revise a mensagem no WhatsApp antes de enviar."
-          : "Seu navegador bloqueou a nova aba. Permita pop-ups e tente novamente.";
+      return {
+        analysis,
+        lines,
+        text: lines.join("\n"),
+        url: `https://wa.me/5518981196746?text=${encodeURIComponent(lines.join("\n"))}`,
+      };
+    };
+
+    const syncDraft = () => {
+      if (!draftWrap || !draft || !draftLink) return null;
+      const payload = buildDraft(new FormData(form));
+      draft.textContent = payload.text;
+      draftLink.href = payload.url;
+      if (levelHost) levelHost.textContent = payload.analysis.level;
+      if (prioritiesHost) {
+        prioritiesHost.innerHTML = payload.analysis.priorities
+          .map((priority) => `<li>${safe(priority)}</li>`)
+          .join("");
       }
+      draftWrap.hidden = false;
+      return payload;
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      syncDraft();
+      if (status) {
+        status.textContent = "Pedido preparado. Revise a mensagem e abra no WhatsApp quando quiser.";
+      }
+      levelHost?.focus();
+    });
+
+    form.addEventListener("input", () => {
+      if (draftWrap?.hidden) return;
+      syncDraft();
+      if (status) status.textContent = "Rascunho atualizado.";
+    });
+
+    form.addEventListener("change", () => {
+      if (draftWrap?.hidden) return;
+      syncDraft();
+      if (status) status.textContent = "Rascunho atualizado.";
     });
   }
 
-  function setupPreviewPlayback() {
-    if (reducedMotion.matches || saveData || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  function setupPreviewPlayback(forceMotion = false) {
+    if (
+      (!forceMotion && (reducedMotion.matches || saveData))
+      || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) return;
 
     const targets = [...document.querySelectorAll("[data-preview-src]")];
     targets.forEach((target) => {
+      if (target.dataset.previewReady === "true") return;
+      target.dataset.previewReady = "true";
       let video;
       const media = target.matches(".media-link")
         ? target
@@ -579,8 +929,11 @@
       ".voti__intro",
       ".voti-card",
       ".formats__head",
-      ".kayky",
-      ".nsf",
+      ".kayky__copy",
+      ".kayky__long",
+      ".kayky__cuts .media-link",
+      ".nsf__copy",
+      ".nsf__media .media-link",
       ".services__head",
       ".service",
       ".archive__head",
@@ -607,6 +960,7 @@
 
   function init() {
     renderHeroWall();
+    renderHeroDestinations();
     renderVoti();
     renderKayky();
     renderNsf();
@@ -614,6 +968,11 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
+    requestAnimationFrame(() => {
+      syncHeroDestinationGeometry();
+      requestAnimationFrame(syncHeroDestinationGeometry);
+    });
+    window.addEventListener("resize", () => requestAnimationFrame(syncHeroDestinationGeometry), { passive: true });
     setupHeroChoreography();
     setupPointerField();
     setupAmbientMotion();

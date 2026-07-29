@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="motion-paused">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,9 +26,9 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-mono-500.woff2" crossorigin>
   <link rel="preload" as="image" href="assets/hero-wall/qBTk1irwDc4.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260728-ultimate-2">
+  <link rel="stylesheet" href="versions/kinetic/kinetic.css?v=20260729-orbit-2">
   <script defer src="cases.js?v=20260728-ultimate-1"></script>
-  <script defer src="versions/kinetic/kinetic.js?v=20260728-ultimate-2"></script>
+  <script defer src="versions/kinetic/kinetic.js?v=20260729-orbit-2"></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -73,53 +73,50 @@
   <main id="conteudo">
     <header class="hero" id="top">
       <div class="hero__sticky">
-        <div class="hero__orbit" data-hero-orbit aria-hidden="true">
-          <div class="hero__axis"></div>
-          <div class="hero__wall" data-hero-wall>
-            <figure class="hero-tile hero-tile--a" style="--index:0">
-              <div class="hero-tile__surface">
-                <img src="assets/hero-wall/qBTk1irwDc4.webp"
-                     alt=""
-                     width="720"
-                     height="1280"
-                     fetchpriority="high"
-                     decoding="async">
-                <figcaption>
-                  <span>VOTI Software</span>
-                  <b>Visita técnica da VOTI</b>
-                </figcaption>
-              </div>
-            </figure>
+        <div class="hero__ambient" aria-hidden="true">
+          <span></span>
+        </div>
+        <div class="hero__orbit" data-hero-orbit>
+          <div class="hero__axis" aria-hidden="true"></div>
+          <div class="hero__spin" data-hero-spin>
+            <div class="hero__wall" data-hero-wall aria-hidden="true">
+              <figure class="hero-tile hero-tile--a" style="--index:0" data-hero-id="qBTk1irwDc4">
+                <div class="hero-tile__surface">
+                  <img src="assets/hero-wall/qBTk1irwDc4.webp"
+                       alt=""
+                       width="720"
+                       height="1280"
+                       fetchpriority="high"
+                       decoding="async">
+                  <figcaption>
+                    <span>VOTI Software</span>
+                    <b>Visita técnica da VOTI</b>
+                  </figcaption>
+                </div>
+              </figure>
+            </div>
           </div>
         </div>
+        <div class="hero__destinations" data-hero-destinations aria-hidden="true"></div>
         <div class="hero__veil" aria-hidden="true"></div>
 
         <div class="hero__name shell" aria-label="Enzo Marinho">
           <h1>
-            <span>ENZO</span>
-            <span>MARINHO</span>
+            <span>ENZO MARINHO</span>
           </h1>
         </div>
 
         <div class="hero__footer shell">
           <p>Marketing, conteúdo e vídeo.<br>Da estratégia à publicação.</p>
           <a class="button" href="#provas">Ver trabalhos</a>
-          <button class="motion-control" type="button" data-motion-toggle aria-pressed="false">
-            Pausar vídeos
-          </button>
-          <p class="sr-only" data-motion-status aria-live="polite"></p>
         </div>
+        <button class="motion-control" type="button" data-motion-toggle aria-pressed="false" aria-describedby="motion-status">
+          Pausar vídeos
+        </button>
+        <p class="sr-only" id="motion-status" data-motion-status aria-live="polite"></p>
       </div>
       <div class="hero__settle-sentinel" aria-hidden="true"></div>
     </header>
-
-    <section class="opening shell" aria-labelledby="opening-title">
-      <h2 id="opening-title">Não é uma coleção de peças soltas.</h2>
-      <p>
-        É o trabalho de entender uma operação, encontrar a mensagem e executar
-        o formato certo até ele chegar ao público.
-      </p>
-    </section>
 
     <section class="voti section" id="provas" aria-labelledby="voti-title">
       <div class="shell">
@@ -142,6 +139,14 @@
           <span>Edição e publicação</span>
         </div>
       </div>
+    </section>
+
+    <section class="opening shell" aria-labelledby="opening-title">
+      <h2 id="opening-title">Não é uma coleção de peças soltas.</h2>
+      <p>
+        É o trabalho de entender uma operação, encontrar a mensagem e executar
+        o formato certo até ele chegar ao público.
+      </p>
     </section>
 
     <section class="formats section shell" id="formatos" aria-labelledby="formats-title">
@@ -281,6 +286,18 @@
               <li>Investimento proporcional</li>
             </ul>
             <p data-diagnostic-promise></p>
+            <div class="diagnostic__draft" data-diagnostic-draft-wrap hidden>
+              <div class="diagnostic__assessment" data-diagnostic-assessment>
+                <p class="diagnostic__draft-label">Leitura inicial</p>
+                <h4 data-diagnostic-level tabindex="-1"></h4>
+                <ul data-diagnostic-priorities></ul>
+              </div>
+              <p class="diagnostic__draft-label">Mensagem preparada</p>
+              <pre class="diagnostic__draft-copy" data-diagnostic-draft></pre>
+              <a class="button button--small" data-diagnostic-link target="_blank" rel="noopener noreferrer">
+                Abrir no WhatsApp
+              </a>
+            </div>
           </aside>
         </div>
       </div>
