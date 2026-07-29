@@ -35,7 +35,7 @@ test("the public root is the selected, indexable ultimate portfolio", () => {
   assert.match(html, /<html lang="pt-BR" class="motion-paused">/);
   assert.match(html, /<body data-version="ultimate" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /<span>ENZO<\/span>\s*<span>MARINHO<\/span>/);
+  assert.match(html, /<span>ENZO MARINHO<\/span>/);
   assert.match(html, /data-hero-wall/);
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
@@ -49,6 +49,8 @@ test("proof leads the narrative and the diagnostic closes it", () => {
   for (const id of ["provas", "formatos", "capacidades", "arquivo", "metodo", "analise", "contato"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
+  assert.ok(html.indexOf('id="provas"') < html.indexOf("Não é uma coleção de peças soltas."));
+  assert.ok(html.indexOf("Não é uma coleção de peças soltas.") < html.indexOf('id="formatos"'));
   assert.ok(html.indexOf('id="provas"') < html.indexOf('id="formatos"'));
   assert.ok(html.indexOf('id="formatos"') < html.indexOf('id="arquivo"'));
   assert.ok(html.indexOf('id="arquivo"') < html.indexOf('id="analise"'));
@@ -121,6 +123,43 @@ test("all public projects retain an original link and a real local image", () =>
 });
 
 test("the hero video wall is optimized, pausable and progressively enhanced", () => {
+  const heroIdsBlock = js.match(/const HERO_IDS = \[([\s\S]*?)\];/)?.[1] || "";
+  const heroIds = [...heroIdsBlock.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+  const heroItems = heroIds.map((id) => projects.find((project) => project.id === id));
+  assert.equal(heroIds.length, 12, "desktop hero must document twelve real works");
+  assert.equal(new Set(heroIds).size, heroIds.length, "hero work IDs must be unique");
+  assert.ok(heroItems.every(Boolean), "every hero ID must resolve to a real portfolio project");
+  assert.ok(heroItems.every((item) => item.preview), "every selected hero work must have real motion footage");
+  assert.equal(heroItems.filter((item) => item.client === "VOTI Software").length, 6);
+  assert.equal(heroItems.filter((item) => item.client === "Kayky Pitondo").length, 3);
+  assert.equal(heroItems.filter((item) => item.client === "Negócio Sem Filtro").length, 1);
+  assert.equal(
+    heroItems.filter((item) => !["VOTI Software", "Kayky Pitondo", "Negócio Sem Filtro"].includes(item.client)).length,
+    2,
+  );
+  const mobileHeroItems = heroItems.slice(0, 9);
+  assert.equal(mobileHeroItems.filter((item) => item.client === "VOTI Software").length, 4);
+  assert.equal(mobileHeroItems.filter((item) => item.client === "Kayky Pitondo").length, 3);
+  assert.equal(mobileHeroItems.filter((item) => item.client === "Negócio Sem Filtro").length, 1);
+  assert.equal(
+    mobileHeroItems.filter((item) => !["VOTI Software", "Kayky Pitondo", "Negócio Sem Filtro"].includes(item.client)).length,
+    1,
+  );
+  const votiPriorityIds = [...(js.match(/const priority = \[([\s\S]*?)\];/)?.[1] || "").matchAll(/"([^"]+)"/g)]
+    .map((match) => match[1]);
+  assert.ok(
+    heroItems.filter((item) => item.client === "VOTI Software").every((item) => votiPriorityIds.includes(item.id)),
+    "every VOTI hero video must reappear in the VOTI proof section",
+  );
+  assert.deepEqual(
+    heroItems.filter((item) => item.client === "Kayky Pitondo").map((item) => item.id).sort(),
+    ["ADKpionmFiw", "DZGeYPdBiet", "DZUo3jokhkP"].sort(),
+  );
+  assert.deepEqual(
+    heroItems.filter((item) => item.client === "Negócio Sem Filtro").map((item) => item.id),
+    ["DaBe_RIhl06"],
+  );
+
   const proxyNames = [
     "negocio-sem-filtro.mp4",
     "kayky-long-form.mp4",
@@ -139,7 +178,6 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
     "DYC7byPyEnW",
     "DUf-ODMDWqA",
     "DXiIx4_kQ-0",
-    "DTgXN2FiDV6",
   ].reduce((total, id) => {
     const file = path.join(root, "assets", "hero-wall", `${id}.webp`);
     assert.ok(fs.existsSync(file), `missing hero poster: ${id}`);
@@ -153,7 +191,11 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
     "assets/previews/DYC7byPyEnW.mp4",
     "assets/previews/DUf-ODMDWqA.mp4",
     "assets/previews/DXiIx4_kQ-0.mp4",
-    "assets/previews/DTgXN2FiDV6.mp4",
+    "assets/previews/DGLMxcXRRJ4.mp4",
+    "assets/previews/DSldztZCA9P.mp4",
+    "assets/previews/DWpa8TQCKvX.mp4",
+    "assets/previews/DZUo3jokhkP.mp4",
+    "assets/previews/DZGeYPdBiet.mp4",
   ].reduce((total, file) => {
     const fullPath = path.join(root, file);
     assert.ok(fs.existsSync(fullPath), `missing hero video: ${file}`);
@@ -162,11 +204,12 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
 
   assert.ok(totalProxyBytes < 256 * 1024, `hero proxies exceed 256 KB: ${totalProxyBytes}`);
   assert.ok(totalPosterBytes < 128 * 1024, `hero posters exceed 128 KB: ${totalPosterBytes}`);
-  assert.ok(allHeroVideoBytes < 1024 * 1024, `hero videos exceed 1 MB: ${allHeroVideoBytes}`);
+  assert.ok(allHeroVideoBytes < 2 * 1024 * 1024, `hero videos exceed 2 MB: ${allHeroVideoBytes}`);
   assert.match(html, /preload" as="image" href="assets\/hero-wall\/qBTk1irwDc4\.webp"/);
   assert.match(html, /<img src="assets\/hero-wall\/qBTk1irwDc4\.webp"[\s\S]*fetchpriority="high"/);
   assert.match(html, /<button class="motion-control"[^>]+data-motion-toggle/);
   assert.match(html, /class="hero__orbit" data-hero-orbit/);
+  assert.match(html, /class="hero__ambient"/);
   assert.doesNotMatch(html, /data-hero-orbit aria-hidden="true"/);
   assert.match(html, /class="hero__spin" data-hero-spin/);
   assert.match(html, /data-hero-destinations aria-hidden="true"/);
@@ -177,9 +220,32 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(js, /renderHeroDestinations/);
   assert.match(js, /syncHeroDestinationGeometry/);
   assert.match(js, /data-hero-id/);
-  assert.match(js, /data-hero-destination/);
-  assert.match(js, /item\.client === "VOTI Software"[\s\S]*"#provas"/);
-  assert.match(js, /"Kayky Pitondo"[\s\S]*"Negócio Sem Filtro"[\s\S]*"#formatos"/);
+  assert.match(js, /data-destination="\$\{destination\.key\}"/);
+  assert.match(js, /data-hero-destination="\$\{group\.key\}"/);
+  assert.match(js, /if \(item\?\.client === "VOTI Software"\) return \{ key: "voti", label: "VOTI", href: "#provas" \}/);
+  assert.match(js, /if \(item\?\.client === "Kayky Pitondo"\) return \{ key: "kayky", label: "Kayky", href: "#formatos" \}/);
+  assert.match(js, /if \(item\?\.client === "Negócio Sem Filtro"\) return \{ key: "nsf", label: "Negócio Sem Filtro", href: "#formatos" \}/);
+  assert.match(js, /return \{ key: "fade", label: "Arquivo", href: "#arquivo" \}/);
+  assert.match(js, /const limit = compactViewport\.matches \? 9 : 12/);
+  assert.doesNotMatch(heroIdsBlock, /DTgXN2FiDV6/, "known mismatched footage must stay out of the hero");
+  assert.doesNotMatch(
+    votiPriorityIds.join(","),
+    /DTgXN2FiDV6/,
+    "known mismatched footage must stay out of the VOTI playback wall",
+  );
+  assert.match(js, /const HERO_SLOTS = \[/);
+  assert.match(js, /--sphere-transform:/);
+  assert.match(js, /--destination-opacity/);
+  assert.match(js, /data-section-video/);
+  assert.match(js, /const playheads = new Map\(\)/);
+  assert.match(js, /playheads\.set\(id, video\.currentTime\)/);
+  assert.match(js, /const saved = playheads\.get\(video\.dataset\.workId\)/);
+  assert.match(js, /const chooseActiveVideos = \(\) =>/);
+  assert.match(js, /activeVideos = chooseActiveVideos\(\)/);
+  assert.match(js, /&& activeVideos\.has\(video\)/);
+  assert.match(js, /video\.dataset\.needsPlayheadSync = "true"/);
+  assert.match(js, /const restorePlayhead = \(video\) =>/);
+  assert.match(js, /video\.dataset\.needsPlayheadSync === "true" && restorePlayhead\(video\)/);
   assert.match(js, /tabindex="-1"/);
   assert.match(js, /destination\.tabIndex = settled \? 0 : -1/);
   assert.match(js, /setAttribute\("aria-hidden", String\(!settled\)\)/);
@@ -200,7 +266,12 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(css, /@supports \(animation-timeline: scroll\(\)\)/);
   assert.match(css, /@keyframes tile-orbit-settle/);
   assert.match(css, /@keyframes hero-idle-orbit/);
+  assert.match(css, /@keyframes ambient-drift/);
   assert.match(css, /\.motion-paused \.hero__spin/);
+  assert.match(css, /\.motion-paused \.hero__ambient::before/);
+  assert.match(css, /\.hero\.is-settled \.hero__spin\s*\{[^}]*animation-play-state:\s*paused/);
+  assert.match(css, /\.hero\.is-settled \.hero__footer\s*\{[^}]*pointer-events:\s*none/);
+  assert.match(css, /@media \(max-width: 48rem\)[\s\S]*data-hero-destination="kayky"[\s\S]*font-size:\s*1\.5rem/);
   assert.match(css, /\.hero\.is-settled \.hero__orbit\s*\{[^}]*pointer-events:\s*auto/);
   assert.match(css, /hero-destinations-scroll/);
   assert.match(css, /transform:\s*var\(--orbit-transform\)/);
@@ -209,13 +280,16 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(css, /content-visibility:\s*auto/);
   const infiniteAnimations = [...css.matchAll(/animation:[^;]*infinite[^;]*/g)]
     .map((match) => match[0]);
-  assert.ok(infiniteAnimations.length >= 1, "the controlled ambient orbit must exist");
+  assert.ok(infiniteAnimations.length >= 2, "the controlled ambient orbit and background drift must exist");
   assert.ok(
-    infiniteAnimations.every((animation) => animation.includes("hero-idle-orbit")),
+    infiniteAnimations.every((animation) => (
+      animation.includes("hero-idle-orbit")
+      || animation.includes("ambient-drift")
+    )),
     `unexpected infinite animation: ${infiniteAnimations.join(" | ")}`,
   );
-  assert.match(css, /100%\s*\{\s*opacity:\s*0\.72/);
-  assert.match(css, /100%\s*\{\s*opacity:\s*0\.88/);
+  assert.match(css, /100%\s*\{\s*opacity:\s*0\.94/);
+  assert.match(css, /@keyframes hero-footer-scroll[\s\S]*100%\s*\{\s*opacity:\s*0/);
 });
 
 test("keyboard, focus and form semantics have an explicit safety contract", () => {
@@ -226,7 +300,7 @@ test("keyboard, focus and form semantics have an explicit safety contract", () =
   assert.match(html, /<legend>/);
   assert.match(html, /type="radio"/);
   assert.match(html, /type="submit"/);
-  assert.match(html, /aria-pressed="true"/);
+  assert.match(html, /aria-pressed="false"/);
   assert.match(html, /aria-describedby="motion-status"/);
   assert.match(css, /@media \(max-width: 30rem\)[\s\S]*\.filters\s*\{[\s\S]*grid-template-columns:\s*repeat\(2/);
 });

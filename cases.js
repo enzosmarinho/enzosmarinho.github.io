@@ -656,7 +656,6 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "permalink": "https://www.instagram.com/reel/DTgXN2FiDV6/",
     "thumb": "assets/thumbs/ig_DTgXN2FiDV6.webp",
-    "preview": "assets/previews/DTgXN2FiDV6.mp4",
     "cardImage": "assets/thumbs/ig_DTgXN2FiDV6.webp"
   },
   {
