@@ -78,6 +78,9 @@ genérico.
 - O controle `data-motion-toggle` pausa e retoma todos os vídeos ambientes.
 - Aba oculta e hero fora do viewport pausam todos os vídeos.
 - `prefers-reduced-motion: reduce` e economia de dados impedem o download dos vídeos e escondem o controle.
+- Ponteiro fino pode inclinar o conjunto em até poucos graus; usar `requestAnimationFrame`, amortecimento e transformação direta.
+- Durante a primeira descida, as peças atravessam um arco em torno do eixo central e terminam organizadas com identificação.
+- A coreografia de scroll anima somente `transform` e `opacity`; nunca propriedades de layout.
 - Revelações usam `IntersectionObserver`.
 - Filtro usa View Transition quando houver suporte e tem fallback imediato.
 - Movimento de scroll usa Scroll-driven Animations apenas como melhoria progressiva.

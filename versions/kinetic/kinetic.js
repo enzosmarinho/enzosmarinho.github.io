@@ -129,24 +129,112 @@
       return `
         <figure class="hero-tile hero-tile--${slots[index]}"
                 style="--index:${index}"
+                data-depth="${(0.58 + (index % 4) * 0.12).toFixed(2)}"
                 ${index === 2 || index === 5 ? 'data-plane="front"' : ""}>
-          <img src="${escapeHtml(poster)}"
-               alt=""
-               width="${landscape ? 1280 : 720}"
-               height="${landscape ? 720 : 1280}"
-               ${index === 0 ? 'fetchpriority="high"' : ""}
-               decoding="async">
-          ${preview ? `
-            <video data-ambient-video
-                   data-src="${escapeHtml(preview)}"
-                   muted
-                   loop
-                   playsinline
-                   preload="none"
-                   poster="${escapeHtml(poster)}"
-                   aria-hidden="true"></video>` : ""}
+          <div class="hero-tile__surface">
+            <img src="${escapeHtml(poster)}"
+                 alt=""
+                 width="${landscape ? 1280 : 720}"
+                 height="${landscape ? 720 : 1280}"
+                 ${index === 0 ? 'fetchpriority="high"' : ""}
+                 decoding="async">
+            ${preview ? `
+              <video data-ambient-video
+                     data-src="${escapeHtml(preview)}"
+                     muted
+                     loop
+                     playsinline
+                     preload="none"
+                     poster="${escapeHtml(poster)}"
+                     aria-hidden="true"></video>` : ""}
+            <figcaption>
+              <span>${safe(item.client)}</span>
+              <b>${safe(item.title)}</b>
+            </figcaption>
+          </div>
         </figure>`;
     }).join("");
+  }
+
+  function setupHeroChoreography() {
+    const hero = document.querySelector(".hero");
+    const sentinel = document.querySelector(".hero__settle-sentinel");
+    const supportsScrollTimeline = Boolean(
+      CSS.supports?.("animation-timeline", "scroll()")
+      || CSS.supports?.("animation-timeline", "scroll(root)"),
+    );
+
+    document.documentElement.classList.toggle("has-scroll-timeline", supportsScrollTimeline);
+    document.documentElement.classList.toggle("no-scroll-timeline", !supportsScrollTimeline);
+    if (supportsScrollTimeline || reducedMotion.matches || !hero || !sentinel) return;
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        hero.classList.toggle("is-settled", entries.some((entry) => entry.isIntersecting));
+      }, { rootMargin: "0px 0px 18% 0px" });
+      observer.observe(sentinel);
+    }
+  }
+
+  function setupPointerField() {
+    const sticky = document.querySelector(".hero__sticky");
+    const orbit = document.querySelector("[data-hero-orbit]");
+    const surfaces = [...document.querySelectorAll(".hero-tile__surface")];
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (!sticky || !orbit || !surfaces.length || reducedMotion.matches || !finePointer.matches) return;
+
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let frame = 0;
+
+    const render = () => {
+      currentX += (targetX - currentX) * 0.11;
+      currentY += (targetY - currentY) * 0.11;
+      orbit.style.transform = `perspective(1400px) rotateX(${(-currentY * 1.4).toFixed(3)}deg) rotateY(${(currentX * 2.4).toFixed(3)}deg)`;
+
+      surfaces.forEach((surface) => {
+        const depth = Number(surface.closest(".hero-tile")?.dataset.depth || 0.7);
+        const x = currentX * depth * 8;
+        const y = currentY * depth * 6;
+        const rotateX = -currentY * depth * 1.2;
+        const rotateY = currentX * depth * 1.7;
+        surface.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotateX(${rotateX.toFixed(3)}deg) rotateY(${rotateY.toFixed(3)}deg)`;
+      });
+
+      const moving = Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002;
+      if (moving) {
+        frame = requestAnimationFrame(render);
+        return;
+      }
+
+      frame = 0;
+      if (targetX === 0 && targetY === 0) {
+        orbit.style.transform = "";
+        surfaces.forEach((surface) => {
+          surface.style.transform = "";
+        });
+        sticky.classList.remove("is-pointer-active");
+      }
+    };
+
+    const requestRender = () => {
+      if (!frame) frame = requestAnimationFrame(render);
+    };
+
+    sticky.addEventListener("pointermove", (event) => {
+      targetX = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth - 0.5) * 2));
+      targetY = Math.max(-1, Math.min(1, (event.clientY / window.innerHeight - 0.5) * 2));
+      sticky.classList.add("is-pointer-active");
+      requestRender();
+    }, { passive: true });
+
+    sticky.addEventListener("pointerleave", () => {
+      targetX = 0;
+      targetY = 0;
+      requestRender();
+    });
   }
 
   function setupAmbientMotion() {
@@ -526,6 +614,8 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
+    setupHeroChoreography();
+    setupPointerField();
     setupAmbientMotion();
     setupPreviewPlayback();
     setupReveal();

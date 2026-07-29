@@ -136,6 +136,12 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(html, /preload" as="image" href="assets\/hero-wall\/qBTk1irwDc4\.webp"/);
   assert.match(html, /<img src="assets\/hero-wall\/qBTk1irwDc4\.webp"[\s\S]*fetchpriority="high"/);
   assert.match(html, /<button class="motion-control"[^>]+data-motion-toggle/);
+  assert.match(html, /class="hero__orbit" data-hero-orbit/);
+  assert.match(html, /class="hero__axis"/);
+  assert.match(html, /class="hero__settle-sentinel"/);
+  assert.match(js, /setupPointerField/);
+  assert.match(js, /pointermove/);
+  assert.match(js, /requestAnimationFrame/);
   assert.doesNotMatch(html, /<video[^>]+autoplay/);
   assert.match(js, /prefers-reduced-motion: reduce/);
   assert.match(js, /navigator\.connection\?\.saveData/);
@@ -147,6 +153,10 @@ test("the hero video wall is optimized, pausable and progressively enhanced", ()
   assert.match(js, /document\.startViewTransition/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@supports \(animation-timeline: scroll\(\)\)/);
+  assert.match(css, /@keyframes tile-orbit-settle/);
+  assert.match(css, /transform:\s*var\(--orbit-transform\)/);
+  assert.match(css, /transform:\s*var\(--settle-transform\)/);
+  assert.match(css, /\.hero-tile figcaption/);
   assert.match(css, /content-visibility:\s*auto/);
   assert.doesNotMatch(css, /animation:[^;]*infinite/);
 });
