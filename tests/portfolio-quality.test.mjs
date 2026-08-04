@@ -54,7 +54,10 @@ test("the public root is the reform holding page and keeps contact reachable", (
   assert.match(holdingHtml, /Portfólio em reforma/);
   // O contato e a unica funcao que a home precisa cumprir na reforma: a URL esta no kit
   // de candidatura PJ, entao recrutador que chegar aqui tem que conseguir falar com o Enzo.
-  assert.match(holdingHtml, /mailto:enzo\.marinho@hotmail\.com/);
+  // O profissional e enzosmarinho@hotmail.com (sem ponto). O endereco com ponto que
+  // vivia no portfolio antigo estava errado — confirmado pelo Enzo em 2026-08-03.
+  assert.match(holdingHtml, /mailto:enzosmarinho@hotmail\.com/);
+  assert.doesNotMatch(holdingHtml, /enzo\.marinho@hotmail\.com/);
   assert.match(holdingHtml, /linkedin\.com\/in\/enzo-marinho-727200320/);
   assert.match(holdingHtml, /instagram\.com\/enzosmarinho/);
   // Nada de preco publico e nada carregado do portfolio arquivado.
