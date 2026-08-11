@@ -599,7 +599,7 @@
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
         const update = () => applyFilter(button.dataset.filter || "all");
-        if (!reducedMotion.matches && document.startViewTransition) {
+        if (document.startViewTransition) {
           document.startViewTransition(update);
         } else {
           update();
@@ -839,20 +839,35 @@
       ".diagnostic",
     ].join(",");
     const elements = [...document.querySelectorAll(selector)];
-    if (reducedMotion.matches || !("IntersectionObserver" in window)) return;
+    // A revelacao segue a mesma regra do resto: quem decide o quanto ela se
+    // desloca e o bloco reduce do CSS, que zera o transform e deixa so o fade.
+    // Barrar aqui matava a animacao da pagina inteira abaixo do hero.
+    if (!("IntersectionObserver" in window)) return;
 
     elements.forEach((element, index) => {
       element.classList.add("reveal-pending");
       element.style.setProperty("--reveal-order", String(index % 6));
     });
+    let revelou = false;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
+        revelou = true;
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });
     }, { threshold: 0.05, rootMargin: "0px 0px -4% 0px" });
     elements.forEach((element) => observer.observe(element));
+
+    // Rede de seguranca. reveal-pending zera a opacidade, entao um observador
+    // que nunca dispare deixaria a pagina inteira invisivel abaixo do hero -
+    // falha muito pior do que nao ter animacao. Se em tres segundos nada foi
+    // revelado, a coreografia e abandonada e tudo aparece.
+    window.setTimeout(() => {
+      if (revelou) return;
+      observer.disconnect();
+      elements.forEach((element) => element.classList.add("is-visible"));
+    }, 3000);
   }
 
   function init() {
