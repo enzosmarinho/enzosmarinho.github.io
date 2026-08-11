@@ -423,8 +423,11 @@
         restorePlayhead(video);
         delete video.dataset.needsPlayheadSync;
       }, { once: true });
+      // .work-card faltava aqui: o video da grade tocava de verdade e ficava em
+      // opacity 0, porque quem revela e a classe is-playing no cartao. Seis
+      // videos rodando invisiveis - o pior dos dois mundos, gasto sem imagem.
       video.addEventListener("playing", () => {
-        video.closest(".hero-tile, .media-link")?.classList.add("is-playing");
+        video.closest(".hero-tile, .media-link, .work-card")?.classList.add("is-playing");
       });
       video.load();
     };
@@ -470,7 +473,13 @@
         });
         refreshActiveVideos();
         sync();
-      }, { threshold: [0, 0.03, 0.25, 0.5, 0.75, 1], rootMargin: "18% 0px 18%" });
+      /*
+        Sem margem: toca o que esta na tela, para o que saiu. A margem de 18%
+        deixava peca a 86px abaixo da dobra rodando sem ninguem olhando. Colar na
+        borda so e possivel porque o download acontece antes, no observador de
+        aquecimento logo abaixo - sem ele isso viraria engasgo.
+      */
+      }, { threshold: [0, 0.03, 0.25, 0.5, 0.75, 1], rootMargin: "0px" });
       videos.forEach((video) => observer.observe(video));
 
       // Sem esta observacao adiantada o arquivo so comeca a baixar quando a peca
@@ -480,16 +489,21 @@
       // A grade fica FORA do adiantamento de proposito: sao 25 pecas e so seis
       // tocam ao mesmo tempo, entao baixar as 25 seria pagar por movimento que
       // ninguem vai ver. La o arquivo desce quando a peca e escolhida.
-      const warmup = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          hydrateVideo(entry.target);
-          warmup.unobserve(entry.target);
-        });
-      }, { rootMargin: "75% 0px 75%" });
-      videos
-        .filter((video) => !video.hasAttribute("data-grid-video"))
-        .forEach((video) => warmup.observe(video));
+      const aquecer = (margem, alvos) => {
+        if (!alvos.length) return;
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            hydrateVideo(entry.target);
+            obs.unobserve(entry.target);
+          });
+        }, { rootMargin: margem });
+        alvos.forEach((video) => obs.observe(video));
+      };
+      // Vitrine com folga larga: e o que o visitante ve primeiro e nao pode falhar.
+      aquecer("75% 0px 75%", videos.filter((v) => !v.hasAttribute("data-grid-video")));
+      // Grade com folga curta: sao 25 pecas, entao so desce o que esta chegando.
+      aquecer("20% 0px 20%", videos.filter((v) => v.hasAttribute("data-grid-video")));
     } else {
       videos.forEach((video) => visibilityRatios.set(video, 1));
       refreshActiveVideos();
@@ -879,26 +893,68 @@
       // diagonal, qualquer que seja o numero de colunas do momento.
       element.style.setProperty("--reveal-order", String(ordem % 8));
     });
-    let revelou = false;
+    let observadorRespondeu = false;
     const observer = new IntersectionObserver((entries) => {
+      // Responder ja prova que o observador funciona, mesmo que a entrada diga
+      // "nao esta visivel". Esse e o sinal certo para a rede de seguranca.
+      observadorRespondeu = true;
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        revelou = true;
         entry.target.classList.add("is-visible");
         observer.unobserve(entry.target);
       });
     }, { threshold: 0.05, rootMargin: "0px 0px -4% 0px" });
     elements.forEach((element) => observer.observe(element));
 
-    // Rede de seguranca. reveal-pending zera a opacidade, entao um observador
-    // que nunca dispare deixaria a pagina inteira invisivel abaixo do hero -
-    // falha muito pior do que nao ter animacao. Se em tres segundos nada foi
-    // revelado, a coreografia e abandonada e tudo aparece.
-    window.setTimeout(() => {
-      if (revelou) return;
-      observer.disconnect();
-      elements.forEach((element) => element.classList.add("is-visible"));
-    }, 3000);
+    // Passagem inicial sincrona: o que ja esta na tela aparece sem esperar
+    // observador nenhum. Importante em recarga com rolagem restaurada.
+    elements.forEach((element) => {
+      const caixa = element.getBoundingClientRect();
+      if (caixa.top < window.innerHeight * 0.96 && caixa.bottom > 0) {
+        element.classList.add("is-visible");
+        observer.unobserve(element);
+      }
+    });
+
+    /*
+      Rede de seguranca: reveal-pending zera a opacidade, entao um observador que
+      nunca dispare deixaria a pagina inteira invisivel abaixo do hero.
+
+      O gatilho ANTERIOR era "nada foi revelado em 3s" - e isso era um autogol.
+      No carregamento o hero ocupa a tela inteira e nao existe nada revelavel
+      visivel, entao bastava o visitante levar tres segundos para comecar a rolar
+      e a pagina INTEIRA se revelava de uma vez. A coreografia morria sem nenhum
+      erro aparecer, que e exatamente o sintoma de "as animacoes nao pegaram".
+
+      O gatilho correto e "o observador nunca respondeu": se ele responde, mesmo
+      dizendo que nada esta visivel, esta vivo e a cascata pode esperar a rolagem.
+
+      E o prazo era curto demais: medido neste site, o Chrome so entrega a
+      primeira intersecao por volta de 3.2s. Em 3s a rede vencia a corrida por
+      180ms e desligava a coreografia toda vez. Oito segundos e folga real.
+
+      Aba oculta nao conta: o navegador nao calcula intersecao em segundo plano,
+      entao julgar ali condenaria o observador por algo que nao e culpa dele.
+    */
+    let redeArmada = false;
+    const armarRede = () => {
+      if (redeArmada) return;
+      redeArmada = true;
+      window.setTimeout(() => {
+        if (observadorRespondeu) return;
+        observer.disconnect();
+        elements.forEach((element) => element.classList.add("is-visible"));
+      }, 8000);
+    };
+    if (document.hidden) {
+      document.addEventListener("visibilitychange", function aoAparecer() {
+        if (document.hidden) return;
+        document.removeEventListener("visibilitychange", aoAparecer);
+        armarRede();
+      });
+    } else {
+      armarRede();
+    }
   }
 
   function init() {
