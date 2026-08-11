@@ -262,11 +262,12 @@
     const orbit = document.querySelector("[data-hero-orbit]");
     const tiles = [...document.querySelectorAll(".hero-tile")];
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    // A inclinacao responde ao ponteiro do proprio visitante, alguns graus: nao
+    // e movimento que acontece sozinho com ele parado.
     if (
       !sticky
       || !orbit
       || !tiles.length
-      || reducedMotion.matches
       || !finePointer.matches
       || sticky.dataset.pointerReady === "true"
     ) return;
@@ -324,10 +325,18 @@
     let activeVideos = new Set();
     const playheads = new Map();
 
-    if (!videos.length) return;
+    // Sem isto, uma parede de hero que falhasse ao renderizar deixaria a classe
+    // motion-paused presa no html e congelaria a pagina inteira em silencio.
+    if (!videos.length) {
+      document.documentElement.classList.remove("motion-paused");
+      return;
+    }
 
-    const systemBlocksMotion = () => reducedMotion.matches || saveData;
-    const motionAllowed = () => !systemBlocksMotion();
+    // O video E o portfolio, nao enfeite: ele toca independente de
+    // prefers-reduced-motion (decisao do Enzo em 11/08/2026). Economia de dados
+    // continua respeitada, porque ali o custo e a conta do visitante e nao uma
+    // preferencia de movimento.
+    const playbackAllowed = () => !saveData;
 
     const rememberPlayhead = (video) => {
       const id = video.dataset.workId;
@@ -365,7 +374,7 @@
     };
 
     const hydrateVideo = (video) => {
-      if (video.dataset.hydrated === "true" || !motionAllowed()) return;
+      if (video.dataset.hydrated === "true" || !playbackAllowed()) return;
       video.dataset.hydrated = "true";
       video.src = video.dataset.src || "";
       video.addEventListener("loadedmetadata", () => {
@@ -381,7 +390,7 @@
     const syncVideo = (video) => {
       const heroIsActive = !video.hasAttribute("data-hero-video")
         || !video.closest(".hero")?.classList.contains("is-inactive");
-      const shouldPlay = motionAllowed()
+      const shouldPlay = playbackAllowed()
         && !document.hidden
         && heroIsActive
         && activeVideos.has(video);
@@ -399,7 +408,7 @@
     };
 
     const sync = () => {
-      const globallyPaused = !motionAllowed() || document.hidden;
+      const globallyPaused = !playbackAllowed() || document.hidden;
       document.documentElement.classList.toggle("motion-paused", globallyPaused);
       videos.forEach(syncVideo);
     };
@@ -407,7 +416,7 @@
     document.addEventListener("visibilitychange", sync);
     document.addEventListener("heroactivitychange", sync);
     reducedMotion.addEventListener?.("change", () => {
-      if (!systemBlocksMotion()) {
+      if (!reducedMotion.matches) {
         setupPointerField();
         setupPreviewPlayback();
       }
@@ -424,12 +433,25 @@
         sync();
       }, { threshold: [0, 0.03, 0.25, 0.5, 0.75, 1], rootMargin: "18% 0px 18%" });
       videos.forEach((video) => observer.observe(video));
+
+      // Sem esta observacao adiantada o arquivo so comeca a baixar quando a peca
+      // JA esta visivel: o visitante ve o poster parado e so depois o movimento
+      // comeca. Buffer a 75% de viewport de distancia elimina esse engasgo sem
+      // baixar a pagina inteira de uma vez.
+      const warmup = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          hydrateVideo(entry.target);
+          warmup.unobserve(entry.target);
+        });
+      }, { rootMargin: "75% 0px 75%" });
+      videos.forEach((video) => warmup.observe(video));
     } else {
       videos.forEach((video) => visibilityRatios.set(video, 1));
       refreshActiveVideos();
     }
 
-    if (!motionAllowed()) return;
+    if (!playbackAllowed()) return;
     const scheduleSync = () => {
       if ("requestIdleCallback" in window) {
         window.requestIdleCallback(sync, { timeout: 900 });
@@ -752,9 +774,9 @@
   }
 
   function setupPreviewPlayback() {
+    // Mesma regra do hero: previa e conteudo. So economia de dados segura.
     if (
-      reducedMotion.matches
-      || saveData
+      saveData
       || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
     ) return;
 

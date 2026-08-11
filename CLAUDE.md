@@ -73,11 +73,16 @@ genérico.
 
 ## Movimento
 
-- O hero usa até oito proxies otimizados no desktop e cinco no mobile, mudos e sem áudio.
+- O hero usa dezoito peças no desktop e doze no mobile, mudas e sem áudio.
 - Posters aparecem primeiro; os vídeos só recebem `src` depois do carregamento inicial.
-- O controle `data-motion-toggle` pausa e retoma todos os vídeos ambientes.
-- Aba oculta e hero fora do viewport pausam todos os vídeos.
-- `prefers-reduced-motion: reduce` e economia de dados impedem o download por padrão; o controle permanece visível para um opt-in manual e explícito.
+- Não existe controle manual de movimento na página, e o teste barra a volta dele.
+- Aba oculta e hero fora do viewport pausam todos os vídeos. As duas pausas são invisíveis para quem está olhando e existem para não gastar bateria à toa.
+- O vídeo é o conteúdo do portfólio, então `prefers-reduced-motion: reduce` não impede o download nem a reprodução. Decisão do Enzo em 11/08/2026.
+- Economia de dados (`saveData`) continua impedindo o download: ali o custo é a conta do visitante.
+- Sob movimento reduzido, o que desliga é o deslocamento grande (peça atravessando a tela) e a rolagem suave; o ambiente segue vivo em passo mais lento.
+- Vídeo hidrata a 75% de viewport de distância, para o movimento já estar pronto quando a peça aparece.
+- Nada de `filter` em vídeo: refaz o passe de imagem a cada quadro. Escurecimento por camada opaca.
+- Nada de `filter: blur()` em transição de revelação: força rasterização a cada quadro.
 - Ponteiro fino pode inclinar o conjunto em até poucos graus; usar `requestAnimationFrame`, amortecimento e transformação direta.
 - Durante a primeira descida, as peças atravessam um arco em torno do eixo central e terminam organizadas com identificação.
 - A coreografia de scroll anima somente `transform` e `opacity`; nunca propriedades de layout.

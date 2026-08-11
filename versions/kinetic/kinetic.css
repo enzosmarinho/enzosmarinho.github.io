@@ -71,7 +71,28 @@ body {
   font-family: var(--body);
   font-size: var(--step-0);
   line-height: 1.55;
-  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+
+/*
+  Metrica real do Anton, medida com measureText em 11/08/2026 (nao chutada):
+  caixa alta sobe 0.87em; til sobe 1.08em; agudo e circunflexo sobem 1.11em;
+  a cedilha desce 0.31em. Portugues em caixa alta precisa desse espaco, e o
+  display foi desenhado sem ele. Constantes usadas pelas regras de display.
+
+    normal sobre acentuada .... 0.01 + 1.11 = 1.12
+    cedilha sobre normal ...... 0.31 + 0.87 = 1.18
+*/
+:root {
+  /* 1.18 e o limite exato da cedilha sobre caixa alta: em 1.18 a folga e zero e
+     o arredondamento subpixel ja encosta. 1.19 da a margem. */
+  --display-lh: 1.19;
+  /*
+    Caixa alta pede tracking positivo: negativo era o que grudava ÊN, ÍD e ÇÃ.
+    Em zero a folga minima ja era 0.0016em; 0.012em da margem sem afrouxar a
+    leitura monumental.
+  */
+  --display-track: 0.012em;
 }
 
 body::after {
@@ -139,6 +160,9 @@ p {
   z-index: 100;
   top: 0.75rem;
   left: 0.75rem;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   padding: 0.7rem 1rem;
   color: var(--signal-ink);
   background: var(--signal);
@@ -483,7 +507,21 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(calc(0.68 + var(--depth) * 0.26)) saturate(0.94);
+}
+
+/*
+  A profundidade era um filter brightness() no proprio video. Filter em video
+  refaz o passe de imagem a cada quadro, e sao dezoito videos tocando juntos:
+  peso puro por um escurecimento que uma camada opaca resolve de graca no
+  compositor. Mesma curva de antes: 1 - (0.68 + depth * 0.26).
+*/
+.hero-tile__surface::after {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  content: "";
+  opacity: calc(0.32 - var(--depth) * 0.26);
+  pointer-events: none;
 }
 
 .hero-tile video {
@@ -565,10 +603,14 @@ p {
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero__spin {
-    animation: hero-idle-orbit 15s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
-  }
+/*
+  A orbita nao vive mais dentro de (prefers-reduced-motion: no-preference).
+  Decisao do Enzo em 11/08/2026: a parede viva e o portfolio, nao decoracao,
+  e o site tem que estar vivo mesmo com a preferencia do sistema ligada. O que
+  a preferencia continua controlando esta no bloco reduce la embaixo.
+*/
+.hero__spin {
+  animation: hero-idle-orbit 15s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
 }
 
 .opening {
@@ -589,8 +631,8 @@ p {
   font-family: var(--display);
   font-size: var(--step-4);
   font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 1.04;
+  letter-spacing: var(--display-track); /* ptbr-audit: acentuada */
+  line-height: var(--display-lh); /* ptbr-audit: acentuada */
   text-transform: uppercase;
 }
 
@@ -850,8 +892,8 @@ p {
   font-family: var(--display);
   font-size: var(--step-3);
   font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.04;
+  letter-spacing: var(--display-track); /* ptbr-audit: acentuada */
+  line-height: var(--display-lh); /* ptbr-audit: acentuada */
   text-transform: uppercase;
 }
 
@@ -959,7 +1001,8 @@ p {
   font-family: var(--display);
   font-size: var(--step-2);
   font-weight: 400;
-  line-height: 1.04;
+  letter-spacing: var(--display-track); /* ptbr-audit: acentuada */
+  line-height: var(--display-lh); /* ptbr-audit: acentuada */
   text-transform: uppercase;
 }
 
@@ -1194,7 +1237,8 @@ p {
   font-family: var(--display);
   font-size: var(--step-2);
   font-weight: 400;
-  line-height: 1.04;
+  letter-spacing: var(--display-track); /* ptbr-audit: acentuada */
+  line-height: var(--display-lh); /* ptbr-audit: acentuada */
   text-transform: uppercase;
 }
 
@@ -1426,13 +1470,16 @@ textarea {
 }
 
 .contact h2 {
-  max-width: 70rem;
+  /* 70rem deixava a frase de fechamento a um fio de quebrar em tres linhas, e o
+     tracking correto de caixa alta empurrou. A medida maior devolve as duas
+     linhas sem mexer no tamanho do tipo. */
+  max-width: 78rem;
   margin-bottom: var(--space-2);
   font-family: var(--display);
   font-size: var(--step-5);
   font-weight: 400;
-  letter-spacing: -0.032em;
-  line-height: 1.02;
+  letter-spacing: var(--display-track); /* ptbr-audit: acentuada */
+  line-height: var(--display-lh); /* ptbr-audit: acentuada */
   text-transform: uppercase;
 }
 
@@ -1474,6 +1521,14 @@ textarea {
   gap: var(--space-2);
 }
 
+/* Instagram e LinkedIn tinham 18.9px de altura de toque no rodape, contra os
+   44px que o proprio contrato do repositorio exige. */
+.contact__foot a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+
 /*
   Pacing situacional. Cada secao corta no ritmo do proprio proposito, como numa
   edicao: a prova entra em rajada, o metodo entra devagar e a secao que pede a
@@ -1512,8 +1567,7 @@ textarea {
 [data-cut] .reveal-pending.is-visible {
   transition:
     opacity var(--cut-dur, 520ms) var(--ease-out),
-    transform var(--cut-dur, 520ms) var(--ease-out),
-    filter calc(var(--cut-dur, 520ms) * 0.8) var(--ease-out);
+    transform var(--cut-dur, 520ms) var(--ease-out);
   transition-delay: calc(var(--reveal-order, 0) * var(--cut-step, 38ms));
 }
 
@@ -1552,27 +1606,30 @@ textarea {
   }
 }
 
+/*
+  O blur saiu de toda a coreografia. Animar filter: blur() obriga o navegador a
+  rasterizar o elemento de novo a cada quadro, e sao ~50 elementos revelados na
+  descida: era a fonte real de travamento. Opacity e transform vao no
+  compositor, sem repintura. A leitura de foco chegando fica no proprio
+  deslocamento.
+*/
 .reveal-pending {
   opacity: 0;
   transform: translate3d(0, 1.5rem, 0);
-  filter: blur(4px);
 }
 
 .reveal-pending.is-visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  filter: blur(0);
   transition:
     opacity 520ms var(--ease-out),
-    transform 520ms var(--ease-out),
-    filter 420ms var(--ease-out);
+    transform 520ms var(--ease-out);
   transition-delay: calc(var(--reveal-order, 0) * 38ms);
 }
 
 .voti-card.reveal-pending:not(.is-visible) {
   opacity: 0;
   transform: translate3d(var(--arrival-x, 0), -11vh, 0) scale(0.94);
-  filter: blur(3px);
 }
 
 .voti-card:nth-child(1),
@@ -1596,7 +1653,7 @@ textarea {
 }
 
 .voti-card.reveal-pending.is-visible {
-  transition-duration: 460ms, 560ms, 420ms;
+  transition-duration: 460ms, 560ms;
   transition-delay: calc((var(--index, 0)) * 35ms);
 }
 
@@ -1604,13 +1661,11 @@ textarea {
 .kayky__cuts .media-link.reveal-pending:not(.is-visible) {
   opacity: 0;
   transform: translate3d(-8vw, -9vh, 0) scale(0.95);
-  filter: blur(3px);
 }
 
 .nsf__media .media-link.reveal-pending:not(.is-visible) {
   opacity: 0;
   transform: translate3d(8vw, -9vh, 0) scale(0.95);
-  filter: blur(3px);
 }
 
 .kayky__cuts .media-link.reveal-pending.is-visible,
@@ -1854,60 +1909,41 @@ textarea {
   }
 }
 
+/*
+  Este bloco deixou de ser um interruptor geral. Antes ele zerava toda animacao
+  com !important, e o resultado era um portfolio de video parado: a preferencia
+  do sistema desligava justamente a prova do trabalho.
+
+  O que incomoda de verdade em movimento reduzido e o deslocamento grande - a
+  peca que atravessa a tela - e a rolagem que foge do dedo. E isso que fica
+  desligado aqui. O ambiente lento e o video seguem vivos, por decisao do Enzo
+  em 11/08/2026.
+*/
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .hero-tile,
-  .hero-tile__body,
-  .hero-tile__surface,
-  .hero__orbit,
-  .hero__spin,
-  .hero__wall,
-  .hero__axis,
-  .hero__name,
-  .hero__name span,
-  .reveal-pending {
-    animation: none !important;
-    opacity: 1;
-    filter: none;
-  }
-
-  .hero-tile {
-    transform: var(--sphere-transform);
-  }
-
-  .hero__name {
-    transform: translateY(-50%);
-  }
-
-  .hero-tile__surface,
-  .hero-tile__body,
-  .hero__orbit,
-  .hero__spin,
-  .hero__wall,
-  .hero__axis,
-  .reveal-pending {
+  /* Nada atravessa a tela: a chegada vira so aparecer no lugar. */
+  .reveal-pending,
+  .voti-card.reveal-pending:not(.is-visible),
+  .kayky__long.reveal-pending:not(.is-visible),
+  .kayky__cuts .media-link.reveal-pending:not(.is-visible),
+  .nsf__media .media-link.reveal-pending:not(.is-visible) {
     transform: none;
   }
 
-  .hero {
-    height: 100svh;
-    min-height: 100svh;
+  /* O ambiente continua, no passo mais lento que ainda le como vivo. */
+  .hero__spin {
+    animation-duration: 46s;
   }
 
-  .hero__axis {
-    display: none;
+  .hero-tile__body {
+    animation-duration: 28s;
+  }
+
+  .hero__ambient::before {
+    animation-duration: 54s;
   }
 }
 
