@@ -426,9 +426,18 @@
       // .work-card faltava aqui: o video da grade tocava de verdade e ficava em
       // opacity 0, porque quem revela e a classe is-playing no cartao. Seis
       // videos rodando invisiveis - o pior dos dois mundos, gasto sem imagem.
-      video.addEventListener("playing", () => {
-        video.closest(".hero-tile, .media-link, .work-card")?.classList.add("is-playing");
-      });
+      const moldura = () => video.closest(".hero-tile, .media-link, .work-card");
+      video.addEventListener("playing", () => moldura()?.classList.add("is-playing"));
+      /*
+        Sem isto a peca que perde a vaga do teto continua exibindo o ultimo
+        quadro congelado - um frame qualquer, talvez de piscada ou borrado pelo
+        movimento - no lugar do poster, que e frame escolhido. Na grade sao
+        sempre duas peças nessa situacao. Achado do Codex em 11/08/2026.
+
+        A troca de volta nao pisca porque so acontece durante a rolagem, quando
+        a vaga muda de dono, e o cruzamento leva 180ms.
+      */
+      video.addEventListener("pause", () => moldura()?.classList.remove("is-playing"));
       video.load();
     };
 
