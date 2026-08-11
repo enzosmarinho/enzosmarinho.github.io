@@ -80,7 +80,11 @@ genérico.
 - O vídeo é o conteúdo do portfólio, então `prefers-reduced-motion: reduce` não impede o download nem a reprodução. Decisão do Enzo em 11/08/2026.
 - Economia de dados (`saveData`) continua impedindo o download: ali o custo é a conta do visitante.
 - Sob movimento reduzido, o que desliga é o deslocamento grande (peça atravessando a tela) e a rolagem suave; o ambiente segue vivo em passo mais lento.
-- Vídeo hidrata a 75% de viewport de distância, para o movimento já estar pronto quando a peça aparece.
+- Vídeo hidrata a 75% de viewport de distância, para o movimento já estar pronto quando a peça aparece. A grade do arquivo fica fora desse adiantamento: são 25 peças e só seis tocam ao mesmo tempo.
+- Toda peça com vídeo toca, inclusive na grade do arquivo. O teto de seis simultâneos vale só para a grade; hero e casos tocam inteiros porque são a vitrine.
+- Apontar com o ponteiro promove a peça acima do teto. Não existe segundo vídeo criado no hover.
+- A moldura toma a forma da mídia, nunca o contrário. `--media-ratio` vem de `heroWidth`/`heroHeight`, medidos com ffprobe e gravados em `cases.js`. Proporção nunca é chutada, e `orientation` é consequência da medida.
+- O slot largo da grade pertence a quem é largo de verdade, não a cada sétima posição.
 - Nada de `filter` em vídeo: refaz o passe de imagem a cada quadro. Escurecimento por camada opaca.
 - Nada de `filter: blur()` em transição de revelação: força rasterização a cada quadro.
 - Ponteiro fino pode inclinar o conjunto em até poucos graus; usar `requestAnimationFrame`, amortecimento e transformação direta.

@@ -803,12 +803,11 @@ p {
 .voti-card {
   grid-column: span 1;
   min-height: 0;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: var(--media-ratio, 9 / 16);
 }
 
 .voti-card[data-orientation="landscape"] {
   grid-column: span 2;
-  aspect-ratio: 16 / 9;
 }
 
 .voti__scope {
@@ -917,7 +916,7 @@ p {
 
 .kayky__long {
   grid-column: 1 / -1;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--media-ratio, 16 / 9);
 }
 
 .kayky__cuts {
@@ -929,7 +928,7 @@ p {
 
 .kayky__cuts .media-link {
   min-height: 0;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: var(--media-ratio, 9 / 16);
 }
 
 .case-cta {
@@ -960,7 +959,7 @@ p {
 
 .nsf__media .media-link {
   min-height: 0;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: var(--media-ratio, 9 / 16);
 }
 
 .nsf__media .media-link:nth-child(2) {
@@ -1062,11 +1061,17 @@ p {
   opacity: 1;
 }
 
+/*
+  Cinco colunas porque os cartoes passaram a ter a altura real de um vertical
+  9:16. Em quatro colunas cada peca ficava alta demais e o arquivo virava uma
+  escada.
+*/
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-3) var(--space-2);
   margin-top: var(--space-3);
+  align-items: start;
 }
 
 .work-card {
@@ -1078,24 +1083,26 @@ p {
   display: none;
 }
 
+/*
+  A moldura toma a forma da midia, nunca o contrario. --media-ratio vem medido
+  do arquivo por ffprobe e gravado em cases.js, entao object-fit: cover nao corta
+  nada: a caixa ja tem a proporcao exata do video.
+
+  Antes eram tres proporcoes decorativas (4/5, 4/3 e 16/10 a cada setimo cartao)
+  contra midia que so existe em 9:16 e 16:9. Era isso que deixava a peca
+  estranhamente encaixada, e cortava vertical em cartao largo por rodizio.
+*/
 .work-card__media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: var(--media-ratio, 9 / 16);
   background: var(--surface);
   transition: transform 340ms var(--ease-out);
 }
 
-.work-card[data-orientation="landscape"] .work-card__media {
-  aspect-ratio: 4 / 3;
-}
-
-.work-card:nth-child(7n + 1) {
+/* O slot largo pertence a quem e largo de verdade, nao a cada setima posicao. */
+.work-card[data-orientation="landscape"] {
   grid-column: span 2;
-}
-
-.work-card:nth-child(7n + 1) .work-card__media {
-  aspect-ratio: 16 / 10;
 }
 
 .work-card__media img,
@@ -1673,6 +1680,15 @@ textarea {
   transition-delay: 90ms;
 }
 
+/*
+  A cadeia do metodo entra na horizontal, uma etapa por vez: o movimento repete
+  a propria ideia da secao, que e uma etapa puxando a seguinte.
+*/
+.method__chain li.reveal-pending:not(.is-visible),
+.voti__scope span.reveal-pending:not(.is-visible) {
+  transform: translate3d(-0.75rem, 0, 0);
+}
+
 @media (max-width: 68rem) {
   :root {
     --shell: min(100% - 2rem, 92rem);
@@ -1783,12 +1799,11 @@ textarea {
   .voti-card:nth-child(n) {
     grid-column: span 1;
     min-height: 0;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: var(--media-ratio, 9 / 16);
   }
 
   .voti-card[data-orientation="landscape"] {
     grid-column: span 1;
-    aspect-ratio: 16 / 9;
   }
 
   .voti__scope {
@@ -1844,7 +1859,7 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .work-card:nth-child(7n + 1) {
+  .work-card[data-orientation="landscape"] {
     grid-column: span 2;
   }
 

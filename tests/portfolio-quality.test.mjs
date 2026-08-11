@@ -308,6 +308,49 @@ test("the hero video wall is optimized, autonomous and progressively enhanced", 
   assert.match(js, /!video\.closest\("\.hero"\)\?\.classList\.contains\("is-inactive"\)/);
 });
 
+test("every work declares its real media size and the frame follows the media", () => {
+  // A proporcao era chutada em 22 das 31 pecas (720x1280 fixo), e a grade impunha
+  // 4/5, 4/3 e 16/10 a midia que so existe em 9:16 e 16:9. Era isso que deixava a
+  // peca torta. Agora a medida vem do arquivo e a moldura obedece.
+  for (const project of projects) {
+    assert.ok(
+      Number.isInteger(project.heroWidth) && project.heroWidth > 0,
+      `${project.id} precisa da largura real medida`,
+    );
+    assert.ok(
+      Number.isInteger(project.heroHeight) && project.heroHeight > 0,
+      `${project.id} precisa da altura real medida`,
+    );
+    const esperado = project.heroWidth > project.heroHeight ? "landscape" : "portrait";
+    assert.equal(
+      project.orientation,
+      esperado,
+      `${project.id}: orientacao declarada nao bate com ${project.heroWidth}x${project.heroHeight}`,
+    );
+  }
+  // So tres pecas sao realmente horizontais; o resto do portfolio e vertical.
+  assert.equal(projects.filter((p) => p.orientation === "landscape").length, 3);
+
+  assert.match(js, /style="--media-ratio:\$\{largura\} \/ \$\{altura\}"/);
+  assert.match(css, /aspect-ratio: var\(--media-ratio, 9 \/ 16\)/);
+  assert.doesNotMatch(css, /aspect-ratio:\s*4 \/ 5|aspect-ratio:\s*4 \/ 3|aspect-ratio:\s*16 \/ 10/);
+  // O slot largo pertence a quem e largo, nao a cada setima posicao da grade.
+  assert.doesNotMatch(css, /work-card:nth-child\(7n/);
+  assert.match(css, /\.work-card\[data-orientation="landscape"\]\s*\{\s*grid-column: span 2/);
+});
+
+test("archive playback is ambient, capped and promoted by the pointer", () => {
+  // Toda peca com video toca, inclusive no arquivo - antes so tocava no hover.
+  assert.match(js, /data-grid-video/);
+  assert.equal(projects.filter((p) => p.preview).length, 25);
+  // Teto so na grade: doze videos visiveis de uma vez e peso que ninguem assiste.
+  assert.match(js, /const LIMITE_DA_GRADE = compactViewport\.matches \? 3 : 6/);
+  assert.match(js, /\.filter\(\(e\) => e\.video\.hasAttribute\("data-grid-video"\)\)/);
+  assert.match(js, /if \(apontado && \(visibilityRatios\.get\(apontado\) \|\| 0\) > 0\) escolhidos\.add\(apontado\)/);
+  // O hover virou promocao dentro do sistema ambiente: nada de segundo video por card.
+  assert.doesNotMatch(js, /data-preview-src|setupPreviewPlayback/);
+});
+
 test("keyboard, focus and form semantics have an explicit safety contract", () => {
   assert.match(css, /:focus-visible/);
   assert.match(css, /min-height:\s*(?:2\.75rem|44px)/);

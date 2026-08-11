@@ -137,6 +137,13 @@
     return `${assetPrefix}${path}`;
   };
   const imageFor = (item) => item?.cardImage || item?.thumb || item?.poster || "";
+  // Medida real do arquivo, gravada em cases.js a partir do proprio ffprobe. O
+  // fallback existe so para nao quebrar se entrar peca nova sem medir - ele nao
+  // deve ser usado, porque chutar a proporcao e o que fazia a midia entrar torta.
+  const mediaSize = (item) => [
+    Number(item?.heroWidth) || (item?.orientation === "landscape" ? 1280 : 720),
+    Number(item?.heroHeight) || (item?.orientation === "landscape" ? 720 : 1280),
+  ];
   const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
@@ -154,18 +161,19 @@
   function mediaLink(item, className = "", ambient = false) {
     const image = imageFor(item);
     const preview = previewFor(item);
+    const [largura, altura] = mediaSize(item);
     return `
       <a class="media-link ${escapeHtml(className)}"
          data-orientation="${escapeHtml(item?.orientation || "portrait")}"
+         style="--media-ratio:${largura} / ${altura}"
          href="${escapeHtml(item?.permalink || "#arquivo")}"
          target="_blank"
          rel="noopener"
-         aria-label="Abrir ${safe(item?.title || "trabalho")} na publicação original"
-         ${preview && !ambient ? `data-preview-src="${escapeHtml(asset(preview))}"` : ""}>
+         aria-label="Abrir ${safe(item?.title || "trabalho")} na publicação original">
         <img src="${escapeHtml(asset(image))}"
              alt=""
-             width="${escapeHtml(item?.heroWidth || (item?.orientation === "landscape" ? 1280 : 720))}"
-             height="${escapeHtml(item?.heroHeight || (item?.orientation === "landscape" ? 720 : 1280))}"
+             width="${largura}"
+             height="${altura}"
              loading="lazy"
              decoding="async">
         ${ambient && preview ? `
@@ -344,6 +352,15 @@
       playheads.set(id, video.currentTime);
     };
 
+    /*
+      O teto vale so para a grade do arquivo. La sao 25 cartoes e uma tela larga
+      pode mostrar uma duzia de uma vez - isso sim e peso a toa, porque ninguem
+      assiste doze videos ao mesmo tempo. O hero e os casos sao a vitrine e tocam
+      inteiros: e o que o visitante veio ver.
+    */
+    const LIMITE_DA_GRADE = compactViewport.matches ? 3 : 6;
+    let apontado = null;
+
     const chooseActiveVideos = () => {
       const byWork = new Map();
       videos.forEach((video) => {
@@ -354,7 +371,32 @@
         const score = ratio + (video.hasAttribute("data-section-video") ? 2 : 0);
         if (!current || score > current.score) byWork.set(id, { video, score });
       });
-      return new Set([...byWork.values()].map((entry) => entry.video));
+
+      const candidatos = [...byWork.values()];
+      const vitrine = candidatos.filter((e) => !e.video.hasAttribute("data-grid-video"));
+      const grade = candidatos
+        .filter((e) => e.video.hasAttribute("data-grid-video"))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, LIMITE_DA_GRADE);
+
+      const escolhidos = new Set([...vitrine, ...grade].map((e) => e.video));
+      // Apontar com o ponteiro sempre vence o teto: e um pedido explicito.
+      if (apontado && (visibilityRatios.get(apontado) || 0) > 0) escolhidos.add(apontado);
+      return escolhidos;
+    };
+
+    const seguirPonteiro = () => {
+      document.querySelectorAll("[data-grid-video]").forEach((video) => {
+        const card = video.closest(".work-card");
+        if (!card || card.dataset.pointerBound === "true") return;
+        card.dataset.pointerBound = "true";
+        const entrar = () => { apontado = video; refreshActiveVideos(); sync(); };
+        const sair = () => { if (apontado === video) apontado = null; refreshActiveVideos(); sync(); };
+        card.addEventListener("pointerenter", entrar);
+        card.addEventListener("pointerleave", sair);
+        card.addEventListener("focusin", entrar);
+        card.addEventListener("focusout", sair);
+      });
     };
 
     const refreshActiveVideos = () => {
@@ -416,10 +458,7 @@
     document.addEventListener("visibilitychange", sync);
     document.addEventListener("heroactivitychange", sync);
     reducedMotion.addEventListener?.("change", () => {
-      if (!reducedMotion.matches) {
-        setupPointerField();
-        setupPreviewPlayback();
-      }
+      if (!reducedMotion.matches) setupPointerField();
       sync();
     });
 
@@ -436,8 +475,11 @@
 
       // Sem esta observacao adiantada o arquivo so comeca a baixar quando a peca
       // JA esta visivel: o visitante ve o poster parado e so depois o movimento
-      // comeca. Buffer a 75% de viewport de distancia elimina esse engasgo sem
-      // baixar a pagina inteira de uma vez.
+      // comeca. Buffer a 75% de viewport de distancia elimina esse engasgo.
+      //
+      // A grade fica FORA do adiantamento de proposito: sao 25 pecas e so seis
+      // tocam ao mesmo tempo, entao baixar as 25 seria pagar por movimento que
+      // ninguem vai ver. La o arquivo desce quando a peca e escolhida.
       const warmup = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
@@ -445,13 +487,16 @@
           warmup.unobserve(entry.target);
         });
       }, { rootMargin: "75% 0px 75%" });
-      videos.forEach((video) => warmup.observe(video));
+      videos
+        .filter((video) => !video.hasAttribute("data-grid-video"))
+        .forEach((video) => warmup.observe(video));
     } else {
       videos.forEach((video) => visibilityRatios.set(video, 1));
       refreshActiveVideos();
     }
 
     if (!playbackAllowed()) return;
+    seguirPonteiro();
     const scheduleSync = () => {
       if ("requestIdleCallback" in window) {
         window.requestIdleCallback(sync, { timeout: 900 });
@@ -556,21 +601,33 @@
       const relationship = relationshipFor(item);
       const image = imageFor(item);
       const preview = previewFor(item);
+      const [largura, altura] = mediaSize(item);
       return `
         <a class="work-card"
            data-work-category="${escapeHtml(item.category || "")}"
            data-orientation="${escapeHtml(item.orientation || "portrait")}"
-           ${preview ? `data-preview-src="${escapeHtml(asset(preview))}"` : ""}
+           style="--media-ratio:${largura} / ${altura}"
            href="${escapeHtml(item.permalink || "#analise")}"
            target="_blank"
            rel="noopener">
           <div class="work-card__media">
             <img src="${escapeHtml(asset(image))}"
                  alt=""
-                 width="${escapeHtml(item.heroWidth || (item.orientation === "landscape" ? 1280 : 720))}"
-                 height="${escapeHtml(item.heroHeight || (item.orientation === "landscape" ? 720 : 1280))}"
+                 width="${largura}"
+                 height="${altura}"
                  loading="lazy"
                  decoding="async">
+            ${preview ? `
+              <video data-ambient-video
+                     data-grid-video
+                     data-work-id="${escapeHtml(item.id || "")}"
+                     data-src="${escapeHtml(asset(preview))}"
+                     muted
+                     loop
+                     playsinline
+                     preload="none"
+                     poster="${escapeHtml(asset(image))}"
+                     aria-hidden="true"></video>` : ""}
           </div>
           <div class="work-card__body">
             <span class="work-card__relation" data-relation="${relationship.type}">${safe(relationship.label)}</span>
@@ -773,54 +830,11 @@
     });
   }
 
-  function setupPreviewPlayback() {
-    // Mesma regra do hero: previa e conteudo. So economia de dados segura.
-    if (
-      saveData
-      || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
-    ) return;
-
-    const targets = [...document.querySelectorAll("[data-preview-src]")];
-    targets.forEach((target) => {
-      if (target.dataset.previewReady === "true") return;
-      target.dataset.previewReady = "true";
-      let video;
-      const media = target.matches(".media-link")
-        ? target
-        : target.querySelector(".work-card__media");
-
-      const play = () => {
-        if (!media) return;
-        if (!video) {
-          video = document.createElement("video");
-          video.src = target.dataset.previewSrc || "";
-          video.muted = true;
-          video.loop = true;
-          video.playsInline = true;
-          video.preload = "metadata";
-          video.setAttribute("aria-hidden", "true");
-          media.append(video);
-        }
-        video.play().then(() => target.classList.add("is-playing")).catch(() => {});
-      };
-
-      const pause = () => {
-        if (!video) return;
-        video.pause();
-        target.classList.remove("is-playing");
-      };
-
-      target.addEventListener("pointerenter", play);
-      target.addEventListener("pointerleave", pause);
-      target.addEventListener("focusin", play);
-      target.addEventListener("focusout", pause);
-    });
-  }
-
   function setupReveal() {
     const selector = [
       ".voti__intro",
       ".voti-card",
+      ".voti__scope span",
       ".opening",
       ".formats__head",
       ".kayky__copy",
@@ -833,10 +847,14 @@
       ".archive__head",
       ".work-card",
       ".method__head",
+      ".method__chain li",
       ".method-item",
       ".analysis__head",
       ".factor",
       ".diagnostic",
+      ".contact h2",
+      ".contact > .shell > p",
+      ".contact__actions",
     ].join(",");
     const elements = [...document.querySelectorAll(selector)];
     // A revelacao segue a mesma regra do resto: quem decide o quanto ela se
@@ -844,9 +862,22 @@
     // Barrar aqui matava a animacao da pagina inteira abaixo do hero.
     if (!("IntersectionObserver" in window)) return;
 
-    elements.forEach((element, index) => {
+    /*
+      A ordem da cascata e contada DENTRO de cada grupo, nao no indice global.
+      Com indice global (index % 6) o atraso caia no meio de uma fileira e a
+      cascata parecia sorteada: a terceira etapa do metodo podia entrar antes da
+      primeira. Contando por pai, cada fileira conta a partir do proprio inicio.
+    */
+    const ordemPorGrupo = new Map();
+    elements.forEach((element) => {
       element.classList.add("reveal-pending");
-      element.style.setProperty("--reveal-order", String(index % 6));
+      const grupo = element.parentElement || document.body;
+      const ordem = ordemPorGrupo.get(grupo) || 0;
+      ordemPorGrupo.set(grupo, ordem + 1);
+      // Modulo, nao teto: com teto os 23 cartoes seguintes do arquivo dividiam o
+      // mesmo atraso e entravam em bloco. Girando de 0 a 7 a grade sempre cai em
+      // diagonal, qualquer que seja o numero de colunas do momento.
+      element.style.setProperty("--reveal-order", String(ordem % 8));
     });
     let revelou = false;
     const observer = new IntersectionObserver((entries) => {
@@ -882,7 +913,6 @@
     setupHeroLifecycle();
     setupPointerField();
     setupAmbientMotion();
-    setupPreviewPlayback();
     setupReveal();
     document.documentElement.classList.add("ready");
   }
