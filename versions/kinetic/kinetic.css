@@ -521,15 +521,23 @@ p {
   }
 }
 
+/*
+  A orbita antiga variava 5 graus em 20s: quase imperceptivel, e a parede parecia
+  parada. Amplitude maior e um deslocamento em Z dao a leitura de peca flutuando
+  no espaco, que e a intencao da direcao. Continua em transform apenas.
+*/
 @keyframes hero-idle-orbit {
   0% {
-    transform: rotateX(-1.4deg) rotateY(-5deg) rotateZ(-0.8deg);
+    transform: rotateX(-3.2deg) rotateY(-11deg) rotateZ(-1.6deg) translate3d(0, 0, -18px);
   }
-  50% {
-    transform: rotateX(1deg) rotateY(0deg) rotateZ(0.4deg);
+  35% {
+    transform: rotateX(1.6deg) rotateY(-3deg) rotateZ(0.9deg) translate3d(0, -0.6%, 26px);
+  }
+  70% {
+    transform: rotateX(-0.8deg) rotateY(6deg) rotateZ(-0.6deg) translate3d(0, 0.4%, 8px);
   }
   100% {
-    transform: rotateX(-0.6deg) rotateY(5deg) rotateZ(-0.3deg);
+    transform: rotateX(2.4deg) rotateY(11deg) rotateZ(1.4deg) translate3d(0, 0, -14px);
   }
 }
 
@@ -559,7 +567,7 @@ p {
 
 @media (prefers-reduced-motion: no-preference) {
   .hero__spin {
-    animation: hero-idle-orbit 20s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+    animation: hero-idle-orbit 15s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
   }
 }
 
@@ -1510,12 +1518,15 @@ textarea {
 }
 
 /* Rabisco a mao: o traco da assinatura, nao um sublinhado de template. */
+/*
+  O traco mora DENTRO do h2 e sublinha a frase. Como item solto do grid ele caia
+  numa coluna vazia e virava um risco perdido no meio do nada.
+*/
 .scribble {
   display: block;
-  width: 100%;
-  max-width: 22ch;
+  width: min(18rem, 62%);
   height: auto;
-  margin-top: var(--space-1);
+  margin-top: calc(var(--space-1) * -0.5);
   overflow: visible;
   color: var(--signal);
   transform: scaleX(0);
