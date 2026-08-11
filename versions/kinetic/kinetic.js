@@ -799,6 +799,7 @@
     const selector = [
       ".voti__intro",
       ".voti-card",
+      ".opening",
       ".formats__head",
       ".kayky__copy",
       ".kayky__long",

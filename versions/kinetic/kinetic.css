@@ -775,6 +775,35 @@ p {
   font-size: var(--step--1);
 }
 
+.method__chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 0;
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-3);
+  list-style: none;
+  counter-reset: chain;
+}
+
+.method__chain li {
+  counter-increment: chain;
+  color: var(--paper-dim);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.method__chain li::before {
+  content: counter(chain, decimal-leading-zero) " ";
+  color: var(--signal);
+}
+
+.method__chain-note {
+  color: var(--paper-dim);
+  margin-bottom: var(--space-3);
+}
+
 .formats__head,
 .services__head,
 .archive__head,
@@ -1435,6 +1464,81 @@ textarea {
 .contact__foot span:last-child {
   display: flex;
   gap: var(--space-2);
+}
+
+/*
+  Pacing situacional. Cada secao corta no ritmo do proprio proposito, como numa
+  edicao: a prova entra em rajada, o metodo entra devagar e a secao que pede a
+  conversa quase nao se move. Ritmo unico para tudo e template, e template nao e
+  a assinatura desta casa.
+*/
+[data-cut="rajada"] {
+  --cut-dur: 300ms;
+  --cut-step: 16ms;
+  --cut-rise: 1rem;
+}
+
+[data-cut="medio"] {
+  --cut-dur: 520ms;
+  --cut-step: 38ms;
+  --cut-rise: 1.5rem;
+}
+
+[data-cut="lento"] {
+  --cut-dur: 760ms;
+  --cut-step: 92ms;
+  --cut-rise: 2rem;
+}
+
+/* O respiro antes do pedido: o movimento cai quase a zero para a frase pousar. */
+[data-cut="respiro"] {
+  --cut-dur: 980ms;
+  --cut-step: 120ms;
+  --cut-rise: 0.6rem;
+}
+
+[data-cut] .reveal-pending {
+  transform: translate3d(0, var(--cut-rise, 1.5rem), 0);
+}
+
+[data-cut] .reveal-pending.is-visible {
+  transition:
+    opacity var(--cut-dur, 520ms) var(--ease-out),
+    transform var(--cut-dur, 520ms) var(--ease-out),
+    filter calc(var(--cut-dur, 520ms) * 0.8) var(--ease-out);
+  transition-delay: calc(var(--reveal-order, 0) * var(--cut-step, 38ms));
+}
+
+/* Rabisco a mao: o traco da assinatura, nao um sublinhado de template. */
+.scribble {
+  display: block;
+  width: 100%;
+  max-width: 22ch;
+  height: auto;
+  margin-top: var(--space-1);
+  overflow: visible;
+  color: var(--signal);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.opening.is-visible .scribble {
+  transform: scaleX(1);
+  transition: transform 720ms var(--ease-move) 180ms;
+}
+
+.scribble path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scribble {
+    transform: none;
+  }
 }
 
 .reveal-pending {

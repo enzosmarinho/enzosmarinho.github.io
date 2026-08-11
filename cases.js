@@ -2,20 +2,21 @@
 window.PROFILE = {
   "name": "Enzo Marinho",
   "initials": "EM",
-  "role": "Estratégia, conteúdo e sistemas digitais",
+  "role": "Marketing de conteúdo em vídeo",
   "location": "Araçatuba · SP",
-  "tagline_a": "Transformo ideias em conteúdo, páginas e sistemas que o cliente entende.",
+  "tagline_a": "Vídeo curto construído a partir do que o negócio precisa vender.",
   "tagline_b": "Estratégia e execução no mesmo lugar, com proposta construída a partir do negócio real.",
   "hero_title": "Enzo Marinho",
-  "hero_sub": "Conteúdo, sites e automações com direção humana e escopo claro.",
-  "about": "Meu trabalho começa entendendo o que precisa mudar para o cliente. A partir daí, organizo a mensagem, escolho o formato e uso IA para acelerar o trabalho pesado sem terceirizar o critério.",
+  "hero_sub": "Pesquisa, roteiro, captação, edição e medição no mesmo lugar.",
+  "about": "Meu trabalho começa entendendo o que precisa mudar para o cliente: quem compra, o que trava a decisão e o que dá para provar em vídeo. A partir daí escolho o formato, escrevo, gravo, publico e leio o que aconteceu. Uso IA para acelerar o trabalho pesado sem terceirizar o critério.",
   "process": [
-    "Estratégia",
+    "Diagnóstico",
+    "Pauta",
     "Roteiro",
-    "Curadoria",
-    "Automação com IA",
+    "Captação",
     "Edição",
-    "Distribuição"
+    "Distribuição",
+    "Medição"
   ],
   "methods": [
     {

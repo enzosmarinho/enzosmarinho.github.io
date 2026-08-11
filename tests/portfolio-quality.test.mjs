@@ -7,8 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (name) => fs.readFileSync(path.join(root, name), "utf8");
-const html = read("portfolio.html");
-const holdingHtml = read("index.html");
+const html = read("index.html");
 const css = read("versions/kinetic/kinetic.css");
 const js = read("versions/kinetic/kinetic.js");
 const dataSource = read("cases.js");
@@ -32,7 +31,7 @@ function visibleWords(source) {
     .filter(Boolean);
 }
 
-test("the archived ultimate portfolio stays intact and out of the index", () => {
+test("the public root is the selected, indexable portfolio", () => {
   assert.match(html, /<html lang="pt-BR" class="motion-paused">/);
   assert.match(html, /<body data-version="ultimate" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
@@ -42,27 +41,22 @@ test("the archived ultimate portfolio stays intact and out of the index", () => 
   assert.match(html, /versions\/kinetic\/kinetic\.js\?v=/);
   assert.match(html, /class="skip-link"/);
   assert.doesNotMatch(html, /version-switch|Comparar versões/);
-  // Arquivado durante a reforma: preservado na raiz para nao quebrar caminho relativo,
-  // mas fora do indice enquanto a home for a pagina de reforma.
-  assert.match(html, /<meta name="robots" content="noindex,nofollow">/);
+  // A reforma terminou: a home voltou a ser o portfolio e volta para o indice.
+  assert.match(html, /<meta name="robots" content="index,follow">/);
+  assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
+  // Uma unica pagina publica: portfolio.html duplicaria a home e competiria com ela.
+  assert.equal(fs.existsSync(path.join(root, "portfolio.html")), false);
+  assert.doesNotMatch(html, /Portfólio em reforma/);
 });
 
-test("the public root is the reform holding page and keeps contact reachable", () => {
-  assert.match(holdingHtml, /<html lang="pt-BR">/);
-  assert.equal((holdingHtml.match(/<h1\b/g) || []).length, 1);
-  assert.match(holdingHtml, /<meta name="robots" content="index,follow">/);
-  assert.match(holdingHtml, /Portfólio em reforma/);
-  // O contato e a unica funcao que a home precisa cumprir na reforma: a URL esta no kit
-  // de candidatura PJ, entao recrutador que chegar aqui tem que conseguir falar com o Enzo.
+test("contact stays reachable and correct on the public page", () => {
+  // A URL esta no kit de candidatura PJ: quem chegar aqui tem que conseguir falar com o Enzo.
   // O profissional e enzosmarinho@hotmail.com (sem ponto). O endereco com ponto que
   // vivia no portfolio antigo estava errado — confirmado pelo Enzo em 2026-08-03.
-  assert.match(holdingHtml, /mailto:enzosmarinho@hotmail\.com/);
-  assert.doesNotMatch(holdingHtml, /enzo\.marinho@hotmail\.com/);
-  assert.match(holdingHtml, /linkedin\.com\/in\/enzo-marinho-727200320/);
-  assert.match(holdingHtml, /instagram\.com\/enzosmarinho/);
-  // Nada de preco publico e nada carregado do portfolio arquivado.
-  assert.doesNotMatch(holdingHtml, /R\$/);
-  assert.doesNotMatch(holdingHtml, /versions\/kinetic/);
+  assert.match(html, /enzosmarinho@hotmail\.com/);
+  assert.doesNotMatch(html, /enzo\.marinho@hotmail\.com/);
+  assert.match(html, /linkedin\.com\/in\/enzo-marinho-727200320/);
+  assert.match(html, /instagram\.com\/enzosmarinho/);
 });
 
 test("proof leads the narrative and the diagnostic closes it", () => {
