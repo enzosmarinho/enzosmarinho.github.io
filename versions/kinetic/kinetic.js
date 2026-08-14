@@ -15,15 +15,14 @@
     direcao: "Direção",
     "long-form": "Long-form",
     edicao: "Edição",
-    automacao: "Sistemas",
   };
 
   const HERO_IDS = [
-    "qBTk1irwDc4",
-    "ADKpionmFiw",
-    "DaBe_RIhl06",
-    "DQfTWkhiK4k",
     "DXiIx4_kQ-0",
+    "DQfTWkhiK4k",
+    "qBTk1irwDc4",
+    "DaBe_RIhl06",
+    "ADKpionmFiw",
     "DZUo3jokhkP",
     "DYC7byPyEnW",
     "DGLMxcXRRJ4",
@@ -47,9 +46,9 @@
 
   const SECTION_WORK_IDS = Object.freeze({
     voti: [
-      "qBTk1irwDc4",
-      "DQfTWkhiK4k",
       "DXiIx4_kQ-0",
+      "DQfTWkhiK4k",
+      "qBTk1irwDc4",
       "DSldztZCA9P",
       "DWpa8TQCKvX",
       "DKkdTYyItAy",
@@ -91,32 +90,7 @@
     { x: -9, y: 11, z: 130, r: -3, scale: 0.95 },
   ];
 
-  const SERVICES = [
-    {
-      title: "Marketing de operação",
-      text: "Pauta, roteiro, captação, edição e publicação conectados à rotina comercial e ao produto.",
-      proof: "Prova: VOTI",
-      href: "#provas",
-    },
-    {
-      title: "Vídeo longo e desdobramentos",
-      text: "Produção completa de uma conversa longa e transformação do material em cortes com função própria.",
-      proof: "Prova: Kayky Pitondo",
-      href: "#formatos",
-    },
-    {
-      title: "Cortes, teasers e curadoria",
-      text: "Seleção dos trechos mais fortes, hierarquia editorial, edição vertical, legendas e ritmo de publicação.",
-      proof: "Prova: Negócio Sem Filtro",
-      href: "#formatos",
-    },
-    {
-      title: "Campanhas e presença digital",
-      text: "Conceito, copy, peças e páginas pensadas para dar consistência à presença da marca em cada ponto de contato.",
-      proof: "Provas: Magnos, Lumiar e 8848",
-      href: "#arquivo",
-    },
-  ];
+  const SERVICES = Array.isArray(profile.services) ? profile.services : [];
 
   const escapeHtml = (value = "") => String(value)
     .replace(/&/g, "&amp;")
@@ -144,7 +118,21 @@
     Number(item?.heroWidth) || (item?.orientation === "landscape" ? 1280 : 720),
     Number(item?.heroHeight) || (item?.orientation === "landscape" ? 720 : 1280),
   ];
-  const previewFor = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
+  /*
+    Duas qualidades por peca, escolhidas pelo tamanho em que a peca aparece.
+
+    O proxy existe porque o hero toca dezoito videos ao mesmo tempo em quadros de
+    100 a 200px - ali 270x480 e mais do que suficiente e mantem a pagina leve.
+    O erro era usar esse mesmo proxy em TODA parte: a peca longa do Kayky ocupa
+    cerca de 700px e recebia um arquivo de 480x270, e o cartao da VOTI ocupa 460px
+    e recebia 270x480. Esticado quase o dobro, ficava mole. Os arquivos HD ja
+    estavam no repositorio, parados.
+
+    Agora: superficie pequena e repetida usa o proxy, superficie grande e unica
+    usa o HD. Qualidade maxima onde se ve, peso baixo onde nao muda nada.
+  */
+  const previewLeve = (item) => HERO_PROXIES[item?.id] || item?.preview || item?.video || "";
+  const previewAlto = (item) => item?.preview || item?.video || previewLeve(item);
   const itemById = (id) => works.find((item) => item.id === id);
   const categoryLabel = (item) => CATEGORIES[item?.category] || cleanText(item?.categoryLabel || "Projeto");
   const featuredHeroItems = () => {
@@ -153,19 +141,19 @@
   };
 
   function relationshipFor(item) {
-    if (item?.client === "VOTI Software") return { label: "Trabalho atual", type: "employment" };
+    if (item?.client === "VOTI Software") return { label: "Experiência CLT", type: "employment" };
     if (item?.client === "Lumiar Parfum") return { label: "Histórico encerrado", type: "historical" };
     return { label: "Projeto independente", type: "independent" };
   }
 
-  function mediaLink(item, className = "", ambient = false) {
+  function mediaLink(item, className = "", ambient = false, revealIndex = null) {
     const image = imageFor(item);
-    const preview = previewFor(item);
+    const preview = previewAlto(item);
     const [largura, altura] = mediaSize(item);
     return `
       <a class="media-link ${escapeHtml(className)}"
          data-orientation="${escapeHtml(item?.orientation || "portrait")}"
-         style="--media-ratio:${largura} / ${altura}"
+         style="--media-ratio:${largura} / ${altura}${Number.isInteger(revealIndex) ? `;--index:${revealIndex}` : ""}"
          href="${escapeHtml(item?.permalink || "#arquivo")}"
          target="_blank"
          rel="noopener"
@@ -197,7 +185,7 @@
     const featured = featuredHeroItems();
     host.innerHTML = featured.map((item, index) => {
       const poster = asset(HERO_POSTERS[item.id] || imageFor(item));
-      const preview = asset(previewFor(item));
+      const preview = asset(previewLeve(item));
       const landscape = item.orientation === "landscape";
       const slot = HERO_SLOTS[index] || HERO_SLOTS[index % HERO_SLOTS.length];
       const depth = Math.max(0.48, Math.min(1, (slot.z + 180) / 350));
@@ -535,7 +523,7 @@
     const host = document.querySelector("[data-voti-wall]");
     if (!host) return;
     const items = SECTION_WORK_IDS.voti.map(itemById).filter(Boolean);
-    host.innerHTML = items.map((item) => mediaLink(item, "voti-card", true)).join("");
+    host.innerHTML = items.map((item, index) => mediaLink(item, "voti-card", true, index)).join("");
   }
 
   function renderKayky() {
@@ -579,7 +567,7 @@
         </a>
       </div>
       <div class="nsf__media">
-        ${[main, ...supporting].map((item) => mediaLink(item, "", Boolean(previewFor(item)))).join("")}
+        ${[main, ...supporting].map((item) => mediaLink(item, "", Boolean(previewAlto(item)))).join("")}
       </div>`;
   }
 
@@ -590,10 +578,10 @@
       <article class="service">
         <h3>${safe(service.title)}</h3>
         <div class="service__body">
-          <p>${safe(service.text)}</p>
+          <p>${safe(service.description)}</p>
           <p class="service__proof">${safe(service.proof)}</p>
         </div>
-        <a class="button button--ghost button--small" href="${escapeHtml(service.href)}">Ver prova</a>
+        <a class="button button--ghost button--small" href="${escapeHtml(service.href)}">${safe(service.cta)}</a>
       </article>`).join("");
   }
 
@@ -623,7 +611,7 @@
     grid.innerHTML = works.map((item) => {
       const relationship = relationshipFor(item);
       const image = imageFor(item);
-      const preview = previewFor(item);
+      const preview = previewLeve(item);
       const [largura, altura] = mediaSize(item);
       return `
         <a class="work-card"
@@ -655,7 +643,8 @@
           <div class="work-card__body">
             <span class="work-card__relation" data-relation="${relationship.type}">${safe(relationship.label)}</span>
             <h3>${safe(item.title)}</h3>
-            <p>${safe(item.client)} / ${safe(categoryLabel(item))} / ${safe(item.year || "")}</p>
+            <p class="work-card__role">${safe(item.role || "Papel não informado")}</p>
+            <p class="work-card__meta">${safe(item.client)} / ${safe(categoryLabel(item))} / ${safe(item.year || "")}</p>
           </div>
         </a>`;
     }).join("");
@@ -750,10 +739,10 @@
         "Ainda não está definido": 1,
       };
       const needPriorities = {
-        "Conteúdo e presença": "Definir mensagem, formatos e cadência de publicação",
-        "Oferta e site": "Clarificar oferta, provas e jornada da página",
-        "Operação e automação": "Mapear o gargalo antes de escolher a ferramenta",
-        "Ainda preciso descobrir": "Começar pelo diagnóstico e pela prioridade do negócio",
+        "Roteirizar e publicar": "Escolher o assunto e transformar a ideia em um roteiro gravável",
+        "Direção de conteúdo": "Revisar mensagem, presença, gravação e corte para chegar na pessoa certa",
+        "Revisão de performance": "Ler o que já foi publicado e priorizar os ajustes com maior impacto",
+        "Produção completa": "Planejar direção, captação e edição do material até a entrega",
       };
 
       const business = String(values.get("business") || "");
@@ -803,7 +792,7 @@
         `Material: ${values.get("material")}`,
         `Aprovação: ${values.get("approval")}`,
       ];
-      if (values.get("reference")) lines.push(`Site ou perfil: ${values.get("reference")}`);
+      if (values.get("reference")) lines.push(`Perfil ou canal: ${values.get("reference")}`);
       if (values.get("outcome")) lines.push(`Resultado esperado: ${values.get("outcome")}`);
 
       return {
@@ -843,7 +832,6 @@
     form.addEventListener("input", () => {
       if (draftWrap?.hidden) return;
       syncDraft();
-      if (status) status.textContent = "Rascunho atualizado.";
     });
 
     form.addEventListener("change", () => {

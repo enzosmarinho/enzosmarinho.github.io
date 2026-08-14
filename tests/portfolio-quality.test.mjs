@@ -44,6 +44,7 @@ test("the public root is the selected, indexable portfolio", () => {
   // A reforma terminou: a home voltou a ser o portfolio e volta para o indice.
   assert.match(html, /<meta name="robots" content="index,follow">/);
   assert.match(html, /rel="canonical" href="https:\/\/enzosmarinho\.github\.io\/"/);
+  assert.match(html, /assets\/portfolio-share-2026\.png/);
   // Uma unica pagina publica: portfolio.html duplicaria a home e competiria com ela.
   assert.equal(fs.existsSync(path.join(root, "portfolio.html")), false);
   assert.doesNotMatch(html, /Portfólio em reforma/);
@@ -57,23 +58,27 @@ test("contact stays reachable and correct on the public page", () => {
   assert.doesNotMatch(html, /enzo\.marinho@hotmail\.com/);
   assert.match(html, /linkedin\.com\/in\/enzo-marinho-727200320/);
   assert.match(html, /instagram\.com\/enzosmarinho/);
+  assert.match(html, /tiktok\.com\/@enzosmarinho/);
+  assert.match(html, /youtube\.com\/@enzosmarinho/);
+  assert.equal(profile.contact.email, "enzosmarinho@hotmail.com");
 });
 
 test("proof leads the narrative and the diagnostic closes it", () => {
-  for (const id of ["provas", "formatos", "capacidades", "arquivo", "metodo", "analise", "contato"]) {
+  for (const id of ["caminhos", "provas", "formatos", "capacidades", "arquivo", "metodo", "sobre", "analise", "contato"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.ok(html.indexOf('id="provas"') < html.indexOf("Não é uma coleção de peças soltas."));
-  assert.ok(html.indexOf("Não é uma coleção de peças soltas.") < html.indexOf('id="formatos"'));
+  assert.ok(html.indexOf('id="caminhos"') < html.indexOf('id="provas"'));
+  assert.ok(html.indexOf('id="provas"') < html.indexOf("O meu trabalho começa antes da timeline."));
+  assert.ok(html.indexOf("O meu trabalho começa antes da timeline.") < html.indexOf('id="formatos"'));
   assert.ok(html.indexOf('id="provas"') < html.indexOf('id="formatos"'));
   assert.ok(html.indexOf('id="formatos"') < html.indexOf('id="arquivo"'));
   assert.ok(html.indexOf('id="arquivo"') < html.indexOf('id="analise"'));
-  assert.match(html, /Marketing de dentro da operação/);
+  assert.match(html, /Tema técnico também precisa ser fácil de acompanhar/);
   assert.match(html, /data-kayky-case/);
   assert.match(html, /data-nsf-case/);
-  assert.match(js, /Prova: VOTI/);
-  assert.match(js, /Prova: Kayky Pitondo/);
-  assert.match(js, /Prova: Negócio Sem Filtro/);
+  assert.match(js, /function renderVoti/);
+  assert.match(js, /id="kayky-title">Kayky Pitondo/);
+  assert.match(js, /id="nsf-title">Negócio Sem Filtro/);
 });
 
 test("the conversion path is proportional and never a fixed package ladder", () => {
@@ -87,12 +92,21 @@ test("the conversion path is proportional and never a fixed package ladder", () 
     assert.match(html, new RegExp(`name="${name}"`));
   }
   assert.match(html, /Nada é enviado automaticamente/);
-  assert.match(html, /Empresas diferentes não recebem a mesma proposta/);
+  assert.match(html, /Eu começo entendendo o ponto real/);
   assert.match(html, /Investimento proporcional/);
   assert.match(js, /Pedido preparado/);
   assert.match(js, /Rascunho atualizado/);
   assert.match(js, /data-diagnostic-link/);
   assert.match(js, /analyzeRequest/);
+  assert.match(js, /"Roteirizar e publicar": "Escolher o assunto/);
+  assert.match(js, /"Direção de conteúdo": "Revisar mensagem/);
+  assert.match(js, /"Revisão de performance": "Ler o que já foi publicado/);
+  assert.match(js, /"Produção completa": "Planejar direção/);
+  assert.doesNotMatch(js, /"Oferta e site":|"Operação e automação":/);
+  const needValues = [...html.matchAll(/name="need" value="([^"]+)"/g)].map((match) => match[1]);
+  const prioritiesBlock = js.match(/const needPriorities = \{([\s\S]*?)\n\s*\};/)?.[1] || "";
+  const priorityKeys = [...prioritiesBlock.matchAll(/"([^"]+)":/g)].map((match) => match[1]);
+  assert.deepEqual(priorityKeys, needValues, "every form need must produce a diagnostic priority");
   assert.match(js, /Projeto enxuto, com decisão direta/);
   assert.match(js, /Operação em crescimento, com escopo coordenado/);
   assert.match(js, /Operação estruturada, com mais dependências/);
@@ -118,9 +132,12 @@ test("work relationships and authorship boundaries stay explicit", () => {
       .every((project) => project.category === "edicao"),
     "podcast cuts must be represented as editing and curation, not automation",
   );
-  assert.match(js, /Trabalho atual/);
+  assert.match(js, /Experiência CLT/);
   assert.match(js, /Projeto independente/);
   assert.match(js, /Histórico encerrado/);
+  assert.match(js, /class="work-card__role"/);
+  assert.match(js, /safe\(item\.role/);
+  assert.doesNotMatch(dataSource, /Todos os cortes e teasers publicados/);
   assert.doesNotMatch(`${html}\n${js}`, /data-ai-roles|renderAiRoles/);
 });
 
@@ -221,8 +238,9 @@ test("the hero video wall is optimized, autonomous and progressively enhanced", 
   assert.ok(totalProxyBytes < 256 * 1024, `hero proxies exceed 256 KB: ${totalProxyBytes}`);
   assert.ok(totalPosterBytes < 128 * 1024, `hero posters exceed 128 KB: ${totalPosterBytes}`);
   assert.ok(allHeroVideoBytes < 3 * 1024 * 1024, `hero videos exceed 3 MB: ${allHeroVideoBytes}`);
-  assert.match(html, /preload" as="image" href="assets\/hero-wall\/qBTk1irwDc4\.webp"/);
-  assert.match(html, /<img src="assets\/hero-wall\/qBTk1irwDc4\.webp"[\s\S]*fetchpriority="high"/);
+  assert.equal(heroIds[0], "DXiIx4_kQ-0", "the first hero proof must be a direction-led VOTI work");
+  assert.match(html, /preload" as="image" href="assets\/hero-wall\/DXiIx4_kQ-0\.webp"/);
+  assert.match(html, /<img src="assets\/hero-wall\/DXiIx4_kQ-0\.webp"[\s\S]*fetchpriority="high"/);
   assert.doesNotMatch(html, /motion-control|data-motion-toggle|data-motion-status/);
   assert.match(html, /class="hero__orbit" data-hero-orbit/);
   assert.match(html, /class="hero__ambient"/);
@@ -367,9 +385,47 @@ test("the page is authored, concise and avoids loose punctuation", () => {
   assert.ok(visibleWords(html).length < 850);
   assert.doesNotMatch(html, /[—–]/);
   assert.doesNotMatch(html, /lorem ipsum|revolucionário|solução 360/i);
-  assert.match(html, /Não é uma coleção de peças soltas/);
-  assert.match(html, /Serviços construídos a partir do trabalho real/);
-  assert.match(html, /Seu negócio merece uma leitura própria/);
+  assert.match(html, /Você tem assunto\. <em>Eu ajudo a transformar em vídeo/);
+  assert.match(html, /Você pode estar em um destes dois pontos/);
+  assert.match(html, /Depois, eu assumo o que o projeto precisa/);
+  assert.match(html, /Eu somo ao que você já tem/);
+  assert.match(html, /Tem assunto, mas ainda não tem vídeo/);
+});
+
+test("positioning, offer layers and brand system stay canonical", () => {
+  assert.match(html, /Roteirista e diretor de conteúdo em vídeo/);
+  assert.match(html, /Ajudo quem ainda não produz a começar e quem já produz a fazer melhor/);
+  assert.match(html, /Você ainda não produz/);
+  assert.match(html, /Você já produz/);
+  assert.equal(profile.services.length, 3);
+  assert.deepEqual(
+    [...profile.services].map((service) => service.title),
+    ["Roteiro para começar", "Direção de conteúdo", "Produção audiovisual"],
+  );
+  assert.match(js, /const SERVICES = Array\.isArray\(profile\.services\) \? profile\.services : \[\]/);
+  assert.doesNotMatch(js, /title:\s*"Roteiro para começar"/);
+  assert.deepEqual(
+    [...profile.process],
+    ["Diagnóstico", "Público", "Assunto", "Roteiro", "Direção", "Produção", "Revisão"],
+  );
+  assert.equal(Object.hasOwn(profile, "aiRoles"), false);
+  assert.equal(Object.hasOwn(profile, "automation"), false);
+  assert.match(css, /--ink:\s*#060011/);
+  assert.match(css, /--signal:\s*#8b5cf6/);
+  assert.match(css, /--signal-bright:\s*#a855f7/);
+  assert.match(css, /--signal-accent:\s*#d8b4fe/);
+  assert.match(css, /font-family:\s*"Instrument Serif"/);
+  assert.match(css, /font-family:\s*"DM Mono"/);
+  assert.match(css, /var\(--depth, 1\)/);
+  assert.match(css, /@media \(max-height: 44rem\)/);
+  assert.doesNotMatch(css, /backdrop-filter/);
+  assert.match(js, /mediaLink\(item, "voti-card", true, index\)/);
+  assert.deepEqual(
+    [...profile.services].map((service) => service.cta),
+    ["Ver como nasce o roteiro", "Ver direção em prática", "Ver produções"],
+  );
+  assert.match(html, /<noscript>[\s\S]*Roteiro, direção e produção continuam acessíveis/);
+  assert.doesNotMatch(`${html}\n${css}\n${notFoundHtml}`, /Anton|#ff5d3a/i);
 });
 
 test("the static payload remains bounded and every declared root asset exists", () => {
@@ -379,6 +435,14 @@ test("the static payload remains bounded and every declared root asset exists", 
   ]);
   for (const reference of references) {
     assert.ok(fs.existsSync(path.join(root, reference)), `missing public asset: ${reference}`);
+  }
+
+  const shareImage = fs.readFileSync(path.join(root, "assets", "portfolio-share-2026.png"));
+  assert.equal(shareImage.readUInt32BE(16), 1200);
+  assert.equal(shareImage.readUInt32BE(20), 630);
+  assert.equal(fs.existsSync(path.join(root, "assets", "portfolio-share-2026.jpg")), false);
+  for (const retiredFont of ["anton-latin.woff2", "ibm-plex-mono-500.woff2"]) {
+    assert.equal(fs.existsSync(path.join(root, "assets", "fonts", retiredFont)), false);
   }
 
   const stack = [path.join(root, "assets")];
@@ -396,7 +460,7 @@ test("the static payload remains bounded and every declared root asset exists", 
 
 test("the custom 404 remains connected to the public portfolio", () => {
   assert.match(notFoundHtml, /<meta name="robots" content="noindex">/);
-  assert.match(notFoundHtml, /assets\/fonts\/anton-latin\.woff2/);
+  assert.match(notFoundHtml, /assets\/fonts\/InstrumentSerif-Regular\.woff2/);
   assert.match(notFoundHtml, /href="\/">Voltar ao portfólio/);
 });
 

@@ -33,6 +33,18 @@ mas não fazem parte da árvore publicada.
 
 ## Tese comercial
 
+A categoria pública é **Roteirista e diretor de conteúdo em vídeo**. A frase
+central é: **Ajudo quem ainda não produz a começar e quem já produz a fazer
+melhor.** Toda comunicação organiza a oferta nesta ordem:
+
+1. roteiro para quem ainda não produz;
+2. direção para pessoas e equipes que já produzem;
+3. captação e edição quando o projeto pede produção.
+
+Enzo entra como apoio à pessoa ou equipe existente, não como substituto de
+marketing nem como agência. Sites, sistemas, automações e inteligência artificial
+podem apoiar o processo, mas não são oferta de primeira tela deste portfólio.
+
 A conversão principal é `Pedir análise`, não comprar um pacote.
 
 - Não existe tabela pública de preço.
@@ -58,18 +70,18 @@ continuar genéricos, sem quantidade ou valor fechado.
 
 | Papel | Valor |
 |---|---|
-| Fundo | `#0b0b0a` |
-| Superfícies | `#11110f`, `#171714`, `#20201c` |
-| Texto | `#f3f0e8` |
-| Ação e sinal | `#ff5d3a` |
-| Display | Anton |
+| Fundo | `#060011` |
+| Superfícies | `#0b021d`, `#11042a`, `#1a083d` |
+| Texto | `#ede9fe`; apoio `#9d8fc9` |
+| Ação e sinal | `#8b5cf6`, `#a855f7`, `#d8b4fe` |
+| Display | Instrument Serif |
 | Corpo | Manrope |
-| Metadados | IBM Plex Mono |
+| Metadados | DM Mono |
 
-A direção é de estúdio cinematográfico: tipografia monumental, geometria afiada
-e uma parede viva de trabalhos. A mídia real é a textura. Não usar
-gradiente decorativo, glassmorphism, mockup falso, brilho roxo ou card arredondado
-genérico.
+A direção combina estúdio cinematográfico com a identidade roxa V3, consolidada
+em 14/08/2026. Instrument Serif dá voz humana; a parede viva usa o trabalho real
+como textura e prova. Não usar glassmorphism, mockup falso, gradiente aplicado a
+logo, sombra em logo ou card arredondado genérico.
 
 ## Movimento
 

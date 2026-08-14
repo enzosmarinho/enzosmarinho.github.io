@@ -4,21 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#f1eee8">
+  <meta name="theme-color" content="#060011">
   <title>Página não encontrada | Enzo Marinho</title>
   <link rel="canonical" href="https://enzosmarinho.github.io/">
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/anton-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/InstrumentSerif-Regular.woff2" crossorigin>
   <!--
     Estilo inline de proposito: a pagina de erro precisa desenhar inteira num
-    request so, sem depender do CSS do site. Antes puxava /styles.css (132 KB,
-    folha da versao antiga ESCURA) para desenhar cinco linhas — pesado e
-    visualmente inconsistente com o site atual, que e claro. Tokens abaixo
-    copiados do estado vivo (getComputedStyle em 25/07/2026).
+    request so, sem depender do CSS do site. Os tokens abaixo repetem a
+    identidade roxa vigente sem carregar a folha e a parede de videos da home.
   -->
   <style>
     @font-face {
-      font-family: "Anton";
-      src: url("/assets/fonts/anton-latin.woff2") format("woff2");
+      font-family: "Instrument Serif";
+      src: url("/assets/fonts/InstrumentSerif-Regular.woff2") format("woff2");
       font-display: fallback;
       font-weight: 400;
     }
@@ -29,18 +27,20 @@
       font-weight: 200 800;
     }
     @font-face {
-      font-family: "IBM Plex Mono";
-      src: url("/assets/fonts/ibm-plex-mono-500.woff2") format("woff2");
+      font-family: "DM Mono";
+      src: url("/assets/fonts/DMMono-Medium.woff2") format("woff2");
       font-display: swap;
       font-weight: 500;
     }
 
     :root {
-      --paper: #f1eee8;
-      --ink: #171719;
-      --accent: #b13a33;
-      --muted: #6b6862;
-      --line: rgba(23, 23, 25, .16);
+      --paper: #ede9fe;
+      --ink: #060011;
+      --surface: #11042a;
+      --accent: #8b5cf6;
+      --accent-soft: #d8b4fe;
+      --muted: #9d8fc9;
+      --line: rgba(216, 180, 254, .24);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -53,8 +53,8 @@
       display: grid;
       place-items: center;
       padding: clamp(1.5rem, 6vw, 5rem);
-      background: var(--paper);
-      color: var(--ink);
+      background: var(--ink);
+      color: var(--paper);
       font: 400 clamp(1rem, .95rem + .3vw, 1.125rem)/1.6 "Manrope", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
@@ -67,7 +67,7 @@
 
     .eyebrow {
       margin: 0;
-      font-family: "IBM Plex Mono", Consolas, monospace;
+      font-family: "DM Mono", Consolas, monospace;
       font-size: .75rem;
       font-weight: 500;
       letter-spacing: .18em;
@@ -77,12 +77,11 @@
 
     h1 {
       margin: 0;
-      font-family: "Anton", "Arial Narrow", sans-serif;
+      font-family: "Instrument Serif", Georgia, serif;
       font-weight: 400;
       font-size: clamp(2.75rem, 1.5rem + 6.5vw, 6.5rem);
-      line-height: .92;
-      letter-spacing: -.015em;
-      text-transform: uppercase;
+      line-height: .94;
+      letter-spacing: -.025em;
       text-wrap: balance;
     }
 
@@ -108,20 +107,20 @@
       align-items: center;
       gap: .6rem;
       padding: .85rem 1.5rem;
-      border-radius: 999px;
-      background: var(--ink);
-      color: var(--paper);
+      border-radius: 0;
+      background: var(--accent);
+      color: var(--ink);
       font-weight: 600;
       font-size: .95rem;
       text-decoration: none;
       transition: transform 160ms cubic-bezier(.2,.8,.2,1), background-color 160ms;
     }
-    .button:hover { background: var(--accent); transform: translateY(-1px); }
+    .button:hover { background: var(--accent-soft); transform: translateY(-1px); }
     .button:active { transform: translateY(0); }
 
     .link {
-      color: var(--ink);
-      font-family: "IBM Plex Mono", Consolas, monospace;
+      color: var(--paper);
+      font-family: "DM Mono", Consolas, monospace;
       font-size: .8rem;
       letter-spacing: .06em;
       text-transform: uppercase;

@@ -2,45 +2,45 @@
 window.PROFILE = {
   "name": "Enzo Marinho",
   "initials": "EM",
-  "role": "Marketing de conteúdo em vídeo",
+  "role": "Roteirista e diretor de conteúdo em vídeo",
   "location": "Araçatuba · SP",
-  "tagline_a": "Vídeo curto construído a partir do que o negócio precisa vender.",
-  "tagline_b": "Estratégia e execução no mesmo lugar, com proposta construída a partir do negócio real.",
+  "tagline_a": "Ajudo quem ainda não produz a começar e quem já produz a fazer melhor.",
+  "tagline_b": "Roteiro para organizar o assunto. Direção para a mensagem chegar na pessoa certa. Produção quando o projeto pede.",
   "hero_title": "Enzo Marinho",
-  "hero_sub": "Pesquisa, roteiro, captação, edição e medição no mesmo lugar.",
-  "about": "Meu trabalho começa entendendo o que precisa mudar para o cliente: quem compra, o que trava a decisão e o que dá para provar em vídeo. A partir daí escolho o formato, escrevo, gravo, publico e leio o que aconteceu. Uso IA para acelerar o trabalho pesado sem terceirizar o critério.",
+  "hero_sub": "Você tem assunto. Eu ajudo a transformar em vídeo.",
+  "about": "Meu trabalho começa antes da timeline. Se você ainda não publica, eu ajudo a escolher o assunto e escrevo um roteiro que dá para gravar sem apagar o seu jeito de falar. Se você já produz, eu direciono pauta, mensagem, presença, gravação e corte. Quando falta produção, também assumo câmera e edição.",
   "process": [
     "Diagnóstico",
-    "Pauta",
+    "Público",
+    "Assunto",
     "Roteiro",
-    "Captação",
-    "Edição",
-    "Distribuição",
-    "Medição"
+    "Direção",
+    "Produção",
+    "Revisão"
   ],
   "methods": [
     {
-      "title": "Problema antes da ferramenta",
-      "text": "Entendo público, oferta, rotina e resultado esperado antes de decidir se a solução pede conteúdo, uma página ou automação."
+      "title": "A pessoa certa antes do formato",
+      "text": "Eu entendo quem precisa ouvir, o que essa pessoa já sabe e qual recorte faz o assunto valer um vídeo."
     },
     {
-      "title": "Escopo antes do sinal",
-      "text": "Entregáveis, materiais, prazo, aprovação e limites são definidos antes do pagamento para o projeto avançar sem surpresa."
+      "title": "Roteiro que cabe na boca",
+      "text": "A ideia vira uma fala possível de gravar, com começo, desenvolvimento e fechamento sem apagar a voz de quem aparece."
     },
     {
-      "title": "IA no trabalho pesado",
-      "text": "Pesquisa, transcrição, copy inicial, organização, variações e tarefas repetitivas ganham velocidade com Claude, Codex e fluxos próprios."
+      "title": "Direção sem trocar a sua equipe",
+      "text": "Eu reviso pauta, fala, presença, captação e corte, e mostro onde a mensagem perdeu clareza e como recuperar."
     },
     {
-      "title": "Decisão e revisão humanas",
-      "text": "Eu reviso mensagem, narrativa, design, código, ritmo e contexto antes de qualquer entrega chegar ao cliente ou ao público."
+      "title": "Produção quando precisa",
+      "text": "Se o projeto pede execução completa, eu também dirijo a gravação, capto e edito até o arquivo final."
     }
   ],
   "experience": {
     "employment": {
-      "label": "Trabalho atual · CLT",
+      "label": "Experiência CLT",
       "name": "VOTI Software",
-      "text": "Na VOTI, trabalho de dentro da operação: penso pautas, roteiros, gravo em campo e edito conteúdos de produto, campanha e bastidores."
+      "text": "Na VOTI, cuidei de assunto, roteiro, presença em câmera, captação e edição para transformar temas técnicos em conteúdo publicável."
     },
     "independent": [
       "Negócio Sem Filtro",
@@ -58,68 +58,77 @@ window.PROFILE = {
   ],
   "capabilities": [
     {
-      "id": "conteudo",
-      "label": "Conteúdo e vídeo",
-      "title": "Uma ideia vira uma frente de conteúdo.",
-      "text": "Estratégia, roteiro, captação, edição, cortes e peças de campanha definidos a partir do material e do canal que precisam funcionar."
+      "id": "roteiro",
+      "label": "Para começar",
+      "title": "O assunto vira um roteiro gravável.",
+      "text": "Escolha do recorte, organização do raciocínio e um mapa de fala que respeita a voz de quem vai aparecer."
     },
     {
-      "id": "presenca",
-      "label": "Sites e páginas",
-      "title": "A oferta ganha uma presença clara.",
-      "text": "Arquitetura, copy, design e código responsivo para explicar valor e conduzir a conversa até o próximo passo."
+      "id": "direcao",
+      "label": "Para melhorar",
+      "title": "O conteúdo ganha direção.",
+      "text": "Revisão de pauta, fala, presença, gravação e corte para a mensagem chegar com clareza a quem precisa ouvir."
     },
     {
-      "id": "sistemas",
-      "label": "Sistemas e IA",
-      "title": "O gargalo repetitivo vira um fluxo confiável.",
-      "text": "Automação aplicada a uma tarefa definida, com testes, documentação, limites e decisão humana onde ela importa."
+      "id": "producao",
+      "label": "Quando precisa",
+      "title": "Eu assumo a produção completa.",
+      "text": "Direção de gravação, captação e edição para projetos que precisam sair da ideia e chegar ao arquivo final."
     }
   ],
   "services": [
     {
-      "category": "conteudo",
-      "categoryLabel": "Conteúdo e vídeo",
-      "title": "Frente de Conteúdo Sob Medida",
-      "description": "Estratégia, roteiro, captação e edição combinados depois da leitura do material, do canal e da cadência necessária.",
+      "category": "roteiro",
+      "categoryLabel": "Para começar",
+      "title": "Roteiro para começar",
+      "description": "Você traz o conhecimento. Eu ajudo a escolher o assunto, organizar o raciocínio e escrever uma fala possível de gravar.",
+      "proof": "Saída: assunto, roteiro e guia de gravação",
+      "href": "#metodo",
+      "cta": "Ver como nasce o roteiro",
       "detail": "Escopo construído após análise",
       "timeline": "Prazo definido pelo escopo",
       "revisions": "Aprovação definida na proposta",
       "includes": [
-        "Objetivo e público",
-        "Formatos e volume",
-        "Material de origem",
-        "Cadência e aprovação"
+        "Leitura de público e assunto",
+        "Recorte e promessa do vídeo",
+        "Roteiro no seu tom de voz",
+        "Guia simples de gravação"
       ]
     },
     {
-      "category": "presenca",
-      "categoryLabel": "Sites e páginas",
-      "title": "Presença Digital Sob Medida",
-      "description": "Arquitetura, copy, design e código dimensionados a partir da oferta, das integrações e do próximo passo esperado.",
+      "category": "direcao",
+      "categoryLabel": "Para melhorar",
+      "title": "Direção de conteúdo",
+      "description": "Eu entro ao lado de quem já produz para revisar pauta, mensagem, presença, captação e corte sem substituir a equipe atual.",
+      "proof": "Funciona ao lado da sua equipe atual",
+      "href": "#provas",
+      "cta": "Ver direção em prática",
       "detail": "Escopo construído após análise",
       "timeline": "Prazo definido pelo escopo",
       "revisions": "Aprovação definida na proposta",
       "includes": [
-        "Mensagem e arquitetura",
-        "Design responsivo",
-        "Desenvolvimento",
-        "Publicação combinada"
+        "Revisão de pauta e roteiro",
+        "Direção de presença em câmera",
+        "Leitura de gravação e corte",
+        "Próximos ajustes priorizados"
       ]
     },
     {
-      "category": "sistemas",
-      "categoryLabel": "Sistemas e IA",
-      "title": "Sistema Útil Sob Medida",
-      "description": "Uma tarefa repetitiva vira um fluxo testável quando o ganho, os limites e as responsabilidades estão claros.",
+      "category": "producao",
+      "categoryLabel": "Quando precisa",
+      "title": "Produção audiovisual",
+      "description": "Quando direção sozinha não resolve, eu assumo a gravação e a edição para levar o projeto até a entrega final.",
+      "proof": "Do set ao arquivo final",
+      "href": "#arquivo",
+      "cta": "Ver produções",
       "detail": "Escopo construído após análise",
       "timeline": "Prazo definido pelo escopo",
       "revisions": "Aprovação definida na proposta",
       "includes": [
-        "Mapeamento do gargalo",
-        "Fluxo e integrações",
-        "Testes com exemplos reais",
-        "Documentação e limites"
+        "Direção de gravação",
+        "Captação de imagem e som",
+        "Edição, cor e ritmo",
+        "Versões finais combinadas"
       ]
     }
   ],
@@ -148,100 +157,11 @@ window.PROFILE = {
     ],
     "promise": "Depois da leitura, o plano mostra objetivo, entregáveis, limites, prazo, responsabilidades e investimento. Sem tabela genérica e sem inflar um projeto pequeno."
   },
-  "aiRoles": [
-    {
-      "owner": "Enzo",
-      "role": "Decisão humana",
-      "text": "Diagnóstico do negócio, direção criativa, contato, captação e aprovação final."
-    },
-    {
-      "owner": "GPT-5.6 Codex",
-      "role": "Engenharia principal",
-      "text": "Arquitetura, implementação, testes, acessibilidade, performance e verificação técnica."
-    },
-    {
-      "owner": "Opus 5",
-      "role": "Segunda leitura",
-      "text": "Crítica estratégica e editorial, revisão de narrativa e contraponto visual."
-    },
-    {
-      "owner": "Em comum",
-      "role": "Pesquisa e revisão",
-      "text": "Comparação de fontes, exploração de alternativas e revisão cruzada. Nenhum modelo publica ou decide pelo cliente."
-    }
-  ],
-  "automation": {
-    "stages": [
-      {
-        "title": "Começo pelo material completo",
-        "text": "Recebo o episódio, a entrevista, a aula ou a gravação principal e entendo o contexto antes de separar qualquer trecho."
-      },
-      {
-        "title": "A IA ajuda a enxergar o todo",
-        "text": "Uso transcrição e análise para mapear assuntos, frases fortes e pontos que merecem uma segunda leitura."
-      },
-      {
-        "title": "Eu escolho e organizo",
-        "text": "Reviso os candidatos, separo os melhores cortes e monto uma ordem de prioridade para a entrega."
-      },
-      {
-        "title": "Cada corte ganha acabamento",
-        "text": "Ajusto abertura, ritmo, legenda e identidade seguindo exatamente o padrão aprovado pelo cliente."
-      },
-      {
-        "title": "A entrega chega organizada",
-        "text": "Vídeo longo, cortes e teasers ficam separados e prontos para entrar na rotina de publicação."
-      }
-    ],
-    "proof": {
-      "client": "Negócio Sem Filtro",
-      "title": "Todos os cortes do perfil passaram pela minha edição.",
-      "text": "No Negócio Sem Filtro, edito os cortes publicados do perfil, faço a seleção e o ranking dos trechos e produzo os teasers. Também participei da captação de um dos vídeos longos, sem ser responsável pela edição desse episódio completo.",
-      "poster": "assets/thumbs/ig_DaBe_RIhl06.webp",
-      "permalink": "https://www.instagram.com/reel/DaBe_RIhl06/",
-      "profile": "https://www.instagram.com/onegociosemfiltro/",
-      "signals": [
-        "Todos os cortes do perfil",
-        "Teasers produzidos",
-        "Seleção e ranking"
-      ],
-      "links": [
-        {
-          "title": "Marketing é gasto ou retorno?",
-          "url": "https://www.instagram.com/reel/DaBe_RIhl06/"
-        },
-        {
-          "title": "IA é meio, não estrategista",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DaQEv0Blj2s/"
-        },
-        {
-          "title": "Conteúdo que converte",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DaNgCEIFkJB/"
-        },
-        {
-          "title": "Stories que vendem",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DaFxmK1DjRc/"
-        },
-        {
-          "title": "IA não substitui vendedor",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DaDJWnjjn-X/"
-        },
-        {
-          "title": "Bastidores com Clayton Khan",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DYDiclAOSod/"
-        },
-        {
-          "title": "Faculdade vale a pena?",
-          "url": "https://www.instagram.com/onegociosemfiltro/reel/DX_2dJiO8WZ/"
-        }
-      ]
-    }
-  },
   "contact": {
     "whatsapp": "https://wa.me/5518981196746?text=Oi%20Enzo%2C%20vi%20seu%20portf%C3%B3lio%20e%20quero%20entender%20meu%20pr%C3%B3ximo%20passo.%0A%0AO%20que%20precisa%20mudar%3A%20%0APrazo%3A%20%0AMaterial%20ou%20refer%C3%AAncias%3A%20",
     "instagram": "https://instagram.com/enzosmarinho",
     "linkedin": "https://www.linkedin.com/in/enzo-marinho-727200320",
-    "email": "enzo.marinho@hotmail.com"
+    "email": "enzosmarinho@hotmail.com"
   }
 };
 window.CASES = [
@@ -256,7 +176,7 @@ window.CASES = [
     "role": "Cortes · teasers · curadoria",
     "problem": "Cada episódio precisava se transformar em uma sequência de cortes fortes, coerentes e prontos para publicação.",
     "direction": "Seleciono e ranqueio os trechos, edito cada peça vertical e produzo os teasers. Também captei um dos episódios longos.",
-    "deliverable": "Todos os cortes e teasers publicados no perfil, além da captação de um dos vídeos longos.",
+    "deliverable": "Cortes e teasers publicados no perfil, além da captação de um dos vídeos longos.",
     "result": "Uma frente contínua de conteúdo construída a partir dos episódios do projeto.",
     "year": "2026",
     "layout": "wide",
@@ -301,7 +221,7 @@ window.CASES = [
     "problem": "Fazer quem está do lado de fora sentir a intensidade de um treino real.",
     "direction": "Gravei dentro do tatame e montei o vídeo acompanhando o ritmo dos movimentos.",
     "deliverable": "Captação e edição de um reel vertical para a academia.",
-    "result": "246 likes · 38 comentários — maior alcance orgânico",
+    "result": "246 likes · 38 comentários no perfil da 8848",
     "year": "2026",
     "layout": "tall",
     "orientation": "portrait",
@@ -371,7 +291,7 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DXiIx4_kQ-0/",
     "thumb": "assets/thumbs/ig_DXiIx4_kQ-0.jpg",
     "preview": "assets/previews/DXiIx4_kQ-0.mp4",
-    "cardImage": "assets/thumbs/ig_DXiIx4_kQ-0.jpg",
+    "cardImage": "assets/posters/DXiIx4_kQ-0.webp",
     "heroWidth": 480,
     "heroHeight": 854
   },
@@ -456,7 +376,7 @@ window.CASES = [
     "permalink": "https://www.instagram.com/reel/DWpa8TQCKvX/",
     "thumb": "assets/thumbs/ig_DWpa8TQCKvX.webp",
     "preview": "assets/previews/DWpa8TQCKvX.mp4",
-    "cardImage": "assets/thumbs/ig_DWpa8TQCKvX.webp",
+    "cardImage": "assets/posters/DWpa8TQCKvX.webp",
     "heroWidth": 480,
     "heroHeight": 854
   },
@@ -894,7 +814,7 @@ window.EXTRA_CLIPS = [
     "orientation": "portrait",
     "thumb": "assets/thumbs/DZGeYPdBiet.jpg",
     "preview": "assets/previews/DZGeYPdBiet.mp4",
-    "cardImage": "assets/thumbs/DZGeYPdBiet.jpg",
+    "cardImage": "assets/posters/DZGeYPdBiet.webp",
     "heroWidth": 480,
     "heroHeight": 854
   }
