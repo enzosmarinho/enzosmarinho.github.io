@@ -35,7 +35,9 @@ test("the public root is the selected, indexable portfolio", () => {
   assert.match(html, /<html lang="pt-BR" class="motion-paused">/);
   assert.match(html, /<body data-version="ultimate" data-asset-prefix="">/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /<span>ENZO MARINHO<\/span>/);
+  // O wordmark decorativo saiu em 2026-08-20: colidia com o h1 e deixava os dois
+  // ilegiveis. O nome continua na nav; a hero fala pela mensagem, nao pelo ornamento.
+  assert.doesNotMatch(html, /hero__name/);
   assert.match(html, /data-hero-wall/);
   assert.match(html, /versions\/kinetic\/kinetic\.css\?v=/);
   assert.match(html, /versions\/kinetic\/kinetic\.js\?v=/);

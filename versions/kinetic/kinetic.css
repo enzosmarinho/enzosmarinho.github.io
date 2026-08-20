@@ -427,35 +427,6 @@ p {
   content: none;
 }
 
-.hero__name {
-  position: absolute;
-  z-index: 5;
-  top: 42%;
-  right: 0;
-  left: 0;
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
-.hero__name p {
-  margin: 0;
-  color: var(--signal-accent);
-  font-family: var(--display);
-  font-size: clamp(5.2rem, 14.3vw, 13.8rem);
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  line-height: 0.82;
-  opacity: 0.16;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.hero__name span {
-  display: block;
-  width: 100%;
-  animation: name-enter 900ms var(--ease-move) both;
-}
-
 .hero__copy {
   position: absolute;
   z-index: 6;
@@ -584,19 +555,6 @@ p {
 
 .hero-tile--a {
   --sphere-transform: translate3d(calc(-50% - 34vw), calc(-50% - 22vh), -40px) rotateZ(-5deg) scale(0.9);
-}
-
-@keyframes name-enter {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-    transform: translate3d(0, 15%, 0);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0);
-    transform: translate3d(0, 0, 0);
-  }
 }
 
 @keyframes tile-enter {
@@ -1938,17 +1896,6 @@ textarea {
     min-height: 44rem;
   }
 
-  .hero__name {
-    top: 50%;
-  }
-
-  .hero__name p {
-    font-size: clamp(4.25rem, 15.8vw, 7.5rem);
-    line-height: 0.82;
-    white-space: normal;
-    max-width: 6.8ch;
-    margin-inline: auto;
-  }
 
   .hero__copy {
     bottom: var(--space-3);
