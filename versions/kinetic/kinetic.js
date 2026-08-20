@@ -235,6 +235,111 @@
     }).join("");
   }
 
+  /*
+    Constelacao livre. Antes cada peca ficava presa a um HERO_SLOT fixo e so
+    bamboleava ~1.4vw em torno dele: lia como parede pendurada, nao como campo
+    solto. Aqui cada peca ganha posicao, velocidade e giro proprios, atravessa a
+    tela e reentra pelo lado oposto. Anima somente transform.
+
+    A distribuicao inicial usa angulo aureo (2.39996 rad) porque espalhar por
+    random puro gera aglomerado visivel; o angulo aureo cobre o campo por
+    igual sem parecer grade.
+  */
+  function setupConstellation() {
+    const wall = document.querySelector("[data-hero-wall]");
+    const heroSection = document.querySelector(".hero");
+    if (!wall || !heroSection) return;
+
+    const tiles = [...wall.querySelectorAll(".hero-tile")];
+    if (!tiles.length) return;
+
+    const LIMITE_X = 82;
+    const LIMITE_Y = 86;
+    const lento = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.35 : 1;
+
+    const campo = tiles.map((el, i) => {
+      const angulo = i * 2.39996;
+      const raio = 0.2 + 0.62 * Math.sqrt((i + 0.5) / tiles.length);
+      const profundidade = Math.round(Math.sin(angulo * 1.3) * 150);
+      return {
+        el,
+        x: Math.cos(angulo) * raio * LIMITE_X,
+        y: Math.sin(angulo) * raio * LIMITE_Y,
+        vx: (Math.cos(angulo * 1.7) * 0.00072 + 0.00024) * lento,
+        vy: (Math.sin(angulo * 2.3) * 0.00066 - 0.00019) * lento,
+        // O giro oscila em torno de uma base. Se acumulasse, em um minuto a
+        // peca estaria de cabeca para baixo — vira cambalhota, nao deriva.
+        giroBase: Math.sin(angulo) * 7,
+        giroAmp: 2.4 + ((i % 4) * 0.9),
+        giroFreq: (0.00021 + (i % 5) * 0.00004) * lento,
+        fase: angulo,
+        giro: Math.sin(angulo) * 7,
+        z: profundidade,
+        escala: (0.82 + 0.2 * ((Math.sin(angulo * 2.7) + 1) / 2)).toFixed(3),
+      };
+    });
+
+    // A profundidade decide quem passa na frente de quem.
+    campo.forEach((p) => p.el.style.setProperty("--layer", String(Math.round(p.z + 180))));
+
+    let quadro = 0;
+    let anterior = 0;
+    let rodando = false;
+
+    function pintar(p) {
+      p.el.style.transform =
+        `translate3d(calc(-50% + ${p.x.toFixed(2)}vw), calc(-50% + ${p.y.toFixed(2)}vh), ${p.z}px)`
+        + ` rotateZ(${p.giro.toFixed(2)}deg) scale(${p.escala})`;
+    }
+
+    let relogio = 0;
+
+    function passo(agora) {
+      const dt = Math.min(48, anterior ? agora - anterior : 16);
+      anterior = agora;
+      relogio += dt;
+      for (const p of campo) {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.giro = p.giroBase + Math.sin(relogio * p.giroFreq + p.fase) * p.giroAmp;
+        if (p.x > LIMITE_X) p.x = -LIMITE_X;
+        else if (p.x < -LIMITE_X) p.x = LIMITE_X;
+        if (p.y > LIMITE_Y) p.y = -LIMITE_Y;
+        else if (p.y < -LIMITE_Y) p.y = LIMITE_Y;
+        pintar(p);
+      }
+      quadro = requestAnimationFrame(passo);
+    }
+
+    function ligar() {
+      if (rodando) return;
+      rodando = true;
+      anterior = 0;
+      quadro = requestAnimationFrame(passo);
+    }
+
+    function desligar() {
+      if (!rodando) return;
+      rodando = false;
+      cancelAnimationFrame(quadro);
+    }
+
+    campo.forEach(pintar);
+
+    // Fora do viewport ou aba oculta nao gastam quadro.
+    let visivel = true;
+    new IntersectionObserver((entradas) => {
+      visivel = entradas[0].isIntersecting;
+      if (visivel && !document.hidden) ligar();
+      else desligar();
+    }, { threshold: 0 }).observe(heroSection);
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && visivel) ligar();
+      else desligar();
+    });
+  }
+
   function setupHeroLifecycle() {
     const hero = document.querySelector(".hero");
     if (!hero) return;
@@ -353,10 +458,19 @@
       const byWork = new Map();
       videos.forEach((video) => {
         const ratio = visibilityRatios.get(video) || 0;
-        if (ratio <= 0) return;
+        /*
+          A peca do hero deriva pela tela e cruza a borda o tempo todo. Se ela
+          saisse da lista ao sair do quadro, o video pausaria e voltaria a cada
+          travessia — pisca na volta e perde o ponto da fita. Quem decide se o
+          hero toca e o hero estar ativo (syncVideo ja checa .is-inactive),
+          nao a posicao de cada peca solta.
+        */
+        const doHero = video.hasAttribute("data-hero-video");
+        if (ratio <= 0 && !doHero) return;
         const id = video.dataset.workId || `anonymous-${videos.indexOf(video)}`;
         const current = byWork.get(id);
-        const score = ratio + (video.hasAttribute("data-section-video") ? 2 : 0);
+        const score = (doHero ? Math.max(ratio, 0.01) : ratio)
+          + (video.hasAttribute("data-section-video") ? 2 : 0);
         if (!current || score > current.score) byWork.set(id, { video, score });
       });
 
@@ -963,6 +1077,7 @@
     renderArchive();
     renderMethod();
     renderDiagnostic();
+    setupConstellation();
     setupHeroLifecycle();
     setupPointerField();
     setupAmbientMotion();

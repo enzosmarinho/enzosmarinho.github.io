@@ -279,7 +279,11 @@ test("the hero video wall is optimized, autonomous and progressively enhanced", 
   assert.match(js, /video\.dataset\.needsPlayheadSync = "true"/);
   assert.match(js, /const restorePlayhead = \(video\) =>/);
   assert.match(js, /video\.dataset\.needsPlayheadSync === "true" && restorePlayhead\(video\)/);
-  assert.match(js, /const score = ratio \+ \(video\.hasAttribute\("data-section-video"\) \? 2 : 0\)/);
+  // A secao continua ganhando da grade no desempate.
+  assert.match(js, /video\.hasAttribute\("data-section-video"\) \? 2 : 0/);
+  // A peca do hero deriva e cruza a borda: sair do quadro nao pode pausar o video,
+  // senao pisca a cada travessia. Quem decide o hero e .is-inactive, nao a posicao.
+  assert.match(js, /if \(ratio <= 0 && !doHero\) return;/);
   assert.match(js, /pointermove/);
   assert.match(js, /requestAnimationFrame/);
   assert.doesNotMatch(html, /<video[^>]+autoplay/);

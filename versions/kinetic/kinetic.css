@@ -427,41 +427,41 @@ p {
   content: none;
 }
 
+/*
+  O nome e o elemento principal do hero e vive no mesmo fluxo da copy.
+  Duas camadas absolutas disputando o centro foi o que fez as letras do
+  wordmark cruzarem o h1; em coluna unica a colisao deixa de ser possivel.
+*/
 .hero__name {
-  position: absolute;
-  z-index: 5;
-  top: 42%;
-  right: 0;
-  left: 0;
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
-.hero__name p {
   margin: 0;
-  color: var(--signal-accent);
+  color: var(--paper);
   font-family: var(--display);
-  font-size: clamp(5.2rem, 14.3vw, 13.8rem);
+  font-size: clamp(2.85rem, 11.2vw, 10.5rem);
   font-weight: 400;
-  letter-spacing: -0.045em;
-  line-height: 0.82;
-  opacity: 0.16;
+  letter-spacing: -0.028em;
+  line-height: 0.88;
   text-align: center;
+  text-wrap: nowrap;
   white-space: nowrap;
 }
 
 .hero__name span {
   display: block;
-  width: 100%;
   animation: name-enter 900ms var(--ease-move) both;
 }
 
 .hero__copy {
   position: absolute;
-  z-index: 6;
+  z-index: 400;
+  top: var(--nav-h);
   right: 0;
-  bottom: clamp(2.25rem, 5vw, 5rem);
+  bottom: 0;
   left: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-2);
+  text-align: center;
   pointer-events: none;
 }
 
@@ -469,14 +469,15 @@ p {
   pointer-events: auto;
 }
 
+/* O nome lidera; a tese vira legenda dele, nao um segundo titulo gigante. */
 .hero__copy h1 {
-  max-width: 12ch;
-  margin-bottom: var(--space-2);
+  max-width: 26ch;
+  margin: 0;
   font-family: var(--display);
-  font-size: clamp(3.8rem, 7.8vw, 8.5rem);
+  font-size: clamp(1.45rem, 2.9vw, 2.85rem);
   font-weight: 400;
-  letter-spacing: var(--display-track);
-  line-height: 0.88;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
 }
 
 .hero__copy h1 em {
@@ -485,10 +486,10 @@ p {
 }
 
 .hero__lead {
-  max-width: 41rem;
-  margin-bottom: var(--space-2);
-  color: var(--paper);
-  font-size: var(--step-1);
+  max-width: 46ch;
+  margin: 0;
+  color: var(--paper-dim);
+  font-size: var(--step-0);
 }
 
 .hero__actions {
@@ -496,6 +497,8 @@ p {
   flex-wrap: wrap;
   gap: var(--space-2);
   align-items: center;
+  justify-content: center;
+  margin-top: var(--space-1);
 }
 
 .hero-tile {
@@ -507,9 +510,10 @@ p {
   margin: 0;
   aspect-ratio: 9 / 16;
   opacity: 0;
-  transform: var(--sphere-transform);
   transform-style: preserve-3d;
   transform-origin: center;
+  /* A posicao e da constelacao (JS); a entrada cuida so da opacidade, senao as
+     duas disputam a mesma propriedade e a peca pula no primeiro quadro. */
   animation: tile-enter 750ms var(--ease-out) forwards;
   animation-delay: calc(180ms + var(--index) * 55ms);
 }
@@ -602,7 +606,6 @@ p {
 @keyframes tile-enter {
   to {
     opacity: 1;
-    transform: var(--sphere-transform);
   }
 }
 
