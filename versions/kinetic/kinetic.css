@@ -705,8 +705,6 @@ p {
 .section {
   position: relative;
   padding-block: var(--space-6);
-  content-visibility: auto;
-  contain-intrinsic-size: auto 75rem;
 }
 
 .eyebrow {

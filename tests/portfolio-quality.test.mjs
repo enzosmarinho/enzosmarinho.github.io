@@ -313,7 +313,10 @@ test("the hero video wall is optimized, autonomous and progressively enhanced", 
   assert.match(css, /\.kayky__media\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.nsf\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1\.45fr\) minmax\(19rem, 0\.55fr\)/);
   assert.match(css, /@media \(max-width: 48rem\)[\s\S]*\.nsf__media\s*\{[^}]*grid-auto-columns:\s*minmax\(9\.5rem, 42vw\)/);
-  assert.match(css, /content-visibility:\s*auto/);
+  // Section heights must be real before a hash jump. With content-visibility,
+  // the first jump to #arquivo used the intrinsic estimate and landed hundreds
+  // of pixels before the heading when the hidden sections expanded.
+  assert.doesNotMatch(css, /\.section\s*\{[^}]*content-visibility:\s*auto/);
   const infiniteAnimations = [...css.matchAll(/animation:[^;]*infinite[^;]*/g)]
     .map((match) => match[0]);
   assert.ok(infiniteAnimations.length >= 2, "the controlled ambient orbit and background drift must exist");
