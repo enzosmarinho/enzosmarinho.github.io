@@ -236,7 +236,18 @@
       mediaWorks.map((w) => w.id).filter((id) => !PRIORITY.includes(id)),
     );
     const defaultTexts = Object.fromEntries(
-      $$("[data-edit]").map((e) => [e.dataset.edit, e.innerText]),
+      $$("[data-edit]").map((element) => {
+        // Source indentation is not editorial line breaking. Keep only authored
+        // <br> separators; saved user edits retain their own line breaks below.
+        const clone = element.cloneNode(true);
+        clone.querySelectorAll("br").forEach((br) => br.replaceWith("\uE000"));
+        const value = clone.textContent
+          .replace(/\s+/g, " ")
+          .split("\uE000")
+          .map((line) => line.trim())
+          .join("\n");
+        return [element.dataset.edit, value];
+      }),
     );
     const keys = Object.keys(defaultTexts);
     let state = {

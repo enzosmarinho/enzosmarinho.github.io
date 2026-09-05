@@ -1502,3 +1502,58 @@ body[data-layout="gallery"] .hero h1 {
     display: none;
   }
 }
+
+/* Reading type can be personalized without changing navigation/control type. */
+.study-bar,
+.site-header,
+.hero-person,
+.stage-caption,
+.button,
+.link-button,
+.eyebrow,
+.work-filters,
+.work-meta,
+.work-card h3,
+.work-card p,
+.offer-tag,
+.editor,
+.form-note,
+footer {
+  font-family: Manrope, Arial, sans-serif;
+}
+
+@media (min-width: 761px) {
+  .statement,
+  .section-heading {
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    column-gap: clamp(40px, 5vw, 110px);
+    row-gap: 24px;
+  }
+  .statement > .eyebrow,
+  .section-heading > .eyebrow {
+    grid-column: 1 / -1;
+  }
+  .statement h2,
+  .section-heading h2 {
+    grid-column: 1;
+    max-width: 24ch;
+  }
+  .statement > p:last-child,
+  .section-heading > p:last-child {
+    grid-column: 2;
+    align-self: center;
+  }
+  .statement {
+    padding-block: clamp(64px, 4.5vw, 96px);
+  }
+  .services,
+  .work-section,
+  .process,
+  .about,
+  .contact {
+    padding-block: clamp(72px, 5vw, 120px);
+  }
+  .section-heading {
+    margin-bottom: 44px;
+  }
+}
