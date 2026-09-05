@@ -392,7 +392,7 @@ test("the page is authored, concise and avoids loose punctuation", () => {
   assert.ok(visibleWords(html).length < 850);
   assert.doesNotMatch(html, /[—–]/);
   assert.doesNotMatch(html, /lorem ipsum|revolucionário|solução 360/i);
-  assert.match(html, /Você tem assunto\. <em>Eu ajudo a transformar em vídeo/);
+  assert.match(html, /aria-label="Sua ideia\. Em movimento\."/);
   assert.match(html, /Você pode estar em um destes dois pontos/);
   assert.match(html, /Depois, eu assumo o que o projeto precisa/);
   assert.match(html, /Eu somo ao que você já tem/);
