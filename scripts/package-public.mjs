@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const root=process.cwd();
 const out=path.resolve(process.argv[2]||'../public-release');
 // Explicit allowlist prevents repo notes, git metadata and private drafts from shipping.
-const files=['index.html','404.html','cases.js','_headers','_redirects',
+const files=['index.html','404.html','cases.js','studio.html','studio.css','studio.js','_headers','_redirects',
   'versions/kinetic/kinetic.css','versions/kinetic/kinetic.js',
   'versions/kinetic/vortex.css','versions/kinetic/vortex.js','versions/kinetic/index.html'];
 const assetExtensions=new Set(['.woff2','.svg','.png','.webp','.jpg','.jpeg','.mp4','.pdf','.docx']);

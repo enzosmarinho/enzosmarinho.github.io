@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check cases.js && node --check versions/kinetic/kinetic.js && node --check versions/kinetic/vortex.js && npm test",
+    "check": "node --check cases.js && node --check versions/kinetic/kinetic.js && node --check versions/kinetic/vortex.js && node --check studio.js && npm test",
     "package": "node scripts/package-public.mjs"
   }
 }
