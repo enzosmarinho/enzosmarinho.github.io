@@ -61,10 +61,10 @@
         tile.style.setProperty("--vortex-shade", p.shade.toFixed(3));
       });
       letters.forEach((row, lineIndex) => row.forEach((letter, index) => {
-        const phase = elapsed * 0.62 + index * 0.42 + lineIndex * 1.8;
+        const phase = elapsed * 0.62 * (reduce ? 0.35 : 1) + index * 0.42 + lineIndex * 1.8;
         const amplitude = width <= 768 ? 2.5 : 6;
-        const y = reduce ? 0 : Math.sin(phase) * amplitude;
-        const turn = reduce ? 0 : Math.sin(phase * 0.7) * 2;
+        const y = saveData ? 0 : Math.sin(phase) * amplitude * (reduce ? 0.28 : 1);
+        const turn = saveData ? 0 : Math.sin(phase * 0.7) * (reduce ? 0.5 : 2);
         letter.style.transform = `translate3d(0,${y.toFixed(2)}px,0) rotate(${turn.toFixed(2)}deg)`;
       }));
     };
