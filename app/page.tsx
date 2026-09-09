@@ -14,16 +14,22 @@ import LongFormShowcase from './long-form-showcase';
 import { projects } from './portfolio-data';
 const groups = [
   {
+    id: 'cinematicos', number: '01', label: 'Filmes & narrativas',
+    title: 'Uma ideia.\nUm pequeno filme.',
+    text: 'Cenas, luz e montagem para transformar uma mensagem em história. Três maneiras de colocar uma marca em cena.',
+    projects: ['voti-filmes'],
+  },
+  {
     id: 'produto',
-    number: '01',
+    number: '02',
     label: 'Produto & presença',
     title: 'O que você faz,\nbem apresentado.',
     text: 'O produto em detalhe. A pessoa por trás da marca. Uma conversa que dá vontade de acompanhar.',
-    projects: ['ciclo', 'magnos'],
+    projects: ['ciclo', 'magnos', 'voti-visitas'],
   },
   {
     id: 'cortes',
-    number: '02',
+    number: '03',
     label: 'Edição & cortes',
     title: 'Uma boa conversa.\nUm bom recorte.',
     text: 'A edição encontra a história dentro da gravação. Um corte para acompanhar; um teaser para abrir a conversa.',
@@ -31,19 +37,25 @@ const groups = [
   },
   {
     id: 'longos',
-    number: '03',
+    number: '04',
     label: 'Vídeos longos & podcast',
     title: 'Da conversa inteira\nao conteúdo que permanece.',
     text: 'Podcasts e vídeos de conhecimento. Captação, estrutura e edição para quem tem mais para compartilhar.',
     projects: ['nf-podcast', 'kayky'],
   },
   {
+    id: 'software', number: '05', label: 'Software & tutoriais',
+    title: 'É técnico.\nE pode ser claro.',
+    text: 'Presença em câmera e demonstração na tela. Conteúdo que apresenta como o produto entra na rotina de quem usa.',
+    projects: ['voti'],
+  },
+  {
     id: 'humor',
-    number: '04',
+    number: '06',
     label: 'Histórias & humor',
     title: 'Tem assunto que\npede outra entrada.',
     text: 'Uma situação reconhecível, um personagem, uma virada. O humor também pode apresentar o que um negócio faz.',
-    projects: ['voti', 'jiu'],
+    projects: ['voti-cenas', 'jiu'],
   },
 ];
 const services = [
@@ -132,7 +144,10 @@ const credits: Record<string, string> = {
   ciclo: 'Produção de conteúdo',
   magnos: 'Produção de conteúdo',
   nf: 'Edição de cortes e teaser',
-  voti: 'Conteúdo produzido durante vínculo CLT',
+  voti: 'Experiência CLT · demonstração e edição',
+  'voti-visitas': 'Experiência CLT · produção em campo',
+  'voti-cenas': 'Experiência CLT · cenas e narrativas',
+  'voti-filmes': 'Experiência CLT · filmes e campanhas',
   jiu: 'Produção avulsa',
 };
 const allFilms = groups.flatMap((g) =>
@@ -142,8 +157,7 @@ const allFilms = groups.flatMap((g) =>
   }),
 );
 export default function Home() {
-  const [motion, setMotion] = useState(false),
-    [filter, setFilter] = useState('todos'),
+  const [filter, setFilter] = useState('todos'),
     [menu, setMenu] = useState(false);
   const [need, setNeed] = useState('ideias e roteiros'),
     [message, setMessage] = useState(
@@ -152,17 +166,6 @@ export default function Home() {
     [copied, setCopied] = useState(false),
     [copyError, setCopyError] = useState(false);
   const messageField = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => {
-    const mq = matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => setMotion(!mq.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
-  }, []);
-  useEffect(() => {
-    document.documentElement.classList.toggle('enzo-motion', motion);
-    return () => document.documentElement.classList.remove('enzo-motion');
-  }, [motion]);
   useEffect(() => {
     if (!copied) return;
     const t = setTimeout(() => setCopied(false), 3500);
@@ -243,10 +246,7 @@ export default function Home() {
           </nav>
         )}
       </header>
-      <HeroLive
-        motion={motion}
-        onToggle={() => setMotion((v) => !v)}
-      />
+      <HeroLive />
       <section
         id="trabalhos"
         className="work-library shell"
@@ -337,7 +337,7 @@ export default function Home() {
                         {p.films.map((f) => (
                           <a
                             key={f.id}
-                            className={'film-tile' + (f.youtube ? ' film-landscape' : '')}
+                            className={'film-tile' + (f.youtube || f.landscape ? ' film-landscape' : '')}
                             aria-label={
                               'Assistir: ' + f.title + ' — ' + p.client
                             }
@@ -346,7 +346,7 @@ export default function Home() {
                             rel="noopener noreferrer"
                           >
                             <span className="film-image">
-                              {f.youtube ? <img src={'./posters/' + f.id + '.webp'} alt="" width={1280} height={720} loading="lazy" /> : <VideoPreview id={f.id} enabled={motion} />}
+                              {f.youtube && !f.preview ? <img src={'./posters/' + f.id + '.webp'} alt="" width={1280} height={720} loading="lazy" /> : <VideoPreview id={f.id} landscape={f.landscape} />}
                               <span className="tile-play"><ArrowUpRight size={19} aria-hidden="true" /></span>
                               <span className="film-duration">
                                 {f.duration}
@@ -357,12 +357,13 @@ export default function Home() {
                               <ArrowUpRight size={16} aria-hidden="true" />
                             </span>
                             <span className="tile-format">
-                              {f.youtube ? 'Vídeo completo · ' : 'Vídeo vertical · '}{f.date}
+                              {f.youtube ? 'Vídeo completo · ' : f.landscape ? 'Vídeo horizontal · ' : 'Vídeo vertical · '}{f.date}
                             </span>
                           </a>
                         ))}
                       </div>
                       <p className="project-context">{p.title}</p>
+                      {p.id === 'voti' && <a className="link-arrow archive-link" href="/voti">Ver o acervo da VOTI <ArrowUpRight size={18} /></a>}
                       {['ciclo', 'magnos'].includes(p.id) && <p className="project-note">{p.note}</p>}
                     </article>
                   );
@@ -384,7 +385,7 @@ export default function Home() {
           <div className="production-features">
             <article className="production-edit">
               <div className="production-card-copy"><span className="eyebrow">01 / Edição & cortes</span><h3>Você grava.<br />Eu dou forma.</h3><p>{services[1].delivery}</p><ul>{services[1].examples.map(example => <li key={example}>{example}</li>)}</ul><a href="#conversa" className="production-cta" onClick={() => chooseNeed(services[1].brief)}>Quero apoio na edição <ArrowUpRight size={20} aria-hidden="true" /></a></div>
-              <a className="production-evidence" href={projects.find(p => p.id === 'nf')!.films[0].url} target="_self" rel="noopener noreferrer" aria-label="Ver o corte de O Negócio Sem Filtro no Instagram"><VideoPreview id="Da5jp47OB_u" enabled={motion} /><span>O Negócio Sem Filtro <ArrowUpRight size={18} aria-hidden="true" /></span></a>
+              <a className="production-evidence" href={projects.find(p => p.id === 'nf')!.films[0].url} target="_self" rel="noopener noreferrer" aria-label="Ver o corte de O Negócio Sem Filtro no Instagram"><VideoPreview id="Da5jp47OB_u" /><span>O Negócio Sem Filtro <ArrowUpRight size={18} aria-hidden="true" /></span></a>
             </article>
             <article className="production-ideas"><span className="eyebrow">02 / Ideias & roteiros</span><h3>Antes do REC,<br />uma boa ideia.</h3><p>{services[0].delivery}</p><ul>{services[0].examples.map(example => <li key={example}>{example}</li>)}</ul><a href="#conversa" className="production-cta" onClick={() => chooseNeed(services[0].brief)}>Vamos preparar seu conteúdo <ArrowUpRight size={20} aria-hidden="true" /></a></article>
           </div>
@@ -577,9 +578,6 @@ export default function Home() {
             <span>Araçatuba + remoto</span>
             <span>© 2026</span>
             <a href="./marca">Guia da marca</a>
-            <button aria-pressed={!motion} onClick={() => setMotion((v) => !v)}>
-              {motion ? 'Pausar movimento' : 'Ativar movimento'}
-            </button>
           </div>
         </div>
       </footer>

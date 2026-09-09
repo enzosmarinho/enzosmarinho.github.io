@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { projects } from './portfolio-data';
+import VideoPreview from './video-preview';
 const longFilms = projects.filter(project => ['nf-podcast', 'kayky'].includes(project.id));
 export default function LongFormShowcase({ onInquire }: { onInquire: () => void }) {
   return <section id="filmes-completos" className="long-films shell" aria-labelledby="long-form-title">
@@ -11,7 +12,7 @@ export default function LongFormShowcase({ onInquire }: { onInquire: () => void 
       {longFilms.map(project => {
         const film = project.films[0];
         return <a key={project.id} className="long-film-link" href={film.url} target="_self" rel="noopener noreferrer" aria-label={'Assistir no YouTube: ' + film.title}>
-          <div className="long-film-picture"><img src={'./posters/' + film.id + '.webp'} alt="" width={1280} height={720} loading="lazy" /><span>{film.duration}</span></div>
+          <div className="long-film-picture">{film.preview ? <VideoPreview id={film.id} landscape /> : <img src={'./posters/' + film.id + '.webp'} alt="" width={1280} height={720} loading="lazy" />}<span className="long-film-duration">{film.duration}</span></div>
           <div className="long-film-meta"><span>{project.id === 'nf-podcast' ? 'Captação de podcast' : 'Estrutura, edição e cor'}</span><span>YouTube <ArrowUpRight size={16} aria-hidden="true" /></span></div>
           <h3>{project.client}</h3><p>{film.title}</p>
         </a>;

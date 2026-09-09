@@ -1,6 +1,0 @@
-{
-  "d1": null,
-  "r2": null,
-  "project_id": "appgprj_6aa16684c07881918e0e7bbd99c97a9d",
-  "static": { "directory": "dist/client", "not_found_handling": "404-page" }
-}

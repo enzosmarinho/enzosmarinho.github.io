@@ -5,8 +5,6 @@ import { projects } from './portfolio-data';
 import {
   ArrowDown,
   ArrowUpRight,
-  Pause,
-  Play,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -36,18 +34,16 @@ const clips = [
     kind: 'Uma história com humor',
   },
   {
-    id: 'Dc_vrbiyUw-',
-    project: 'magnos',
-    name: 'Magnos Steel',
-    kind: 'Conversa & detalhe',
+    id: 'DSldztZCA9P',
+    project: 'voti-filmes',
+    name: 'VOTI Software',
+    kind: 'Uma ideia vira filme',
   },
 ];
 function LiveFilm({
   clip,
-  enabled,
 }: {
   clip: (typeof clips)[number];
-  enabled: boolean;
 }) {
   return (
     <a
@@ -57,7 +53,7 @@ function LiveFilm({
       aria-label={'Assistir: ' + clip.name + ' — ' + clip.kind}
     >
       <span className="live-picture">
-        <VideoPreview id={clip.id} enabled={enabled} eager={clip.id === clips[0].id} />
+        <VideoPreview id={clip.id} eager={clip.id === clips[0].id} />
         <span className="live-play">
           <ArrowUpRight size={19} aria-hidden="true" />
         </span>
@@ -70,13 +66,7 @@ function LiveFilm({
     </a>
   );
 }
-export default function HeroLive({
-  motion,
-  onToggle,
-}: {
-  motion: boolean;
-  onToggle: () => void;
-}) {
+export default function HeroLive() {
   const strip = useRef<HTMLDivElement>(null);
   function browse(direction: number) {
     const el = strip.current;
@@ -88,7 +78,7 @@ export default function HeroLive({
         : direction < 0 && el.scrollLeft <= 5
           ? edge
           : el.scrollLeft + direction * el.clientWidth * 0.9;
-    el.scrollTo({ left: target, behavior: motion ? 'smooth' : 'auto' });
+    el.scrollTo({ left: target, behavior: 'smooth' });
   }
   return (
     <section className="opening" id="inicio" aria-labelledby="opening-title">
@@ -120,7 +110,6 @@ export default function HeroLive({
           <LiveFilm
             key={clip.id}
             clip={clip}
-            enabled={motion}
           />
         ))}
       </div>
@@ -138,14 +127,6 @@ export default function HeroLive({
           Araçatuba, SP <span className="dot-separator">/</span> Atendimento
           remoto
         </span>
-        <button onClick={onToggle} aria-pressed={!motion}>
-          {motion ? (
-            <Pause size={13} aria-hidden="true" />
-          ) : (
-            <Play size={13} aria-hidden="true" />
-          )}
-          {motion ? 'Pausar prévias' : 'Reproduzir prévias'}
-        </button>
         <a href="#trabalhos">
           Explore os projetos <ArrowDown size={16} aria-hidden="true" />
         </a>

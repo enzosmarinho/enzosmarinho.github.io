@@ -2148,7 +2148,7 @@ a svg {
 .long-films-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .long-film-picture { aspect-ratio: 16/9; position: relative; background: var(--wine); }
 .long-film-picture img { width: 100%; height: 100%; object-fit: contain; }
-.long-film-picture > span { position: absolute; right: 14px; bottom: 14px; background: #221037eb; padding: 5px 10px; color: white; font-size: 13px; }
+.long-film-picture > .long-film-duration { position: absolute; right: 14px; bottom: 14px; background: #221037eb; padding: 5px 10px; color: white; font-size: 13px; }
 .long-film-meta { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-top: 18px; font-size: 13px; color: var(--muted); }
 .long-film-meta > span:last-child { display: flex; align-items: center; gap: 7px; }
 .long-film-link h3 { font-size: 28px; line-height: 1.15; font-weight: 650; letter-spacing: -.025em; margin-top: 10px; }
@@ -2193,3 +2193,42 @@ a svg {
 }
 
 .project-note { max-width: 640px; font-size: 12px; line-height: 1.5; color: var(--muted); margin-top: 10px; }
+
+/* The original frame determines the layout, including horizontal scene work. */
+.chapter-humor .chapter-projects { grid-template-columns: 1fr; gap: 42px; }
+.chapter-humor .project-heading { display: flex; }
+.chapter-humor .project-heading > span { text-align: right; }
+.chapter-humor .project-films { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 650px; }
+.chapter-humor .film-landscape { grid-column: 1 / -1; }
+.chapter-humor .count-1 { grid-template-columns: 1fr; max-width: 310px; }
+.chapter-cinematicos .project-films { grid-template-columns: 1.65fr 1fr; gap: 28px 20px; align-items: start; }
+.chapter-cinematicos .film-landscape { grid-column: 1; }
+.chapter-cinematicos .film-tile:last-child { grid-column: 2; grid-row: 1 / 3; }
+.chapter-cinematicos .film-tile:last-child .film-image { aspect-ratio: 9/16; }
+.chapter-cinematicos .tile-title { font-size: 13px; }
+.chapter-cinematicos .tile-format { font-size: 10px; }
+@media(max-width: 600px) {
+  .chapter-cinematicos .project-films { grid-template-columns: 1fr; gap: 28px; }
+  .chapter-cinematicos .film-tile:last-child { grid-column: 1; grid-row: auto; max-width: 270px; }
+}
+.archive-link { margin-top: 24px; font-size: 15px; }
+.archive-nav { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-block: 30px; }
+.archive-nav > a:last-child { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.archive-intro { padding-block: 80px 55px; }
+.archive-intro h1 { font-size: clamp(45px, 6vw, 92px); font-weight: 650; line-height: .98; letter-spacing: -.045em; margin-block: 25px; }
+.archive-intro h1 em { color: var(--violet); font-style: normal; }
+.archive-intro > p { max-width: 650px; font-size: 19px; line-height: 1.6; color: var(--muted); margin-bottom: 24px; }
+.archive-count { color: var(--muted); font-size: 13px; margin-block: 28px; }
+.archive-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px; align-items: start; }
+.archive-grid .film-landscape { grid-column: span 2; }
+.archive-grid .film-landscape .film-image { aspect-ratio: 16/9; }
+.archive-footer { display: flex; justify-content: space-between; gap: 24px; padding-block: 90px 40px; }
+@media (max-width: 1000px) { .archive-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 650px) {
+  .archive-intro { padding-top: 44px; }
+  .archive-intro > p { font-size: 16px; }
+  .archive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 14px; }
+  .archive-nav .wordmark { font-size: 21px; }
+  .archive-nav > a:last-child { font-size: 12px; }
+  .archive-footer { flex-direction: column; font-size: 14px; }
+}

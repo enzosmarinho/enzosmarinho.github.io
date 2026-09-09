@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://enzo-marinho.enzosmarinho.chatgpt.site/sitemap.xml
+Sitemap: https://enzosmarinho.github.io/sitemap.xml

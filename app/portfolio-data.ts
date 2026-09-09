@@ -1,3 +1,4 @@
+import { votiFilms } from './voti-films';
 export type Film = {
   id: string;
   title: string;
@@ -5,6 +6,8 @@ export type Film = {
   date: string;
   url: string;
   youtube?: boolean;
+  landscape?: boolean;
+  preview?: boolean;
 };
 export type Project = {
   id: string;
@@ -35,7 +38,7 @@ export const projects: Project[] = [
     description: 'Um treino de superiores explicado em vídeo longo. Estrutura, edição e cor para organizar o conteúdo ao longo de uma sessão completa.',
     note: 'Vídeo publicado no canal de Kayky Pitondo. Estrutura, edição e cor de Enzo, conforme o registro do trabalho.',
     poster: 'ADKpionmFiw.webp',
-    films: [{id: 'ADKpionmFiw', title: 'Treino de superiores', duration: '40:47', date: '04 jun 2026', url: 'https://www.youtube.com/watch?v=ADKpionmFiw', youtube: true}],
+    films: [{id: 'ADKpionmFiw', title: 'Treino de superiores', duration: '40:47', date: '04 jun 2026', url: 'https://www.youtube.com/watch?v=ADKpionmFiw', youtube: true, landscape: true, preview: true}],
   },
   {
     id: 'ciclo',
@@ -126,24 +129,40 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'voti',
-    client: 'VOTI Gestão',
-    number: '04',
-    title: 'Assunto de sistema. Conversa de gente.',
-    kind: 'Software · explicação · humor',
-    description:
-      'A relação com o contador vira o ponto de partida para apresentar uma função do sistema. Um assunto técnico contado a partir de uma situação reconhecível.',
-    note: 'Trabalho realizado durante a experiência CLT de Enzo na VOTI, publicado em julho de 2026. A peça apresenta o Portal do Contador; não é uma demonstração de operação da interface.',
-    poster: 'Da6FTw_IqTm.jpg',
-    films: [
-      {
-        id: 'Da6FTw_IqTm',
-        title: 'O contador que sumiu',
-        duration: '0:32',
-        date: '17 jul 2026',
-        url: 'https://www.instagram.com/votigestao/reel/Da6FTw_IqTm/',
-      },
-    ],
+    id: 'voti', client: 'VOTI Software', number: '04',
+    title: 'O assunto técnico ganha uma explicação que dá para acompanhar.',
+    kind: 'Software · demonstração · conteúdo',
+    description: 'Aplicativo, relatórios e gestão: presença em câmera, gravação de tela e edição para apresentar o produto na prática.',
+    note: 'Conteúdo produzido durante vínculo CLT na VOTI. Os recursos demonstrados pertencem às versões da época de publicação.',
+    poster: 'DZsNBgGR_-x.webp',
+    films: ['DZsNBgGR_-x', 'DXiIx4_kQ-0', 'DZvck7voqcq', 'DaLWfmixIGb', 'DXpoe8Jkekw', 'DayTkUmodCs'].map(id => votiFilms.find(f => f.id === id)!),
+  },
+  {
+    id: 'voti-visitas', client: 'VOTI Software', number: '08',
+    title: 'A empresa em campo. A história no lugar onde acontece.',
+    kind: 'Visita · captação · edição',
+    description: 'Mercadão de Utilidades e Catvi: visitas que acompanham pessoas, ambientes e a operação de cada loja.',
+    note: 'Trabalho para a VOTI, durante vínculo CLT. Mercadão de Utilidades é o local da visita.',
+    poster: 'DZ-_aUUoUeH.webp',
+    films: ['DZ-_aUUoUeH', 'DKkdTYyItAy'].map(id => votiFilms.find(f => f.id === id)!),
+  },
+  {
+    id: 'voti-filmes', client: 'VOTI Software', number: '10',
+    title: 'Luz, enquadramento e montagem a serviço de uma história.',
+    kind: 'Filmes · cenas · campanhas',
+    description: 'Uma mudança no escritório, uma consulta inesperada e uma história de Natal. Filmes que apresentam a marca através de situações e personagens.',
+    note: 'Trabalhos para a VOTI durante vínculo CLT.',
+    poster: 'DVjvzjvESOn.webp',
+    films: ['DVjvzjvESOn', 'DTgXN2FiDV6', 'DSldztZCA9P'].map(id => votiFilms.find(f => f.id === id)!),
+  },
+  {
+    id: 'voti-cenas', client: 'VOTI Software', number: '09',
+    title: 'Personagens e situações para dar outra entrada ao assunto.',
+    kind: 'Cena · narrativa · atuação',
+    description: 'Uma conversa sobre a loja e o contador viram pequenas histórias.',
+    note: 'Conteúdo produzido durante vínculo CLT na VOTI.',
+    poster: 'DZDz8ygI4Pf.webp',
+    films: ['DZDz8ygI4Pf', 'DY24DK8Ijor'].map(id => votiFilms.find(f => f.id === id)!),
   },
   {
     id: 'jiu',
