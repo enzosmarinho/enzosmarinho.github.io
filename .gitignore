@@ -1,3 +1,48 @@
-.qa/
+# dependencies
+/node_modules
+/portable-dist/
+/PORTFOLIO-PORTATIL/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.vinext/
+/out/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local environment
+.env*
+
+# deployment and generated files
+.vercel
+next-env.d.ts
+/dist/
+/.wrangler/
+/outputs/
+/work/
+
+# Local settings and compilation scratch
+/.claude/
+*.tsbuildinfo
+/motion-dist/
+/.qa/
 __pycache__/
 *.pyc
