@@ -12,6 +12,8 @@ Enzo ajuda quem ainda não produz e apoia quem já produz. Vídeos são a prova 
 
 ## Operação
 
+Na revisão seguinte de 09/09/2026, Enzo esclareceu que o espaço após os serviços deve mostrar filmes longos, substituindo a arte estática. `app/long-form-showcase.tsx` é essa seção: podcast e Kayky com capa local, seleção e player inline sob demanda. Não confundir essa entrega com um novo compilado ou com a abertura da home. O guia da marca continua em `/marca`, com acesso pelo rodapé. O relato de duas barras na seção de serviços aguarda identificação exata: não declarar esse relato resolvido com a correção anterior de foco.
+
 Use `npm run build` e `npm exec tsc -- --noEmit` antes de publicar alterações. Validar mudanças de interface com critérios proporcionais. Movimento tem pausa manual, respeita preferência reduzida e para fora de vista ou quando o player abre. O contato monta uma mensagem editável; nada é enviado automaticamente.
 
 O repositório é público: nunca versionar credenciais, .env, contratos, dados internos ou preços de clientes. Faça stage por caminhos explícitos; preserve alterações de outras sessões. Nada de serviços persistentes ou novos custos sem autorização. Cada publicação exige autorização específica já existente ou nova quando necessária. Fontes comerciais e recebimentos vivem na operação privada do Enzo, não neste site.

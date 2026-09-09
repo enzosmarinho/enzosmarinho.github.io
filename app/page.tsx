@@ -16,6 +16,7 @@ import {
 import HeroLive from './hero-live';
 import FilmPlayer from './film-player';
 import EmbeddedFilm from './embedded-film';
+import LongFormShowcase from './long-form-showcase';
 import { projects, type Project, type Film } from './portfolio-data';
 import {
   Dialog,
@@ -542,40 +543,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="brand-proof shell" aria-labelledby="proof-title">
-        <div>
-          <span className="eyebrow">Além do vídeo</span>
-          <h2 id="proof-title">
-            Uma presença
-            <br />
-            <em>que se conecta.</em>
-          </h2>
-          <p>
-            Seu vídeo, seu material e sua página podem falar a mesma língua.
-            Esta é a identidade que desenvolvemos para a minha própria marca.
-          </p>
-          <a className="link-arrow" href="./marca">
-            Conheça a identidade <ArrowUpRight size={19} aria-hidden="true" />
-          </a>
-        </div>
-        <a
-          href="./marca"
-          className="brand-proof-art"
-          aria-label="Ver o guia da marca Enzo Marinho"
-        >
-          <img
-            src="./brand/abertura-16x9.svg"
-            alt="Aplicação da marca Enzo Marinho: Começa com uma ideia, em uva, violeta e lima"
-            width={1920}
-            height={1080}
-            loading="lazy"
-          />
-          <span>
-            Enzo Marinho / identidade visual{' '}
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </span>
-        </a>
-      </section>
+      <LongFormShowcase suspended={!!selected} onInquire={() => chooseNeed('edição dos meus vídeos')} />
       <section
         id="enzo"
         className="about-section shell"
@@ -756,6 +724,7 @@ export default function Home() {
             </a>
             <span>Araçatuba + remoto</span>
             <span>© 2026</span>
+            <a href="./marca">Guia da marca</a>
             <button aria-pressed={!motion} onClick={() => setMotion((v) => !v)}>
               {motion ? 'Pausar movimento' : 'Ativar movimento'}
             </button>

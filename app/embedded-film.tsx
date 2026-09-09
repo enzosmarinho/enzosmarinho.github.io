@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { Film } from './portfolio-data';
 
 type Player = { pauseVideo(): void; destroy(): void; getIframe(): HTMLIFrameElement };
@@ -26,16 +26,28 @@ function loadApi() {
   return apiPromise;
 }
 
-export default function EmbeddedFilm({film}: {film: Film}) {
+export default function EmbeddedFilm({film, pauseWhenOffscreen = false, suspended = false, focusFrom}: {film: Film; pauseWhenOffscreen?: boolean; suspended?: boolean; focusFrom?: RefObject<HTMLElement | null>}) {
   const host = useRef<HTMLDivElement>(null);
+  const activePlayer = useRef<Player | null>(null);
+  const suspendedRef = useRef(suspended);
+  useEffect(() => {
+    suspendedRef.current = suspended;
+    if (suspended) activePlayer.current?.pauseVideo();
+  }, [suspended]);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     let disposed = false;
     let player: Player | undefined;
+    let inView = !pauseWhenOffscreen;
     const timer = setTimeout(() => { if (!disposed) setFailed(true); }, 15000);
-    const pauseHidden = () => { if (document.hidden) player?.pauseVideo(); };
+    const pauseHidden = () => { if (document.hidden || !inView || suspendedRef.current) player?.pauseVideo(); };
     document.addEventListener('visibilitychange', pauseHidden);
+    const observer = pauseWhenOffscreen ? new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      pauseHidden();
+    }) : null;
+    if (observer && host.current) observer.observe(host.current.parentElement!);
     loadApi().then(YT => {
       if (disposed || !host.current) return;
       // The API owns this child; React owns only its persistent outer container.
@@ -50,18 +62,22 @@ export default function EmbeddedFilm({film}: {film: Film}) {
             clearTimeout(timer);
             event.target.getIframe().title = film.title;
             setFailed(false); setLoaded(true); pauseHidden();
+            if (focusFrom?.current === document.activeElement && !document.hidden && inView && !suspendedRef.current) event.target.getIframe().focus();
           },
           onError() { if (!disposed) { clearTimeout(timer); setFailed(true); } },
-          onStateChange(event) { if (event.data === 1 && document.hidden) event.target.pauseVideo(); },
+          onStateChange(event) { if (event.data === 1 && (document.hidden || !inView || suspendedRef.current)) event.target.pauseVideo(); },
         },
       });
+      activePlayer.current = player;
     }).catch(() => { if (!disposed) { clearTimeout(timer); setFailed(true); } });
     return () => {
       disposed = true; clearTimeout(timer);
       document.removeEventListener('visibilitychange', pauseHidden);
+      observer?.disconnect();
       player?.destroy();
+      activePlayer.current = null;
     };
-  }, [film.id, film.title]);
+  }, [film.id, film.title, pauseWhenOffscreen, focusFrom]);
   return <div className="embedded-player">
     <div ref={host} className="embedded-host" />
     {(!loaded || failed) && <img src={'./posters/' + film.id + '.webp'} alt="" width={1280} height={720} />}
