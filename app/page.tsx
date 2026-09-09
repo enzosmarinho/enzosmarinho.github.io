@@ -3,28 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ArrowUpRight,
   ArrowRight,
-  Play,
-  Plus,
-  Minus,
   Check,
   Copy,
-  ChevronLeft,
-  ChevronRight,
   X,
   Menu,
 } from 'lucide-react';
 import HeroLive from './hero-live';
-import FilmPlayer from './film-player';
-import EmbeddedFilm from './embedded-film';
+import VideoPreview from './video-preview';
 import LongFormShowcase from './long-form-showcase';
-import { projects, type Project, type Film } from './portfolio-data';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { projects } from './portfolio-data';
 const groups = [
   {
     id: 'produto',
@@ -156,9 +143,7 @@ const allFilms = groups.flatMap((g) =>
 );
 export default function Home() {
   const [motion, setMotion] = useState(false),
-    [selected, setSelected] = useState<{ p: Project; f: Film } | null>(null),
     [filter, setFilter] = useState('todos'),
-    [service, setService] = useState<number | null>(0),
     [menu, setMenu] = useState(false);
   const [need, setNeed] = useState('ideias e roteiros'),
     [message, setMessage] = useState(
@@ -166,9 +151,7 @@ export default function Home() {
     ),
     [copied, setCopied] = useState(false),
     [copyError, setCopyError] = useState(false);
-  const opener = useRef<HTMLElement | null>(null),
-    player = useRef<HTMLVideoElement>(null),
-    messageField = useRef<HTMLTextAreaElement>(null);
+  const messageField = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     const mq = matchMedia('(prefers-reduced-motion: reduce)');
     const sync = () => setMotion(!mq.matches);
@@ -181,33 +164,10 @@ export default function Home() {
     return () => document.documentElement.classList.remove('enzo-motion');
   }, [motion]);
   useEffect(() => {
-    const pause = () => {
-      if (document.hidden) player.current?.pause();
-    };
-    document.addEventListener('visibilitychange', pause);
-    return () => document.removeEventListener('visibilitychange', pause);
-  }, []);
-  useEffect(() => {
     if (!copied) return;
     const t = setTimeout(() => setCopied(false), 3500);
     return () => clearTimeout(t);
   }, [copied]);
-  function open(p: Project, f: Film) {
-    const active = document.activeElement as HTMLElement;
-    opener.current = (active.closest('button,a') as HTMLElement) || active;
-    setSelected({ p, f });
-  }
-  function close() {
-    player.current?.pause();
-    setSelected(null);
-    requestAnimationFrame(() => opener.current?.focus());
-  }
-  function nextFilm(delta: number) {
-    if (!selected) return;
-    const idx = allFilms.findIndex((x) => x.f.id === selected.f.id);
-    player.current?.pause();
-    setSelected(allFilms[(idx + delta + allFilms.length) % allFilms.length]);
-  }
   function chooseNeed(value: string) {
     setNeed(value);
     setMessage(
@@ -285,15 +245,7 @@ export default function Home() {
       </header>
       <HeroLive
         motion={motion}
-        overlayOpen={Boolean(selected)}
         onToggle={() => setMotion((v) => !v)}
-        onOpen={(p, id) => {
-          const project = projects.find((x) => x.id === p)!;
-          open(
-            project,
-            project.films.find((f) => f.id === id)!,
-          );
-        }}
       />
       <section
         id="trabalhos"
@@ -383,29 +335,19 @@ export default function Home() {
                       </div>
                       <div className={'project-films count-' + p.films.length}>
                         {p.films.map((f) => (
-                          <button
+                          <a
                             key={f.id}
                             className={'film-tile' + (f.youtube ? ' film-landscape' : '')}
                             aria-label={
                               'Assistir: ' + f.title + ' — ' + p.client
                             }
-                            onClick={() => open(p, f)}
+                            href={f.url}
+                            target="_self"
+                            rel="noopener noreferrer"
                           >
                             <span className="film-image">
-                              <img
-                                src={'./posters/' + f.id + '.webp'}
-                                alt=""
-                                width={f.youtube ? 1280 : 720}
-                                height={f.youtube ? 720 : 1280}
-                                loading="lazy"
-                              />
-                              <span className="tile-play">
-                                <Play
-                                  size={18}
-                                  fill="currentColor"
-                                  aria-hidden="true"
-                                />
-                              </span>
+                              {f.youtube ? <img src={'./posters/' + f.id + '.webp'} alt="" width={1280} height={720} loading="lazy" /> : <VideoPreview id={f.id} enabled={motion} />}
+                              <span className="tile-play"><ArrowUpRight size={19} aria-hidden="true" /></span>
                               <span className="film-duration">
                                 {f.duration}
                               </span>
@@ -417,10 +359,11 @@ export default function Home() {
                             <span className="tile-format">
                               {f.youtube ? 'Vídeo completo · ' : 'Vídeo vertical · '}{f.date}
                             </span>
-                          </button>
+                          </a>
                         ))}
                       </div>
                       <p className="project-context">{p.title}</p>
+                      {['ciclo', 'magnos'].includes(p.id) && <p className="project-note">{p.note}</p>}
                     </article>
                   );
                 })}
@@ -429,121 +372,30 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <section
-        id="servicos"
-        className="services-section"
-        aria-labelledby="services-title"
-      >
+      <section id="servicos" className="production-services" aria-labelledby="services-title">
         <div className="shell">
-          <div className="section-top">
-            <span className="eyebrow">O que eu faço / como posso ajudar</span>
-            <span className="section-counter">Do planejamento à entrega</span>
-          </div>
-          <div className="services-heading">
-            <h2 id="services-title">
-              Sua ideia não precisa
-              <br />
-              ficar <em>só na ideia.</em>
-            </h2>
-            <p>
-              Uma peça, uma etapa ou uma parceria.
-              <br />
-              Eu entro onde você precisa.
-            </p>
-          </div>
-          <div className="audience-paths">
-            <div>
-              <span>Você quer começar</span>
-              <p>
-                Vamos encontrar o que dizer e preparar o caminho para você
-                produzir.
-              </p>
-            </div>
-            <div>
-              <span>Você já produz</span>
-              <p>
-                Divida comigo o roteiro, a edição, o design ou a organização da
-                próxima entrega.
-              </p>
+          <div className="production-heading">
+            <div><span className="eyebrow">O que podemos criar juntos</span><h2 id="services-title">Sua próxima ideia.<br /><em>Vamos fazer.</em></h2></div>
+            <div className="production-audiences">
+              <div><h3>Para quem quer começar.</h3><p>Da escolha do assunto à primeira entrega. Eu ajudo você a tirar a produção do papel.</p></div>
+              <div><h3>Para quem já produz.</h3><p>Roteiro, edição, design ou organização. Eu entro na etapa em que você precisa de apoio.</p></div>
             </div>
           </div>
-          <div className="service-list">
-            {services.map((s, i) => (
-              <article
-                className={'service-row ' + (service === i ? 'is-open' : '')}
-                key={s.title}
-              >
-                <h3>
-                  <button
-                    className="service-trigger"
-                    aria-expanded={service === i}
-                    aria-controls={'service-panel-' + i}
-                    id={'service-trigger-' + i}
-                    onClick={() => setService(service === i ? null : i)}
-                  >
-                    <span className="service-index">0{i + 1}</span>
-                    <span>{s.title}</span>
-                    <span className="service-line">{s.line}</span>
-                    {service === i ? (
-                      <Minus size={23} aria-hidden="true" />
-                    ) : (
-                      <Plus size={23} aria-hidden="true" />
-                    )}
-                  </button>
-                </h3>
-                <section
-                  className="service-panel"
-                  id={'service-panel-' + i}
-                  aria-labelledby={'service-trigger-' + i}
-                  hidden={service !== i}
-                >
-                  <div>
-                    <span className="small-label">O ponto de partida</span>
-                    <p>{s.input}</p>
-                  </div>
-                  <div>
-                    <span className="small-label">O que podemos entregar</span>
-                    <p>{s.delivery}</p>
-                    <ul>
-                      {s.examples.map((ex) => (
-                        <li key={ex}>{ex}</li>
-                      ))}
-                    </ul>
-                    <a
-                      href="#conversa"
-                      className="link-arrow"
-                      onClick={() => chooseNeed(s.brief)}
-                    >
-                      Conversar sobre este serviço{' '}
-                      <ArrowUpRight size={18} aria-hidden="true" />
-                    </a>
-                  </div>
-                </section>
-              </article>
-            ))}
+          <div className="production-features">
+            <article className="production-edit">
+              <div className="production-card-copy"><span className="eyebrow">01 / Edição & cortes</span><h3>Você grava.<br />Eu dou forma.</h3><p>{services[1].delivery}</p><ul>{services[1].examples.map(example => <li key={example}>{example}</li>)}</ul><a href="#conversa" className="production-cta" onClick={() => chooseNeed(services[1].brief)}>Quero apoio na edição <ArrowUpRight size={20} aria-hidden="true" /></a></div>
+              <a className="production-evidence" href={projects.find(p => p.id === 'nf')!.films[0].url} target="_self" rel="noopener noreferrer" aria-label="Ver o corte de O Negócio Sem Filtro no Instagram"><VideoPreview id="Da5jp47OB_u" enabled={motion} /><span>O Negócio Sem Filtro <ArrowUpRight size={18} aria-hidden="true" /></span></a>
+            </article>
+            <article className="production-ideas"><span className="eyebrow">02 / Ideias & roteiros</span><h3>Antes do REC,<br />uma boa ideia.</h3><p>{services[0].delivery}</p><ul>{services[0].examples.map(example => <li key={example}>{example}</li>)}</ul><a href="#conversa" className="production-cta" onClick={() => chooseNeed(services[0].brief)}>Vamos preparar seu conteúdo <ArrowUpRight size={20} aria-hidden="true" /></a></article>
           </div>
-          <div className="filming-note">
-            <div>
-              <span className="small-label">
-                Quando o projeto pede presença
-              </span>
-              <h3>Também podemos gravar juntos.</h3>
-            </div>
-            <p>
-              Direção e captação presencial em projetos selecionados. A gente
-              combina local, preparação e entregas antes de marcar a gravação.
-            </p>
-            <a
-              href="#conversa"
-              aria-label="Conversar sobre direção e gravação"
-              onClick={() => chooseNeed('direção e gravação presencial')}
-            >
-              <ArrowUpRight size={28} aria-hidden="true" />
-            </a>
+          <div className="production-support-heading"><h3>Seu conteúdo também precisa de uma boa apresentação.</h3><p>Outras formas de somar ao seu projeto.</p></div>
+          <div className="production-support">
+            {services.slice(2).map((s, i) => <article key={s.title}><span className="eyebrow">0{i + 3}</span><h3>{s.title}</h3><p>{s.delivery}</p><ul>{s.examples.map(example => <li key={example}>{example}</li>)}</ul><a href="#conversa" className="production-cta" onClick={() => chooseNeed(s.brief)}>Conversar sobre este serviço <ArrowUpRight size={18} aria-hidden="true" /></a></article>)}
           </div>
+          <div className="production-filming"><div><span className="eyebrow">Projetos presenciais selecionados</span><h3>Precisa de alguém por trás da câmera?</h3><p>Também fazemos direção e captação em Araçatuba e região. Preparação, local e entregas combinados antes da gravação.</p></div><a href="#conversa" className="production-cta" onClick={() => chooseNeed('direção e gravação presencial')}>Vamos planejar a gravação <ArrowUpRight size={20} aria-hidden="true" /></a></div>
         </div>
       </section>
-      <LongFormShowcase suspended={!!selected} onInquire={() => chooseNeed('edição dos meus vídeos')} />
+      <LongFormShowcase onInquire={() => chooseNeed('edição dos meus vídeos')} />
       <section
         id="enzo"
         className="about-section shell"
@@ -731,78 +583,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      <Dialog
-        open={Boolean(selected)}
-        onOpenChange={(v) => {
-          if (!v) close();
-        }}
-      >
-        <DialogContent className={'screening-room' + (selected?.f.youtube ? ' screening-wide' : '')} showCloseButton={false}>
-          <DialogClose className="screening-close" aria-label="Fechar filme">
-            <X size={23} aria-hidden="true" />
-          </DialogClose>
-          {selected && (
-            <div className="screening-content">
-              <div className="screening-player">
-                {selected.f.youtube ? <EmbeddedFilm key={selected.f.id} film={selected.f} /> : <FilmPlayer key={selected.f.id} film={selected.f} playerRef={player} />}
-              </div>
-              <div className="screening-info">
-                <span className="eyebrow">{selected.p.client}</span>
-                <DialogTitle className="screening-title">
-                  {selected.f.title}
-                </DialogTitle>
-                <DialogDescription className="screening-description">
-                  {selected.p.description}
-                </DialogDescription>
-                <dl className="film-facts">
-                  <div>
-                    <dt>Participação</dt>
-                    <dd>{credits[selected.p.id]}</dd>
-                  </div>
-                  <div>
-                    <dt>Formato</dt>
-                    <dd>{selected.f.youtube ? 'Horizontal' : 'Vertical'} · {selected.f.duration}</dd>
-                  </div>
-                  <div>
-                    <dt>Publicação</dt>
-                    <dd>{selected.f.date}</dd>
-                  </div>
-                </dl>
-                <p className="film-note">{selected.p.note}</p>
-                <a
-                  className="link-arrow"
-                  href={selected.f.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Publicação original{' '}
-                  <ArrowUpRight size={17} aria-hidden="true" />
-                </a>
-                <div className="screening-navigation">
-                  <button
-                    aria-label="Filme anterior"
-                    onClick={() => nextFilm(-1)}
-                  >
-                    <ChevronLeft size={22} />
-                  </button>
-                  <span>
-                    {String(
-                      allFilms.findIndex((x) => x.f.id === selected.f.id) + 1,
-                    ).padStart(2, '0')}{' '}
-                    / {String(allFilms.length).padStart(2, '0')}
-                  </span>
-                  <button
-                    aria-label="Próximo filme"
-                    onClick={() => nextFilm(1)}
-                  >
-                    <ChevronRight size={22} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </main>
   );
 }

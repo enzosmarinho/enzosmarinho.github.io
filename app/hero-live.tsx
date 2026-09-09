@@ -1,5 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
+import VideoPreview from './video-preview';
+import { projects } from './portfolio-data';
 import {
   ArrowDown,
   ArrowUpRight,
@@ -43,69 +45,21 @@ const clips = [
 function LiveFilm({
   clip,
   enabled,
-  onOpen,
 }: {
   clip: (typeof clips)[number];
   enabled: boolean;
-  onOpen: (project: string, id: string) => void;
 }) {
-  const root = useRef<HTMLButtonElement>(null),
-    video = useRef<HTMLVideoElement>(null);
-  const [visible, setVisible] = useState(false),
-    [loaded, setLoaded] = useState(false),
-    [playing, setPlaying] = useState(false);
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      ([e]) => setVisible(e.isIntersecting && e.intersectionRatio > 0.35),
-      { threshold: [0, 0.35] },
-    );
-    if (root.current) io.observe(root.current);
-    return () => io.disconnect();
-  }, []);
-  useEffect(() => {
-    const el = video.current;
-    if (!el) return;
-    const sync = () => {
-      if (enabled && visible && !document.hidden) {
-        setLoaded(true);
-        if (el.getAttribute('src')) {
-          el.muted = true;
-          void el.play().catch(() => {});
-        }
-      } else el.pause();
-    };
-    sync();
-    document.addEventListener('visibilitychange', sync);
-    return () => {
-      document.removeEventListener('visibilitychange', sync);
-      el.pause();
-    };
-  }, [enabled, visible, loaded]);
   return (
-    <button
-      ref={root}
+    <a
       className="live-film"
-      onClick={() => onOpen(clip.project, clip.id)}
+      href={projects.find(p => p.id === clip.project)!.films.find(f => f.id === clip.id)!.url}
+      target="_self" rel="noopener noreferrer"
       aria-label={'Assistir: ' + clip.name + ' — ' + clip.kind}
     >
       <span className="live-picture">
-        <img className="live-cover" src={'./posters/' + clip.id + '.webp'} alt="" width={720} height={1280} loading="eager" decoding="async" fetchPriority={clip.id === clips[0].id ? 'high' : 'auto'} />
-        <video
-          className={playing ? 'preview-playing' : ''}
-          ref={video}
-          src={loaded ? './media/preview-' + clip.id + '.mp4' : undefined}
-          poster={'./posters/' + clip.id + '.webp'}
-          loop
-          muted
-          playsInline
-          preload="none"
-          onPlaying={() => setPlaying(true)}
-          onError={() => setPlaying(false)}
-          aria-hidden="true"
-          tabIndex={-1}
-        />
+        <VideoPreview id={clip.id} enabled={enabled} eager={clip.id === clips[0].id} />
         <span className="live-play">
-          <Play size={19} fill="currentColor" aria-hidden="true" />
+          <ArrowUpRight size={19} aria-hidden="true" />
         </span>
       </span>
       <span className="live-caption">
@@ -113,18 +67,14 @@ function LiveFilm({
         <ArrowUpRight size={16} aria-hidden="true" />
         <small>{clip.kind}</small>
       </span>
-    </button>
+    </a>
   );
 }
 export default function HeroLive({
   motion,
-  overlayOpen,
-  onOpen,
   onToggle,
 }: {
   motion: boolean;
-  overlayOpen: boolean;
-  onOpen: (project: string, id: string) => void;
   onToggle: () => void;
 }) {
   const strip = useRef<HTMLDivElement>(null);
@@ -170,8 +120,7 @@ export default function HeroLive({
           <LiveFilm
             key={clip.id}
             clip={clip}
-            enabled={motion && !overlayOpen}
-            onOpen={onOpen}
+            enabled={motion}
           />
         ))}
       </div>
