@@ -4,11 +4,11 @@ Fonte canônica deste projeto: `D:/projetos/portfolio-live`. Site principal: htt
 
 ## Arquitetura vigente
 
-React/Vinext com exportação estática nativa. `app/page.tsx` compõe a home, `app/hero-live.tsx` controla as prévias, `app/portfolio-data.ts` contém os nove filmes/cinco projetos. `app/globals.css` define o visual. `app/marca` é o guia digital. `public/media` preserva os trabalhos e `public/posters` suas capas. `.openai/hosting.json` publica somente `dist/client` no Sites; nenhuma rotina Node ou Worker de aplicação é enviada. `index.html` e `404.html` da raiz só encaminham o endereço anterior.
+React/Vinext com exportação estática nativa. `app/page.tsx` compõe a home, `app/hero-live.tsx` controla as prévias, `app/portfolio-data.ts` contém onze filmes de seis marcas/projetos. Nove vídeos são locais; dois longos usam o player oficial do YouTube sob demanda. `app/film-player.tsx` mantém capa e recuperação nos vídeos locais; `app/embedded-film.tsx` controla os embeds e sua pausa ao ocultar a página. `app/globals.css` define o visual. `app/marca` é o guia digital. `public/media` preserva os trabalhos e `public/posters` suas capas locais em WebP. `.openai/hosting.json` publica somente `dist/client` no Sites; nenhuma rotina Node ou Worker de aplicação é enviada. O desenvolvimento usa Vinext diretamente, sem um worker de assets interceptando a home. `index.html` e `404.html` da raiz só encaminham o endereço anterior.
 
 ## Marca e proposta
 
-Enzo ajuda quem ainda não produz e apoia quem já produz. Vídeos são a prova principal. Roxo aprovado: #221037, #8648FF, #EAFF87 e #F7F4FF; Inter Tight. Cinco prévias verticais na abertura, biblioteca por linguagem, seis famílias de apoio; gravação seletiva. Sem tabela pública de preço, métricas inventadas ou promessas de crescimento. VOTI mantém crédito CLT; NF é edição; jiu-jitsu é trabalho avulso; Ademir DcyLnRzxRcv fica excluído.
+Enzo ajuda quem ainda não produz e apoia quem já produz. Vídeos são a prova principal. Base aprovada: #221037, #8648FF e #F7F4FF; Inter Tight. O acento #EAFF87 foi rejeitado na revisão de 09/09/2026; permanece na publicação anterior até escolha de substituto, sem nova aprovação implícita. Cinco prévias verticais na abertura; a nova abertura com compilado horizontal depende da direção combinada e dos arquivos de origem. Biblioteca por linguagem, seis famílias de apoio; gravação seletiva. Sem tabela pública de preço, métricas inventadas ou promessas de crescimento. VOTI mantém crédito CLT; NF distingue edição dos cortes e captação do episódio 564xdqJQ4Zc; Kayky ADKpionmFiw tem estrutura, edição e cor; jiu-jitsu é trabalho avulso; Ademir DcyLnRzxRcv fica excluído.
 
 ## Operação
 

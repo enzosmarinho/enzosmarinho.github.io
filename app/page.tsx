@@ -14,6 +14,8 @@ import {
   Menu,
 } from 'lucide-react';
 import HeroLive from './hero-live';
+import FilmPlayer from './film-player';
+import EmbeddedFilm from './embedded-film';
 import { projects, type Project, type Film } from './portfolio-data';
 import {
   Dialog,
@@ -22,7 +24,6 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog';
-const media = (file: string) => './media/' + file;
 const groups = [
   {
     id: 'produto',
@@ -41,8 +42,16 @@ const groups = [
     projects: ['nf'],
   },
   {
-    id: 'humor',
+    id: 'longos',
     number: '03',
+    label: 'Vídeos longos & podcast',
+    title: 'Da conversa inteira\nao conteúdo que permanece.',
+    text: 'Podcasts e vídeos de conhecimento. Captação, estrutura e edição para quem tem mais para compartilhar.',
+    projects: ['nf-podcast', 'kayky'],
+  },
+  {
+    id: 'humor',
+    number: '04',
     label: 'Histórias & humor',
     title: 'Tem assunto que\npede outra entrada.',
     text: 'Uma situação reconhecível, um personagem, uma virada. O humor também pode apresentar o que um negócio faz.',
@@ -130,6 +139,8 @@ const services = [
   },
 ];
 const credits: Record<string, string> = {
+  'nf-podcast': 'Captação de podcast',
+  kayky: 'Estrutura, edição e cor',
   ciclo: 'Produção de conteúdo',
   magnos: 'Produção de conteúdo',
   nf: 'Edição de cortes e teaser',
@@ -147,8 +158,7 @@ export default function Home() {
     [selected, setSelected] = useState<{ p: Project; f: Film } | null>(null),
     [filter, setFilter] = useState('todos'),
     [service, setService] = useState<number | null>(0),
-    [menu, setMenu] = useState(false),
-    [mediaError, setMediaError] = useState(false);
+    [menu, setMenu] = useState(false);
   const [need, setNeed] = useState('ideias e roteiros'),
     [message, setMessage] = useState(
       'Oi, Enzo! Preciso de ajuda com ideias e roteiros. Meu trabalho é... e quero produzir...',
@@ -185,7 +195,6 @@ export default function Home() {
     const active = document.activeElement as HTMLElement;
     opener.current = (active.closest('button,a') as HTMLElement) || active;
     setSelected({ p, f });
-    setMediaError(false);
   }
   function close() {
     player.current?.pause();
@@ -197,7 +206,6 @@ export default function Home() {
     const idx = allFilms.findIndex((x) => x.f.id === selected.f.id);
     player.current?.pause();
     setSelected(allFilms[(idx + delta + allFilms.length) % allFilms.length]);
-    setMediaError(false);
   }
   function chooseNeed(value: string) {
     setNeed(value);
@@ -293,7 +301,7 @@ export default function Home() {
       >
         <div className="section-top">
           <span className="eyebrow">Portfólio / trabalhos em vídeo</span>
-          <span className="section-counter">05 projetos · 09 filmes</span>
+          <span className="section-counter">{new Set(projects.map((p) => p.client)).size} marcas e projetos · {allFilms.length} filmes</span>
         </div>
         <div className="work-heading">
           <h2 id="work-title">
@@ -302,9 +310,9 @@ export default function Home() {
             <em>um jeito de contar.</em>
           </h2>
           <p>
-            Marcas, conversas e cenas do dia a dia.
+            Varejo, tecnologia, fitness e conversas.
             <br />
-            Conheça o trabalho por trás de cada linguagem.
+            Veja para quem produzi e qual foi a minha participação.
           </p>
         </div>
         <div
@@ -315,7 +323,7 @@ export default function Home() {
             aria-pressed={filter === 'todos'}
             onClick={() => setFilter('todos')}
           >
-            Todos <sup>09</sup>
+            Todos <sup>{allFilms.length}</sup>
           </button>
           {groups.map((g) => (
             <button
@@ -332,7 +340,7 @@ export default function Home() {
         </div>
         <output className="sr-only">
           {filter === 'todos'
-            ? 'Todos os nove filmes'
+            ? 'Todos os ' + allFilms.length + ' filmes'
             : allFilms.filter((x) => shown[0].projects.includes(x.p.id))
                 .length + ' filmes nesta linguagem'}
         </output>
@@ -376,7 +384,7 @@ export default function Home() {
                         {p.films.map((f) => (
                           <button
                             key={f.id}
-                            className="film-tile"
+                            className={'film-tile' + (f.youtube ? ' film-landscape' : '')}
                             aria-label={
                               'Assistir: ' + f.title + ' — ' + p.client
                             }
@@ -384,10 +392,10 @@ export default function Home() {
                           >
                             <span className="film-image">
                               <img
-                                src={'./posters/' + f.id + '.jpg'}
+                                src={'./posters/' + f.id + '.webp'}
                                 alt=""
-                                width={720}
-                                height={1280}
+                                width={f.youtube ? 1280 : 720}
+                                height={f.youtube ? 720 : 1280}
                                 loading="lazy"
                               />
                               <span className="tile-play">
@@ -406,7 +414,7 @@ export default function Home() {
                               <ArrowUpRight size={16} aria-hidden="true" />
                             </span>
                             <span className="tile-format">
-                              Vídeo vertical · {f.date}
+                              {f.youtube ? 'Vídeo completo · ' : 'Vídeo vertical · '}{f.date}
                             </span>
                           </button>
                         ))}
@@ -575,7 +583,7 @@ export default function Home() {
       >
         <div className="about-image">
           <img
-            src="./posters/enzo-em-cena.jpg"
+            src="./posters/enzo-em-cena.webp"
             alt="Enzo Marinho durante uma gravação na Magnos Steel"
             width={720}
             height={1280}
@@ -760,33 +768,14 @@ export default function Home() {
           if (!v) close();
         }}
       >
-        <DialogContent className="screening-room" showCloseButton={false}>
+        <DialogContent className={'screening-room' + (selected?.f.youtube ? ' screening-wide' : '')} showCloseButton={false}>
           <DialogClose className="screening-close" aria-label="Fechar filme">
             <X size={23} aria-hidden="true" />
           </DialogClose>
           {selected && (
             <div className="screening-content">
               <div className="screening-player">
-                <video
-                  key={selected.f.id}
-                  ref={player}
-                  src={media(selected.f.id + '.mp4')}
-                  poster={'./posters/' + selected.f.id + '.jpg'}
-                  controls
-                  autoPlay
-                  playsInline
-                  preload="metadata"
-                  aria-label={selected.f.title}
-                  onError={() => setMediaError(true)}
-                />
-                {mediaError && (
-                  <p className="media-error">
-                    O vídeo não carregou.{' '}
-                    <a href={selected.f.url} target="_blank" rel="noreferrer">
-                      Abra a publicação original.
-                    </a>
-                  </p>
-                )}
+                {selected.f.youtube ? <EmbeddedFilm key={selected.f.id} film={selected.f} /> : <FilmPlayer key={selected.f.id} film={selected.f} playerRef={player} />}
               </div>
               <div className="screening-info">
                 <span className="eyebrow">{selected.p.client}</span>
@@ -803,7 +792,7 @@ export default function Home() {
                   </div>
                   <div>
                     <dt>Formato</dt>
-                    <dd>Vertical · {selected.f.duration}</dd>
+                    <dd>{selected.f.youtube ? 'Horizontal' : 'Vertical'} · {selected.f.duration}</dd>
                   </div>
                   <div>
                     <dt>Publicação</dt>
@@ -831,7 +820,7 @@ export default function Home() {
                     {String(
                       allFilms.findIndex((x) => x.f.id === selected.f.id) + 1,
                     ).padStart(2, '0')}{' '}
-                    / 09
+                    / {String(allFilms.length).padStart(2, '0')}
                   </span>
                   <button
                     aria-label="Próximo filme"

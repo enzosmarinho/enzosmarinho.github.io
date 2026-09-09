@@ -4,6 +4,7 @@ export type Film = {
   duration: string;
   date: string;
   url: string;
+  youtube?: boolean;
 };
 export type Project = {
   id: string;
@@ -18,6 +19,24 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    id: 'nf-podcast', client: 'O Negócio Sem Filtro', number: '06',
+    title: 'Uma conversa inteira, registrada para continuar chegando a pessoas.',
+    kind: 'Podcast · captação',
+    description: 'Episódio com Gleydson Espíndula, apresentado por Bruno Teixeira. Captação realizada por Enzo; aqui você pode conhecer o programa completo.',
+    note: 'Captação deste episódio informada por Enzo. Os créditos dos cortes continuam identificados separadamente.',
+    poster: '564xdqJQ4Zc.webp',
+    films: [{id: '564xdqJQ4Zc', title: 'Podcast com Gleydson Espíndula', duration: '51:18', date: '16 jul 2026', url: 'https://www.youtube.com/watch?v=564xdqJQ4Zc', youtube: true}],
+  },
+  {
+    id: 'kayky', client: 'Kayky Pitondo', number: '07',
+    title: 'Conteúdo que acompanha o treino do começo ao fim.',
+    kind: 'Fitness · vídeo longo',
+    description: 'Um treino de superiores explicado em vídeo longo. Estrutura, edição e cor para organizar o conteúdo ao longo de uma sessão completa.',
+    note: 'Vídeo publicado no canal de Kayky Pitondo. Estrutura, edição e cor de Enzo, conforme o registro do trabalho.',
+    poster: 'ADKpionmFiw.webp',
+    films: [{id: 'ADKpionmFiw', title: 'Treino de superiores', duration: '40:47', date: '04 jun 2026', url: 'https://www.youtube.com/watch?v=ADKpionmFiw', youtube: true}],
+  },
   {
     id: 'ciclo',
     client: 'Ciclo Avenida',

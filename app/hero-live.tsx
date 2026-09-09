@@ -52,7 +52,8 @@ function LiveFilm({
   const root = useRef<HTMLButtonElement>(null),
     video = useRef<HTMLVideoElement>(null);
   const [visible, setVisible] = useState(false),
-    [loaded, setLoaded] = useState(false);
+    [loaded, setLoaded] = useState(false),
+    [playing, setPlaying] = useState(false);
   useEffect(() => {
     const io = new IntersectionObserver(
       ([e]) => setVisible(e.isIntersecting && e.intersectionRatio > 0.35),
@@ -88,14 +89,18 @@ function LiveFilm({
       aria-label={'Assistir: ' + clip.name + ' — ' + clip.kind}
     >
       <span className="live-picture">
+        <img className="live-cover" src={'./posters/' + clip.id + '.webp'} alt="" width={720} height={1280} loading="eager" decoding="async" fetchPriority={clip.id === clips[0].id ? 'high' : 'auto'} />
         <video
+          className={playing ? 'preview-playing' : ''}
           ref={video}
           src={loaded ? './media/preview-' + clip.id + '.mp4' : undefined}
-          poster={'./posters/' + clip.id + '.jpg'}
+          poster={'./posters/' + clip.id + '.webp'}
           loop
           muted
           playsInline
           preload="none"
+          onPlaying={() => setPlaying(true)}
+          onError={() => setPlaying(false)}
           aria-hidden="true"
           tabIndex={-1}
         />
@@ -148,8 +153,8 @@ export default function HeroLive({
         </div>
         <div className="opening-intro">
           <p>
-            Eu sou o Enzo. Ajudo você a começar a produzir — ou a dar o próximo
-            passo no que já cria.
+            Roteiros, edição, design e vídeos para empresas e criadores.
+            Do primeiro conteúdo ao apoio na sua próxima produção.
           </p>
           <a href="#trabalhos" className="link-arrow">
             Conheça meu trabalho <ArrowDown size={19} aria-hidden="true" />
