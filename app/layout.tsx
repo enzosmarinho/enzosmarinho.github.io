@@ -1,4 +1,4 @@
 import type { Metadata } from 'next';
 import './globals.css';
-export const metadata: Metadata = { title: 'Enzo Marinho — Boas histórias. No ritmo certo.', description: 'Criação e produção de conteúdo para quem quer começar e suporte para quem já produz. Conheça os trabalhos de Enzo Marinho.', icons:{icon:'/enzo-icon.svg'}, metadataBase:new URL('https://enzosmarinho.github.io'),alternates:{canonical:'/'},robots:{index:true,follow:true} };
-export default function RootLayout({children}:{children:React.ReactNode}) { return <html lang="pt-BR"><body>{children}</body></html>; }
+export const metadata: Metadata = { title: 'Enzo Marinho: a prova já está gravada, falta o formato', description: 'Editor e roteirista em Araçatuba. Eu acho, no vídeo que você já gravou, o formato que vende o seu trabalho. Veja o caso e os trabalhos.', icons:{icon:'/enzo-icon.svg'}, metadataBase:new URL('https://enzosmarinho.github.io'),alternates:{canonical:'/'},robots:{index:true,follow:true} };
+export default function RootLayout({children}:{children:React.ReactNode}) { return <html lang="pt-BR"><head><link rel="preload" href="/fonts/Archivo-cond.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /><link rel="preload" href="/fonts/InterTight.woff2" as="font" type="font/woff2" crossOrigin="anonymous" /></head><body>{children}</body></html>; }

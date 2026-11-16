@@ -1,29 +1,94 @@
 'use client';
+import '../v4.css';
 import { useState } from 'react';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import VideoPreview from '../video-preview';
-import { votiFilms } from '../voti-films';
+import { votiFilms, type VotiFilm } from '../voti-films';
 
 const categories = ['Todos', 'Cenas & campanhas', 'Demonstrações', 'Visitas', 'Apresentação'];
+// Destaques já selecionados no CLAUDE.md do repositório.
+const featured = ['DVjvzjvESOn', 'DTgXN2FiDV6', 'DSldztZCA9P'];
+
+const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const when = (film: VotiFilm) => {
+  const [d, m, y] = film.date.split(' ');
+  return Number(y) * 10000 + (months.indexOf(m) + 1) * 100 + Number(d);
+};
+const ordered = [...votiFilms].sort((a, b) =>
+  categories.indexOf(a.category) - categories.indexOf(b.category) || when(b) - when(a));
+
+function Card({ film }: { film: VotiFilm }) {
+  return (
+    <a href={film.url} target="_blank" rel="noreferrer">
+      <VideoPreview id={film.id} landscape={film.landscape} mode="hover" />
+      <span className="work-cap"><strong>{film.title}</strong> {film.category}, {film.date}</span>
+    </a>
+  );
+}
+
 export default function VotiArchive() {
   const [category, setCategory] = useState('Todos');
-  const films = votiFilms.filter(film => category === 'Todos' || film.category === category);
-  return <main className="enzo-site client-archive">
-    <header className="shell archive-nav"><a href="/" className="wordmark">Enzo Marinho</a><a href="/#trabalhos"><ArrowLeft size={17} /> Voltar ao portfólio</a></header>
-    <section className="shell archive-intro">
-      <span className="eyebrow">Acervo de trabalhos · experiência CLT</span>
-      <h1>VOTI Software.<br /><em>Várias formas de contar.</em></h1>
-      <p>Da cena com personagens à explicação na tela. Vídeos produzidos durante minha experiência na VOTI, organizados pela linguagem de cada peça.</p>
-      <a className="link-arrow" href="/#conversa">Quero conteúdo para minha empresa <ArrowUpRight size={18} /></a>
-    </section>
-    <section className="shell archive-library" aria-label="Vídeos da VOTI">
-      <div className="work-filters" aria-label="Linguagem do vídeo">{categories.map(value => <button key={value} aria-pressed={category === value} onClick={() => setCategory(value)}>{value}<sup>{votiFilms.filter(f => value === 'Todos' || f.category === value).length}</sup></button>)}</div>
-      <p className="archive-count" aria-live="polite">{films.length} trabalhos · clique para assistir à publicação original</p>
-      <div className="archive-grid">{films.map(film => <a key={film.id} className={'film-tile' + (film.landscape ? ' film-landscape' : '')} href={film.url} aria-label={'Assistir: ' + film.title}>
-        <span className="film-image"><VideoPreview id={film.id} landscape={film.landscape} /><span className="tile-play"><ArrowUpRight size={19} aria-hidden="true" /></span><span className="film-duration">{film.duration}</span></span>
-        <span className="tile-title">{film.title}<ArrowUpRight size={16} aria-hidden="true" /></span><span className="tile-format">{film.category} · {film.date}</span>
-      </a>)}</div>
-    </section>
-    <footer className="shell archive-footer"><span>Enzo Marinho · vídeo, criação e apoio</span><a className="link-arrow" href="/#conversa">Vamos conversar <ArrowUpRight size={18} /></a></footer>
-  </main>;
+  const films = ordered.filter((film) => !featured.includes(film.id) && (category === 'Todos' || film.category === category));
+  const top = featured.map((id) => votiFilms.find((f) => f.id === id)).filter((f): f is VotiFilm => Boolean(f));
+  return (
+    <main className="v4" id="inicio">
+      <header className="bar">
+        <div className="wrap bar-in">
+          <a href="/" className="mark">Enzo Marinho</a>
+          <nav aria-label="Principal">
+            <a href="/#trabalhos">Voltar aos trabalhos</a>
+            <a href="/#contato" className="bar-cta">Contato</a>
+          </nav>
+        </div>
+      </header>
+
+      <section className="archive-head">
+        <div className="wrap">
+          <h1>VOTI Software</h1>
+          <p>Vídeos que fiz como videomaker CLT na VOTI: câmera, roteiro, atuação e edição. Cada um abre a publicação original.</p>
+        </div>
+      </section>
+
+      <section className="archive-top" aria-labelledby="top-title">
+        <div className="wrap">
+          <h2 id="top-title">Para começar</h2>
+          <ul className="works-grid archive-grid">
+            {top.map((film) => <li key={film.id} className={film.landscape ? 'is-landscape' : undefined}><Card film={film} /></li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="archive" aria-labelledby="all-title">
+        <div className="wrap">
+          <h2 id="all-title">O acervo</h2>
+          <div className="filters" role="group" aria-label="Linguagem do vídeo">
+            {categories.map((value) => (
+              <button key={value} type="button" aria-pressed={category === value} onClick={() => setCategory(value)}>
+                {value} <span>{ordered.filter((f) => !featured.includes(f.id) && (value === 'Todos' || f.category === value)).length}</span>
+              </button>
+            ))}
+          </div>
+          <p className="archive-count" aria-live="polite">{films.length} vídeos, do mais novo ao mais antigo</p>
+          <ul className="works-grid archive-grid">
+            {films.map((film) => <li key={film.id} className={film.landscape ? 'is-landscape' : undefined}><Card film={film} /></li>)}
+          </ul>
+        </div>
+      </section>
+
+      <section className="archive-end" aria-labelledby="end-title">
+        <div className="wrap archive-end-in">
+          <h2 id="end-title">Hoje atendo pequenos negócios.</h2>
+          <p>Você grava no celular; eu encontro o formato e cuido do resto.</p>
+          <a href="/#contato" className="btn">Montar a mensagem</a>
+        </div>
+      </section>
+
+      <footer className="foot">
+        <div className="wrap foot-in">
+          <a href="/" className="mark">Enzo Marinho</a>
+          <span>Araçatuba e remoto</span>
+          <a href="/#contato">Contato</a>
+        </div>
+      </footer>
+    </main>
+  );
 }
