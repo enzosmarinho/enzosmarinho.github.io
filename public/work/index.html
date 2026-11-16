@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enzo Marinho · Podcast &amp; video editing samples</title>
+<meta name="description" content="Editorial podcast segments, trailers and vertical clips edited by Enzo Marinho, with motion timed to the spoken word.">
+<style>
+  @font-face{font-family:"Inter Tight";src:url("/fonts/InterTight.woff2") format("woff2");font-weight:100 900;font-display:swap}
+  :root{--bg:#221037;--ink:#f7f4ff;--muted:#c9bfe6;--accent:#8648ff;--card:#2c1648;--line:#3d2463}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Inter Tight",system-ui,sans-serif}
+  main{max-width:1040px;margin:0 auto;padding:56px 16px 80px}
+  h1{font-size:clamp(30px,5vw,48px);line-height:1.08;margin:0 0 16px;letter-spacing:-.02em}
+  h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em}
+  p{margin:0 0 14px;color:var(--muted)}
+  .lede{font-size:19px;color:var(--ink);max-width:720px}
+  .tag{display:inline-block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#c7a6ff;margin-bottom:14px}
+  section{margin-top:56px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  video{width:100%;height:auto;border-radius:10px;background:#000;display:block}
+  .meta{font-size:15px;color:var(--muted);margin-top:10px}
+  .verticals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .verticals video{aspect-ratio:9/16}
+  ul{margin:0;padding-left:20px;color:var(--muted)}
+  li{margin:6px 0}
+  .credits{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px}
+  a{color:#c7a6ff}
+  @media (max-width:720px){.verticals{grid-template-columns:1fr}main{padding-top:36px}}
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Podcast &amp; video editing · samples</span>
+  <h1>Long conversations, cut to the point.</h1>
+  <p class="lede">I'm Enzo Marinho, a video editor based in Brazil (UTC−3, one to two hours ahead of New York). I turn long
+  interviews into standalone segments, trailers and vertical clips, with graphics timed to the word that is being said.</p>
+  <p>All three formats below come from one source: a 53-minute <em>How I Invest</em> conversation between David Weisburd and
+  Nelson Mills, published under CC BY.</p>
+
+  <section>
+    <h2>The Undersea Bet · editorial segment (6:57)</h2>
+    <p>One thread of the conversation rebuilt to stand on its own: chapter cards for each turn and four explainer scenes
+    (navigating without GPS, a market map, a $2,000 mine against 200× the cost to clear it, one frigate against the same
+    $400M in drones). Every number lands on the word that says it.</p>
+    <div class="card">
+      <video controls preload="metadata" playsinline poster="undersea-bet-segment.jpg">
+        <source src="undersea-bet-segment.mp4" type="video/mp4">
+      </video>
+      <p class="meta">Web preview at 720p (delivered master: 1440p ProRes 422 HQ). Mix at −14.5 LUFS, −1.3 dBTP.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Podcast trailer (0:59)</h2>
+    <p>Cold open on the "impossible" two-hour lecture, then problem, proof ($2M pre-seed in 30 days, $85M raised), the
+    naval-warfare question and the $100B goal.</p>
+    <div class="card">
+      <video controls preload="metadata" playsinline poster="podcast-trailer.jpg">
+        <source src="podcast-trailer.mp4" type="video/mp4">
+      </video>
+      <p class="meta">Web preview at 1080p (delivered master: 1440p ProRes 422 HQ). Mix at −14.3 LUFS.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Vertical clips (35–56 s)</h2>
+    <p>Word-by-word captions, split screen and on-screen data timed to the dialogue; names and numbers checked against
+    the source.</p>
+    <div class="verticals">
+      <video controls preload="metadata" playsinline poster="vertical-A.jpg"><source src="vertical-A.mp4" type="video/mp4"></video>
+      <video controls preload="metadata" playsinline poster="vertical-G.jpg"><source src="vertical-G.mp4" type="video/mp4"></video>
+      <video controls preload="metadata" playsinline poster="vertical-D.jpg"><source src="vertical-D.mp4" type="video/mp4"></video>
+    </div>
+  </section>
+
+  <section>
+    <h2>How I work</h2>
+    <ul>
+      <li>Cut for the ear first, then make the picture hold up (cutaways, J- and L-cuts across a tightened answer).</li>
+      <li>Every export is re-transcribed and compared with the edit, so no word is clipped.</li>
+      <li>Loudness and true peak measured on every delivery; masters in the format you ask for.</li>
+      <li>A short note with each edit: what came out, why, and what stayed on purpose.</li>
+      <li>DaVinci Resolve and FFmpeg; motion graphics built in code (HyperFrames/GSAP), frame-accurate to the voice.</li>
+      <li>Happy to start with a paid test on your footage.</li>
+    </ul>
+  </section>
+
+  <section class="credits">
+    <p>These are spec/portfolio edits. Footage: <a href="https://www.youtube.com/watch?v=2JjhpNfBExI" rel="noopener">How I Invest
+    with David Weisburd, episode with Nelson Mills</a>, licensed under
+    <a href="https://creativecommons.org/licenses/by/3.0/" rel="noopener">CC BY 3.0</a>. Changes: re-edited, restructured, graphics,
+    captions and mix added. Not affiliated with or endorsed by How I Invest. Portfolio in Portuguese:
+    <a href="/">enzosmarinho.github.io</a>.</p>
+  </section>
+</main>
+</body>
+</html>
